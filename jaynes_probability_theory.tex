@@ -71,4 +71,156 @@ P(D_1|\overline{H_3}) = P(D_1|H_1 + H_2) = P(D_1|H_3)
 \end{gather*}
 \end{solution}
 
+
+
+\begin{exercise}{6.5}
+You are given a source of radiation with strength (expected count of particles over a given time interval) $s$ and a Geiger counter with effectiveness (probability of detection) $\phi$, which exhibits the dead-time effect, meaning that two or more particles incident on the counter within a short time interval T can produce at most only one count. You measure $k$ particles over the given time interval. Estimate (calculate the probability distribution of) $n$, the actual number of particles.
+\end{exercise}
+
+\begin{solution}
+It's not really clear what is meant by the dead-time effect. I'm going to assume the following definition, because it is the most sensible: before a particle passes through, the counter decides whether it will try to detect it. If not, then that particle is totally irrelevant. If yes, then the counter counts the particle and proceeds to turn off for time $T$, during which any other particles that pass through are not counted and do not have any affect on the operation of the counter, whether or not they are destined to be detected. Also, we assume that the particles are uniformly distributed over the time interval, say between time 0 and time 1.\\
+That being said, we can first do the calculations for $\phi = 1$ and name that event $G$. If $k$ particles are detected, then the rest have to appear during the cooldowns of these $k$ particles. Let $l_i$ be the number of particles that appeared during the cooldown of the $i$-th detected particle (from now on all indexes of particles will refer to detected particles, ie. the indexes will range from $1$ to $c$), and $t_i$ its moment of appearance. We can assume a particular order of particles and multiply by $n!$ at the end to take this into account. Since the particles are uniformly distributed over the time interval, then if the only thing we know about the $l_i - 1$ particles is that they appeared during the countdown of the $i$-th particle, then to our best understanding they are uniformly distributed inside the particle's cooldown. Notice that the $i$-th particle has to appear before moment $1 - (c - i)T$, or else the cooldown times of the later particles would have to overlap. Let $b$ be the index of the first particle that appears after moment $1 - (c - b + 1)T$. All later particles $i$ have to appear after moment $1 - iT$; in particular, particle $k$ has to appear after moment $1 - T$, meaning that although its cooldown lasts until $t_k + T$, we know that its $l_k$ particles appeared before moment 1, and we are otherwise ignorant. There is also the possibility that there is no such $b$, in which case the last $l_k$ particles are, to our best knowledge, evenly distributed over the interval $(t_k, t_k + T)$; we will regard this case seperately. We can calculate probabilities of events by calculating the integral over the pdf of the event space, which is uniform by assumption. This is
+
+\begin{equation*}
+p(b l_1 l_2 \ldots l_k | n G T) = \int\limits_{0}^{1-kT} dt_1 \frac{T^{l_1 - 1}}{(l_1 - 1)!} \ldots \int\limits_{t_{b-2}+T}^{1-(k-b+2)T} dt_{b-1} \frac{T^{l_{b-1} - 1}}{(l_{b-1} - 1)!} \int\limits_{1-(k-b+1)T}^{1-(k-b)T}
+\end{equation*}
+\begin{equation*}
+dt_b \frac{T^{l_b - 1}}{(l_b - 1)!} \ldots \int\limits_{t_{k-2} + T}^{1-T} dt_{k-1} \frac{T^{l_{k-1} - 1}}{(l_{k-1} - 1)!} \int\limits_{t_{k-1} + T}^{1} dt_k \frac{(1-t_k)^{l_k - 1}}{(l_k - 1)!}
+\end{equation*}
+
+Notice that this chain of intergrals has two parts, which are independant of each other, because the lower bound of the b-th integral is independent of $t_{b-1}$. Also, the factors $\frac{T^{l_i - 1}}{(l_i - 1)!}$ are independent for $i \leqslant k - 1$:
+
+\begin{equation*}
+B_b = \int_{0}^{1-kT} dt_1 \int_{t_1+T}^{1-(k-1)T} dt_2 ... \int_{t_{b-2}+T}^{1-(k-b+2)T} dt_{b-1}
+\end{equation*}
+
+\begin{equation*}
+E_b = \int_{1-(k-b+1)T}^{1-(k-b)T} dt_b ... \int_{t_{k-2} + T}^{1-T} dt_{k-1} \int_{t_{k-1} + T}^{1} dt_k \frac{(1-t_k)^{l_k - 1}}{(l_k - 1)!}
+\end{equation*}
+
+\begin{equation*}
+p(b l_1 l_2 ... l_k | n G T) = B_b E_b \left(\prod_{i=1}^{k-1} \frac{T^{l_i - 1}}{(l_i - 1)!}\right)
+\end{equation*}
+
+Let's start with calculating $B_b$. The innermost intergral is just the difference of the bounds.
+
+\begin{equation*}
+B_b = \int_{0}^{1-kT} dt_1 \int_{t_1+T}^{1-(k-1)T} dt_2 ... \int_{t_{b-3}+T}^{1-(k-b+3)T} dt_{b-2} (1 - t_{b-2} - (k - b + 3)T)
+\end{equation*}
+
+Note that the last integral is of the form $\int_{t_{b-i-1}+T}^{1-(k-b+i+1)T} dt_{b-i} \frac{(1 - t_{b-i} - (k - b + i + 1)T)^{i-1}}{(i-1)!}$. We substitute $t_{b-i} := 1 - t_{b-i} - (k - b + i + 1)T$ and calculate this integral:
+
+\begin{equation*}
+\int_{t_{b-i-1}+T}^{1-(k-b+i+1)T} dt_{b-i} \frac{(1 - t_{b-i} - (k - b + i + 1)T)^{i-1}}{(i-1)!} = 
+\end{equation*}
+\begin{equation*}
+\int_{0}^{1-(k-b+i+1)T} dt_{b-i} \cdot t_{b-i} = \frac{(1 - t_{b-i-1} - (k - b + i + 2)T)^i}{i!}
+\end{equation*}
+
+We see that the next last integral is of the same form, but with $i + 1$. By the principle of induction, it has to be like that for all $i$, so
+
+\begin{equation*}
+B_b = \int_{0}^{1-kT} dt_1 \frac{(1 - t_1 - kT)^{b-2}}{(b - 2)!} = \int_{0}^{1 - (k-1)T} dt_1 \frac{t_1^{b-2}}{(b-2)!} = \frac{(1 - (k-1)T)^{b-1}}{(b-1)!}
+\end{equation*}
+
+$E_b$ can be calculated in the same way, by repeatedly applying substitutions and noticing that each time the integral is of the same form. I'm not going to go over the calculations in detail; evaluating the integrals gives
+
+\begin{equation*}
+E_b = \frac{T^{l_k+k-b}}{(l_k+k-b)!}
+\end{equation*}
+
+To get the probability of this particular set of particles being detected, we can sum $p(b l_1 l_2 ... l_k | n G T)$ for all $b$ and include the case where there is no such $b$; it is easy to see that that case reduces to $B_{k+1}$. We get
+
+\begin{equation*}
+p(l_1 l_2 ... l_k | n G T) = \left(\prod_{i=1}^{k} \frac{T^{l_i - 1}}{(l_i - 1)!}\right) B_{k+1} + \left(\prod_{i=1}^{k-1} \frac{T^{l_i - 1}}{(l_i - 1)!}\right) \sum_{b=1}^{k} B_b E_b = 
+\end{equation*}
+
+Some terms cancel, the $B_{k+1}$ part turns out to be equal to the $k+1$-st term of the sum, were it extended, we can shift $b$ by $1$, and in the end we get
+\begin{equation*}
+p(l_1 l_2 ... l_k | n G T) = \frac{T^{n-l_k-k+1}}{(n-l_k-k+1)!} \binom{n-l_k-k+1}{l_1, l_2, \ldots, l_{k-1}} \sum_{b=0}^{k} \frac{T^{l_k+k-b-1}}{b!(l_k+k-b-1)!} (1-(k-1)T)^b
+\end{equation*}
+
+We don't actually care which $k$ particles are detected, only that $k$ particles were detected (or, rather, this information is not given to us in the prediction task). We have to sum over all possible sets of $l_i$ which sum to $n$. Notice that for $i < k$, the above is dependent on $l_i$ only in the multinomial coefficient, so the rest can be factored out. This is also the moment to remind ourselves that we were supposed to multiply by $n!$ to account for ordering. We use the fact that
+
+\begin{equation*}
+\sum_{l_1+l_2+\ldots+l_{k-1}=n-l_k-k+1} \binom{n-l_k-k+1}{l_1, l_2, \ldots, l_{k-1}} = (k-1)^{n-l_k-k+1}
+\end{equation*}
+
+to get
+
+\begin{equation*}
+p(k | n G T) = \sum_{b=0}^{k} \sum_{l_k=0}^{n-k} \frac{n!}{(n-l_k-k)!b!(l_k+k-b)!} ((k-1)T)^{n-l_k-k} (1-(k-1)T)^b T^{l_k+k-b}
+\end{equation*}
+
+Now we use the following formula:
+
+\begin{equation*}
+\sum_{b=0}^{k} \sum_{a=k}^{n} \binom{n}{b, a-b, n-a} x^b y^{a-b} z^{n-a} = \sum_{a=0}^{k} \binom{n}{a} \left(x^a(y+z)^{n-a} - (x + y)^a z^{n-a}\right)
+\end{equation*}
+
+to get rid of the double summation:
+
+\begin{equation*}
+p(k | n G T) = \sum_{a=0}^{k} \binom{n}{a} \left((1 - (k-1)T)^a(kT)^{n-a} - (1-(k-2)T)^a((k-1)T)^{n-a}\right)
+\end{equation*}
+
+According to how I defined the problem, the probability for detecting $k$ particles from $n$ with a not 100\% effective counter is the same as if we were only taking into account the $N$ particles that are destined to hit the counter:
+
+\begin{equation*}
+p(k | n \phi T) = \sum_{N=0}^{n} \binom{n}{N} \phi^N (1-\phi)^ {n - N} p(k | N G T)
+\end{equation*}
+
+We will use the same method to calculate $p(n | k s \phi T)$, as was used in the paragraphs preceding this exercise. We already know that $n$ has a Poisson distribution:
+
+\begin{equation*}
+p(n|s \phi T) = p(n|s) = exp(-s)\frac{s^n}{n!}
+\end{equation*}
+
+The normalizing constant is equal to:
+
+\begin{equation*}
+p(k | s \phi T) = \sum_{n=0}^{\infty} p(nk | s \phi T) = \sum_{n} p(n | s \phi T) p(k | n s \phi T) = \sum_{n} p(n | s) p(k | n T)
+\end{equation*}
+
+Some terms cancel, we swap variables to have the same naming as before, and we get
+
+\begin{equation*}
+p(k | s \phi T) = \sum_{n=0}^{\infty} p(k|nGT) exp(1 - s - \phi) \frac{(\phi s)^n}{n!}
+\end{equation*}
+
+Now we plug in the formula for $p(k|nGT)$. Some terms cancel, we swap the summations a few times, and we get
+
+\begin{equation*}
+p(k | \phi s T) 
+= \exp(1 - s - \phi + \phi s kT) 
+\left( \sum_{n=0}^{k} \frac{1}{n!} 
+\left( \phi s \frac{1 - (k-1)T}{kT} \right)^n \right)
+\end{equation*}
+\begin{equation*}
+- \exp(1 - s - \phi) 
+\left( \sum_{n=0}^{k-1} \frac{1}{n!} 
+\left( \phi s \left( \frac{1-(k-1)T}{kT} + kT \right) \right)^n \right)
+\end{equation*}
+\begin{equation*}
+- \exp(1 - s - \phi + \phi s (k-1)T) 
+\left( \sum_{n=0}^{k} \frac{1}{n!} 
+\left( \phi s \frac{1 - (k-2)T}{(k-1)T} \right)^n \right)
+\end{equation*}
+\begin{equation*}
++ \exp(1 - s - \phi) 
+\left( \sum_{n=0}^{k-1} \frac{1}{n!} 
+\left( \phi s \left( \frac{1-(k-2)T}{(k-1)T} + (k-1)T \right) \right)^n \right)
+\end{equation*}
+
+Now we can get our (not closed form, unfortunately) answer by plugging in the above equations into
+
+\begin{equation*}
+p(n | k \phi s T) 
+= p(n | s) \frac{p(k | n T)}{p(k | \phi s T)}
+\end{equation*}
+
+I'm not going to actually typeset that, because the fraction won't fit in one line. Be aware that $n$ the index in the summations should be renamed to something else, because it is also that actuall number of particles.
+
+\end{solution}
+
 \end{document}
