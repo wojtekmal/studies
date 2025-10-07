@@ -16,6 +16,7 @@
 \RequirePackage{graphicx}
 \RequirePackage{listings}
 \RequirePackage{environ}
+\RequirePackage{enumitem}
 
 % Page layout
 \geometry{a4paper, margin=1in}
@@ -67,3 +68,19 @@
     \BODY
     \medskip
 }
+
+\NewEnviron{zadanie}[1]{
+    \par\medskip
+    \noindent\textbf{Zadanie #1.}\\ % Print the custom number
+    \BODY
+    \medskip
+}
+
+\NewEnviron{rozwiazanie}{
+    \par\medskip
+    \noindent\textbf{Rozwiązanie}\\
+    \BODY
+    \medskip
+}
+
+\setlength{\parindent}{0pt}

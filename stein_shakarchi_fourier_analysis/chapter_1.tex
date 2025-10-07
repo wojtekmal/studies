@@ -1,0 +1,158 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{exercise}{1}
+If $z = x + iy$ is a complex number with $x, y \in \mathbb{R}$, define
+\[
+|z| = \sqrt{x^2 + y^2},
+\]
+and call this the \emph{modulus} or \emph{absolute value} of $z$.
+
+\begin{enumerate}[label=(\alph*)]
+\item What is the geometric interpretation of $|z|$?
+\item Show that if $|z| = 0$, then $z = 0$.
+\item Show that if $\lambda \in \mathbb{R}$, then $|\lambda z| = |\lambda|\,|z|$, where $|\lambda|$ is the ordinary absolute value.
+\item If $z_1, z_2$ are two complex numbers, prove that
+\[
+|z_1 z_2| = |z_1||z_2|, \qquad |z_1 + z_2| \le |z_1| + |z_2|.
+\]
+\item Show that if $z \ne 0$, then $\bigl|\frac{1}{z}\bigr| = \frac{1}{|z|}$.
+\end{enumerate}
+\end{exercise}
+\begin{solution}
+\begin{enumerate}[label=(\alph*)]
+    \item The distance from $(0, 0)$ to $(x, y)$ on the Euclidian plane.
+    \item $|z| = \sqrt{x^2 + y^2} = 0$, so $x^2 + y^2 = 0$, but squares of real numbers are nonnegative, so $x = y = 0$.
+    \item $|\lambda z| = |\lambda x + \lambda yi| = \sqrt{(\lambda x)^2 + (\lambda y)^2} = \lambda \sqrt{x^2 + y^2} = \lambda |z|$.
+    \item The inequality arises from the triangle inequality in the geometric interpretation. The equality is derived as follows: 
+    \[|z_1z_2| = |(x_1 + y_1i)(x_2 + y_2i)| = |x_1x_2 - y_1y_2 + (x_1y_2 + x_2y_1)i| =\]
+    \[ \sqrt{(x_1x_2 - y_1y_2)^2 + (x_1y_2 + x_2y_1)^2} = \sqrt{(x_1^2 + y_1^2)(x_2^2 + y_2^2)} = |z_1||z_2|\]
+    \item $\left|\frac1z\right| = \left|\frac{x-yi}{x^2+y^2}\right| = \frac1{x^2+y^2} |x-yi| = \frac1{x^2+y^2}\sqrt{x^2+y^2} = \frac1{\sqrt{x^2+y^2}} = \frac1{|z|}$
+\end{enumerate}
+\end{solution}
+
+\begin{exercise}{2}
+If $z = x + iy$ with $x, y \in \mathbb{R}$, define the complex conjugate
+\[
+\overline{z} = x - iy.
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item What is the geometric interpretation of $\overline{z}$?
+\item Show that $|z|^2 = z \overline{z}$.
+\item Prove that if $z$ lies on the unit circle, then $\frac{1}{z} = \overline{z}$.
+\end{enumerate}
+\end{exercise}
+\begin{solution}
+\begin{enumerate}[label=(\alph*)]
+    \item Reflection of $z$ by the $x$ axis on the complex plane.
+    \item $|z|^2 = x^2 + y^2 = (x + yi)(x - yi)$.
+    \item $\frac1z = \frac{1}{x+yi} = \frac{x-yi}{x^2+y^2} = x-yi = \overline{z}$.
+\end{enumerate}
+\end{solution}
+
+\begin{exercise}{3}
+A sequence $\{w_n\}_{n=1}^\infty$ of complex numbers is said to converge if there exists $w \in \mathbb{C}$ such that
+\[
+\lim_{n \to \infty} |w_n - w| = 0.
+\]
+We then call $w$ the limit of the sequence.
+
+\begin{enumerate}[label=(\alph*)]
+\item Show that a convergent sequence of complex numbers has a unique limit.
+
+A sequence $\{w_n\}$ is a \emph{Cauchy sequence} if for every $\varepsilon > 0$ there exists $N$ such that
+\[
+|w_n - w_m| < \varepsilon \quad \text{whenever } n,m > N.
+\]
+\item Prove that a sequence of complex numbers converges if and only if it is a Cauchy sequence. [Hint: Recall the analogous result for real numbers.]
+\item Let $\{a_n\}$ be a sequence of nonnegative real numbers such that $\sum_n a_n$ converges.  
+Show that if $\{z_n\}$ is a sequence of complex numbers satisfying $|z_n| \le a_n$ for all $n$, then $\sum_n z_n$ converges. [Hint: Use the Cauchy criterion.]
+\end{enumerate}
+\end{exercise}
+\begin{solution}
+\begin{enumerate}[label=(\alph*)]
+    \item If there where two limits $l_1, l_2$, then there must be an $n$ such that $|l_1 - w_n| < \frac12|l_1 - l_2|$ and $|w_n - l_2| < \frac12|l_1 - l_2|$, but then by the triangle inequality $|l_1 - l_2| > |l_1 - w_n| + |w_n - l_2| \geq |l_1 - l_2|$.
+    \item If $\{w_n\}$ is a Cauchy sequence, then there exists an $n$ such that for $m \geq n$ we have $|w_n - w_m| < 1$, so the sequence is bounded in both the real and imaginary parts. The sequence is infinite, so there must be an infinite subsequence with monotonic real parts, and that subsequence must have an infinite subsequence with monotonic imaginary parts. By the monotone convergence theorem, both the real parts $x_i$ and imaginary parts $y_i$ of $w_i$ must converge to some limits, say $x$ and $y$, respectively. Then for every $\varepsilon$ there must be an $n$ such that $|x_m - x_n| < \frac{\sqrt2}2 \epsilon$ and $|y_m - y_n| < \frac{\sqrt2}2 \epsilon$ for all $m \geq n$ in the subsequence. Then $|w_m - w| = |w_m - (x + yi)| \leq \varepsilon$ for such $m$. This means that for all $\varepsilon$ there is an $w_n$ from the subsequence such that $|w_n - w| < \frac\varepsilon2$ and $|w_m - w_n| < \frac\varepsilon2$ for all $m \geq n$ (because of the Cauchy property), so by the triangle inequality $|w_m - w| < \varepsilon$ for all $m$. The implication in the other direction is trivial.
+    \item Since $\sum_n a_n$ converges, it is a Cauchy sequence, meaning that for every $\varepsilon$ there exists an $n$ such that for all $m \geq n$ we have (from the triangle inequality) $|(\sum_1^m z_i) - (\sum_1^n z_i)| = |\sum_n^m z_i| \leq \sum_n^m |z_i| \leq \sum_n^m a_i = |\sum_n^m a_i| < \varepsilon$, so by the Cauchy criterion we have that $\sum_n z_n$ converges.
+\end{enumerate}
+\end{solution}
+
+\begin{exercise}{4}
+For $z \in \mathbb{C}$, define the complex exponential by
+\[
+e^z = \sum_{n=0}^\infty \frac{z^n}{n!}.
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Prove that this series converges for every complex $z$, and that the convergence is uniform on every bounded subset of $\mathbb{C}$.
+\item Show that for any $z_1, z_2 \in \mathbb{C}$, we have $e^{z_1} e^{z_2} = e^{z_1 + z_2}$.
+\item If $z = iy$ with $y \in \mathbb{R}$, show that $e^{iy} = \cos y + i \sin y$ (Euler’s identity).
+\item Show that for $x, y \in \mathbb{R}$,
+\[
+e^{x+iy} = e^x(\cos y + i \sin y), \quad \text{and} \quad |e^{x+iy}| = e^x.
+\]
+\item Prove that $e^z = 1$ if and only if $z = 2\pi k i$ for some integer $k$.
+\item Show that every complex number $z = x + iy$ can be written as $z = r e^{i\theta}$, with $r = |z|$ and $\theta$ unique up to multiples of $2\pi$.
+\item In particular, $i = e^{i\pi/2}$. What is the geometric meaning of multiplication by $i$, or by $e^{i\theta}$?
+\item Show that
+\[
+\cos \theta = \frac{e^{i\theta} + e^{-i\theta}}{2}, \qquad
+\sin \theta = \frac{e^{i\theta} - e^{-i\theta}}{2i}.
+\]
+\item Use the exponential form to derive trigonometric identities such as
+\[
+\cos(\theta + \phi) = \cos \theta \cos \phi - \sin \theta \sin \phi,
+\]
+and also
+\[
+2\sin \theta \sin \phi = \cos(\theta - \phi) - \cos(\theta + \phi), \quad
+2\sin \theta \cos \phi = \sin(\theta + \phi) + \sin(\theta - \phi).
+\]
+\end{enumerate}
+\end{exercise}
+\begin{solution}
+\begin{enumerate}[label=(\alph*)]
+    \item Let $a$ be the supremum of all $|z|$ on the bounded subset. Then we may denote $z_i = \frac{z^n}{n!}$, $a_i = \frac{a^n}{n!}$. The previous exercises' solution shows that $\sum_{n=0}^{\infty} z_i$ converges pointwise, but we can trace the proof for the Cauchy criterion to get a bound. Let $w_n = \sum_{i=0}^{n} z_i$, and let $w$ be the pointwise limit. If $|w_m - w_n| \leq \sum_{i=n-1}^{m} a_i < \varepsilon$ for all $m > n$, then $|w_n - w| < \varepsilon$. This means that $w_i$ converge as $\varepsilon$ converges, and $\varepsilon$ is dependent only on $a$, so the series converges uniformly.
+    \item We have 
+    \[e^{z_1 + z_2} = \sum_{n=0}^{\infty} \frac{(z_1 + z_2)^n}{n!} = \sum_{n=0}^{\infty} \sum_{m=0}^n \frac{z_1^m z_2^{n-m}}{m!(n-m)!} =\]
+    \[ \sum_{n=0}^{\infty} \sum_{m=0}^{\infty} \frac{z_1^n z_2^m}{n!m!} = \left(\sum_{n=0}^{\infty}\frac{z_1^n}{n!}\right)\left(\sum_{n=0}^{\infty}\frac{z_2^n}{n!}\right) = e^{z_1} e^{z_2}\]
+    \item We have \[\cos y + i\sin y = \left(\sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!} y^{2n} \right) + i\left( \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!} y^{2n+1} \right) =\] \[ \left( \sum_{n=0}^{\infty} \frac{y^{2n}}{(2n)!} \right) + \left( \sum_{n=0}^{\infty} \frac{(yi)^{2n+1}}{(2n+1)!} \right) = \sum_{n=0}^{\infty} \frac{(yi)^n}{n!} = e^{yi}\]
+    \item $|e^{x+yi}| = |e^x||e^{yi}| = e^x|\cos y + i\sin y| = e^x\sqrt{\cos^2 y + \sin^2 y} = e^x\sqrt{1} = e^x$.
+    \item From exercise 4(d) we have that since the absolute value is 1, then the real part of the exponent is 0. We are left with $e^{yi} = \cos y + i\sin y = 1$, which only holds when $\cos y = 1$ and $\sin y = 0$, which is only true when $y$ is of the form $2\pi k$.
+    \item .
+    \item It means rotating it by the angle $\theta$, because when multiplying, the angles in the exponents sum up.
+    \item $\frac{e^{i\theta} + e^{-i\theta}}{2} = \frac{\cos \theta + i\sin \theta + \cos \theta + i\sin (-\theta)}{2} = \frac{\cos \theta + i\sin \theta + \cos \theta -i\sin \theta}{2} = \cos\theta$. A similar argument holds for the sine function.
+    \item I'm skipping this.
+\end{enumerate}
+\end{solution}
+
+\begin{exercise}{5}
+Verify that $f(x) = e^{inx}$ is periodic with period $2\pi$ and that
+\[
+\frac{1}{2\pi} \int_{-\pi}^{\pi} e^{inx}\,dx =
+\begin{cases}
+1, & n = 0,\\
+0, & n \ne 0.
+\end{cases}
+\]
+Use this to show that for $n,m \ge 1$,
+\[
+\frac{1}{\pi} \int_{-\pi}^{\pi} \cos nx \cos mx\,dx =
+\begin{cases}
+0, & n \ne m,\\
+1, & n = m,
+\end{cases}
+\]
+and similarly for $\sin nx, \sin mx$. Finally, show that
+\[
+\int_{-\pi}^{\pi} \sin nx \cos mx\,dx = 0.
+\]
+
+\end{exercise}
+\begin{solution}
+$f(x)$ is periodic because $f(x + 2\pi) = e^ni(x+2\pi) = f(x) e^ni2\pi = f(x)$. When $n = 0$, then $e^inx = 1$ for all $x$, so that case is trivial. 
+\end{solution}
+
+\end{document}

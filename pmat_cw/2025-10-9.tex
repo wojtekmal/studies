@@ -1,0 +1,17 @@
+\documentclass{../note}
+
+\begin{document}
+\begin{zadanie}{1}
+Ile elementów może mieć zbiór $\{0, 1, a, a^2\}$, jeśli $a \in \Z$?
+\end{zadanie}
+\begin{rozwiazanie}
+Musi mieć co najmniej 2 elementy: 0 i 1. Może mieć co najwyżej 4, bo elementy mogą się co najwyżej powtarzać, a przed policzeniem powtórzeń są 4 elementy. Ten zbiór ma 2 elementy gdy $a = 0$, 3 elementy gdy $a = -1$ i cztery elementy gdy $a = 2$. Tak więc zbiór możliwych liczb elementów tego zbioru to $\{2, 3, 4\}$.
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+Uzasadnij następującą równość $A - (A - B) = A \cap B$.
+\end{zadanie}
+\begin{rozwiazanie}
+$A - (A - B) \subseteq A$ i $A \cap B \subseteq A$, więc jeśli $x \notin A$, to $x \notin A - (A - B)$ i $x \notin A \cap B$. Jeśli $x \in A$ oraz $x \notin B$, to $x \notin A \cap B$ oraz $x \in A - B$, więc $x \notin A - (A - B)$. Jeśli $x \in A$ i $x \in B$, to $x \in A \cap B$ oraz $x \notin A - B$, więc $x \in A - (A - B)$. We wszystkich przypadkach przynależność dowolnego elementu do obu zbiorów jest taka sama, więc te zbiory są równe.
+\end{rozwiazanie}
+\end{document}
