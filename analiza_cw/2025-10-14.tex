@@ -48,4 +48,71 @@ Niech $F_{0}=0$, $F_{1}=1$ oraz $F_{n+1}=F_{n}+F_{n-1}$ dla $n > 1$. Wykazać, �
 Przeprowadzimy indukcję po $n$. Założenie indukcyjne brzmi następująco: wszystkie liczby naturalne mniejsze od $F_{n+1}$ da się przedstawić jako sumę różnych liczb Fibonacciego. Jako bazę bierzemy $n=2$. Wtedy teza mówi, że 1 da się przedstawić w takiej postaci i rzeczywiście $1 = F_0$.\\
 Dowodzimy tezę dla $n$. Już wiemy, że liczby mniejsze od $F_n$ da się przedstawić w tej postaci. Pozostają liczby w przedziale $F_n \leq A < F_{n+1}$. Możemy je przedstawić w postaci $A = F_n + B$. $B = A - F_n < F_{n+1} - F_n = F_{n-1} \leq F_n$, więc wiemy, że $B$ jest sumą różnych liczb Fibonacciego mniejszych niż $F_n$, czyli $A$ jest sumą różnych liczb Fibonacciego: tych, z których składa się $B$ oraz $F_n$.
 \end{rozwiazanie}
+
+\begin{zadanie}{4}
+Załóżmy, że $0<a_{1}\le a_{2}\le...\le a_{n}$. Wykaż nierówność
+\[\frac{a_{1}}{a_{2}}+\frac{a_{2}}{a_{3}}+...+\frac{a_{n-1}}{a_{n}}+\frac{a_{n}}{a_{1}}\ge\frac{a_{2}}{a_{1}}+\frac{a_{3}}{a_{2}}+...+\frac{a_{n}}{a_{n-1}}+\frac{a_{1}}{a_{n}}.\]
+\end{zadanie}
+\begin{rozwiazanie}
+Przeprowadzimy dowód indukcyjny po $n$. Jako przypadek bazowy bierzemy $n=2$ (uznaję, że $n=1$ ma niewiele sensu); wtedy teza mówi, że $\frac{a_1}{a_2} + \frac{a_2}{a_1} = \frac{a_2}{a_1} + \frac{a_1}{a_2}$, co jest oczywiste. Udowodnijmy następujący lemat:\\
+\textbf{Lemat} Dla $0 < a \leq b \leq c$ zachodzi:
+\begin{equation}
+a^2c + b^2a + c^2b \geq b^2c + c^2a + a^2b
+\end{equation}
+Ponieważ $0 < a \leq b \leq c$, mamy:
+\[(2c - a - b)(b - a) \geq 0\]
+Po wymnożeniu nawiasów i przerzuceniu na drugą stronę:
+\begin{equation}
+a^2 + 2bc \geq b^2 + 2ac
+\end{equation}
+Oznaczmy lewą stronę (3) jako $L$, a prawą jako $P$. Zauważmy, że
+\begin{align*}
+\frac{\partial L}{\partial c} = a^2 + 2bc, & \frac{\partial R}{\partial c} = b^2 + 2ac,
+\end{align*}
+czyli z (4) mamy:
+\[\frac{\partial L}{\partial c} \geq \frac{\partial R}{\partial c}\]
+\end{rozwiazanie}
+Do tego dla najmniejszej możliwej wartości $c$, czyli $c = b$, mamy $L = R$, więc zachodzi $L \geq R$ dla wszystkich $c$, co kończy dowód lematu. Dzieląc (3) stronami przez $abc$, podstawiając $a = a_n, b = a_{n+1}, c = a_1$ i przerzucając wyrazy, dostajemy:
+\[\frac{a_n}{a_{n+1}} + \frac{a_{n+1}}{a_1} - \frac{a_n}{a_1} \geq \frac{a_{n+1}}{a_n} + \frac{a_1}{a_{n+1}} - \frac{a_1}{a_n}\]
+Dodając powyższą nierówność do założenia indukcyjnego dla $n - 1$, dostajemy tezę dla $n$.
+
+\begin{zadanie}{5}
+Udowodnij, że dla $n\ge1$ prawdziwa jest nierówność
+\[\frac{1}{2\sqrt{n}}\le\frac{1\cdot3\cdot...\cdot(2n-1)}{2\cdot4\cdot...\cdot(2n)}<\frac{1}{\sqrt{2n}}.\]
+\end{zadanie}
+\begin{rozwiazanie}
+Udowodnimy mocniejszą nierówność, z której wynika powyższa, indukcyjnie:
+\begin{equation}
+\frac{1}{2\sqrt{n}}\le\frac{1\cdot3\cdot...\cdot(2n-1)}{2\cdot4\cdot...\cdot(2n)}\leq\frac{1}{\sqrt{2n+2}}.
+\end{equation}
+\end{rozwiazanie}
+Jako przypadek bazowy bierzemy $n = 1$; wtedy (5) mówi, że $\frac12 \leq \frac12 \leq \frac12$.
+Zacznijmy krok indukcyjny od następujących nierówności, prawdziwych dla $n \geq 1$:
+\begin{align*}
+4n^3 - 4n^2 \leq 4n^3 - 4n^2 + n & 8n^3 - 6n + 2 \leq 8n^3
+\end{align*}
+Albo
+\begin{align*}
+4n^2(n-1) \leq n(4n^2 - 4n + 1) & (2n+2)(4n^2-4n+1) \leq 2n \cdot 4n^2
+\end{align*}
+Dzielimy stronami (przez liczby dodatnie):
+\[\frac{\sqrt{n-1}}{\sqrt{n}} \leq \frac{2n-1}{2n} \leq \frac{\sqrt{2n}}{\sqrt{2n+2}}\]
+Mnożąc powyższą parę nierówności stronami przez założenie indukcyjne dla $n-1$ dostajemy tezę dla $n$.
+
+\begin{zadanie}{6}
+Wykaż, że dla dowolnych liczb dodatnich $a_{1},...,a_{n}$ oraz $b_{1},...,b_{n}$ prawdziwa jest nierówność
+\[\sum_{k=1}^{n}\frac{a_{k}b_{k}}{a_{k}+b_{k}}\le\frac{\left(\sum_{k=1}^{n}a_{k}\right)\left(\sum_{k=1}^{n}b_{k}\right)}{\sum_{k=1}^{n}(a_{k}+b_{k})}.\]
+\end{zadanie}
+\begin{rozwiazanie}
+Przeprowadzimy dowód indukcyjny po $n$. W przypadku bazowym, czyli $n=1$, powyższa nierówność jest równością. Zaczynamy od AM-GM dla $ac, bd$, gdzie $a, b, c, d > 0$:
+\[2abcd \leq a^2c^2 + b^2d^2\]
+Dodajemy stronami $4abcd + a^2cd + b^2cd + abc^2 + abd^2$ i dzielimy przez $(a + b)(c + d)$:
+\[(a + b)\frac{cd}{c+d} + \frac{ab}{a+b}(c+d) \leq ac + bd\]
+Sumujemy powyższą nierówność dla $c = a_k, d = b_k, k \in {1, 2, ..., n}$:
+\[(a + b)\left(\sum_{k=1}^{n} \frac{a_kb_k}{a_k + b_k}\right) + \frac{ab}{a+b}\left(\sum_{k=1}^{n} a_k + b_k\right) \leq a\left(\sum_{k=1}^{n} b_k\right) + b\left(\sum_{k=1}^{n} a_k\right)\]
+Dodajemy stronami $ab$ i podstawiamy $a = a_{n+1}, b=b_{n+1}$:
+\[(a_{n+1} + b_{n+1})\left(\sum_{k=1}^{n} \frac{a_kb_k}{a_k + b_k}\right) + \frac{a_{n+1}b_{n+1}}{a_{n+1}+b_{n+1}}\left(\sum_{k=1}^{n} a_k + b_k\right) + (a_{n+1} + b_{n+1})\frac{a_{n+1}b_{n+1}}{a_{n+1} + b_{n+1}} \leq\]
+\[a_{n+1}\left(\sum_{k=1}^{n} b_k\right) + b_{n+1}\left(\sum_{k=1}^{n} a_k\right) + a_{n+1}b_{n+1}\]
+Po dodaniu powyższej nierówności stronami do założenia indukcyjnego dla $n-1$ i podzieleniu stronami przez $\sum_{k=1}^{n}(a_{k}+b_{k})$ otrzymujemy tezę dla $n$.
+\end{rozwiazanie}
 \end{document}
