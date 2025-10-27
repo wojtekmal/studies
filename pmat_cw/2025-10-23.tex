@@ -1,0 +1,17 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Niech $f:A \rightarrow B$. Udowodnić, że jest różnowartościowa wtedy i tylko wtedy, gdy
+dla dowolnego C i dowolnych g, h: $C \rightarrow A$ zachodzi implikacja
+$f \circ g = f \circ h \Rightarrow g=h.$
+\end{zadanie}
+\begin{rozwiazanie}
+($\Leftarrow$)
+Załóżmy nie wprost, że $f$ nie jest różnowartościowa, czyli że dla pewnych $x, y \in A$ zachodzi $f(x) = f(y)$. Weźmy sobie $C = \{u, v\}$ i takie $g, h$, że $g(u) = x, g(v) = y, h(u) = h(v) = x$. Wtedy $f \circ g = f \circ h$, ale $g \neq h$, co kończy dowód niewprost.\\\\
+($\Rightarrow$)
+Jeśli $f$ jest różnowartościowa, to jeśli dla pewnych $g, h, C$ zachodzi $f \circ g = f \circ h$, to $f \circ g(u) = f \circ h(u)$ dla dowolnego $u \in C$. Skoro $f$ jest różnowartościowa, to musi też zachodzić $g(u) = h(u)$. To zachodzi dla dowolnego $u$, czyli $g = h$.
+\end{rozwiazanie}
+
+\end{document}

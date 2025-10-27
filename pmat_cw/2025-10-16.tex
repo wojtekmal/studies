@@ -1,0 +1,20 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Wykaż, że jeśli $A_{n}\subseteq A_{n+1}$ dla wszystkich $n\in\mathbb{N},$ to
+\[
+\bigcup_{n\in\mathbb{N}}A_{n}=\bigcup_{n\in H}A_{n},
+\]
+dla dowolnego nieskończonego $H\subseteq\mathbb{N}$.
+\end{zadanie}
+\begin{rozwiazanie}
+
+Załóżmy, że $x \in \bigcup_{n\in\mathbb{N}}A_{n}$. Wtedy istnieje takie $n \in \N$, że $x \in A_n$. Skoro $H$ jest nieskończone, to istnieje takie $m \in H$, że $m \geq n$. Relacja bycia podzbiorem jest przechodnia, więc z ciągu relacji $A_n \subseteq A_{n+1} \subseteq \ldots \subseteq A_m$ wnioskujemy, że $A_n \subseteq A_m$. Skoro $x \in A_n$, to $x \in A_m$, czyli $x \in \bigcup_{n\in H}A_{n}$.\\
+Załóżmy teraz na odwrót, że $x \in \bigcup_{n\in H}A_{n}$. Wtedy istnieje takie $m$, że $m \in H$ oraz $x \in A_m$, czyli $x \in \bigcup_{n\in\mathbb{N}}A_{n}$.\\
+Elementy pierwszej sumy zbiorów należą do drugiej sumy zbiorów i na odwrót, więc te sumy zbiorów są równe.
+
+\end{rozwiazanie}
+
+\end{document}

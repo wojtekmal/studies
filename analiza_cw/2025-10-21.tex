@@ -1,0 +1,80 @@
+\documentclass{../note}
+
+\begin{document}
+\begin{zadanie}{1}
+Obliczyć kresy zbiorów
+\[ A = \left\{\frac{2^{m+n}}{2^{n}+4^{m}+4^{n}} : n,m \in \mathbb{Z}, n,m \ge 0\right\} \quad B = \left\{\frac{m^{2}-n}{m^{2}+n^{2}} : m,n \in \mathbb{Z}, m > n \ge 1\right\}. \]
+Czy kresy należą do zbiorów?
+\end{zadanie}
+\begin{rozwiazanie}
+Zauważmy, że liczniki i mianowniki elementów zbioru $A$ są dodatnie, więc elementy są dodatnie. Dla dowolnego $\frac12 > \alpha > 0$ (czyli $2^\frac{1}{\alpha} > \frac1\alpha$) istnieje takie $n \in \N$, np. $n = \lceil \frac1\alpha \rceil + 1$, że element $A$ dla $m=1$ spełnia
+\[\frac{2^{m+n}}{2^{n}+4^{m}+4^{n}} < \frac{2^{m+n}}{4^{n}} = 2^{1-n} \leq \frac{1}{2^{\frac{1}{\alpha}}} < \alpha\]
+Zatem 0 jest kresem dolnym zbioru $A$ i nie należy do $A$. Możemy do nierówności $a^2 + b^2 \geq 2ab$ podstawić $a=2^m, b=2^n$ i otrzymać $2^{n+m+1} \leq 4^m + 4^n$. Zatem
+\[\frac{2^{m+n}}{2^{n}+4^{m}+4^{n}} \leq \frac{2^{m+n}}{2^{n}+2^{m+n+1}} \leq \frac{2^{m+n}}{1+2^{m+n+1}} = \frac12\left(1 - \frac1{1+2^{m+n+1}}\right) < \frac12\]
+Do tego dla $m=n$:
+\[\frac{2^{m+n}}{2^{n}+4^{m}+4^{n}} = \frac{2^{n}}{1+2^{n+1}} = \frac12\left(1 - \frac{1}{1+2^{n+1}}\right)\]
+Dla dowolnie dużego $n$ ułamek $\frac{1}{1+2^{n+1}}$ jest dowolnie mały, więc taki element zbioru jest dowolnie bliski $\frac12$. Zatem $\frac12$ jest kresem górnym zbioru $A$ nie należącym do $A$.\\
+Zauważmy, że wyrażenie definiujące elementy zbioru $B$ jest monotoniczne w $n$, bo gdy $n$ rośnie, to licznik maleje, a dodatni mianownik rośnie. Zatem zbiór $B$ możemy podzielić na podzbiory o równym $m$, dla których
+\[\frac{m^{2}-m+1}{m^{2}+(m-1)^{2}} \leq \frac{m^{2}-n}{m^{2}+n^{2}} \leq \frac{m^{2}-1}{m^{2}+1}\]
+Lewa stronę nierówności jest równa $\frac12 + \frac{1}{4m^2-4m+2}$, czyli może być dowolnie bliska, ale nie równa $\frac12$, czyli $\frac12$ jest kresem dolnym nie należącym do $B$. Prawa strona jest równa $1 - \frac{2}{m^2+1}$, czyli jest dowolnie bliska, ale nie równa 1. Zatem 1 jest kresem górnym zbioru $B$ nie należącym do niego.
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+Wyznacz kresy zbioru
+\[ A = \left\{\frac{n^{2}m+11m}{mn+1} : m \ge n \ge 1, m,n \in \mathbb{Z}\right\} \]
+Czy kresy należą do zbioru?
+\end{zadanie}
+\begin{rozwiazanie}
+Zauważmy, że wyrażenie definiujące zbiór $A$ jest równe $\frac{n^{2}+11}{n+\frac1m}$. Dla $m = n$, to $\frac{n^{2}+11}{n+\frac1m} > \frac{n^{2}+1}{n+\frac1n} = n$. $n$ może być dowolnie duże, więc elementy zbioru $A$ są dowolnie duże, czyli kresem górnym jest $\infty$ i nie należy ono do $A$. $\frac{n^{2}+11}{n+\frac1m}$ jest rosnące w $m$, więc skoro $m \geq n$, mamy $\frac{n^{2}+11}{n+\frac1m} \geq \frac{n^{2}+11}{n+\frac1n} = \frac{n^{3}+11n}{n^2+1}$. Wykażemy indukcyjnie, że ostatnie wyrażenie jest większe lub równe $6$. Można sprawdzić, że równość zachodzi dla $n\in\left\{1, 2\right\}$. Chcemy udowodnić, że 
+\[(n+1)^{3}+11(n+1) \geq 6(n+1)^2 + 6\]
+Możemy odjąć stronami założenie indukycjnie:
+\[3n^2+3n+1+11 \geq 12n+6\]
+Albo
+\[n^2-3n+2\geq0\]
+co zachodzi dla $n \geq 2$. Po ciągu przekształceń równoważnych dostaliśmy stwierdzenie prawdziwe, co kończy dowód indukcyjny. Zatem 6 jest kresem dolnym i należy do $A$.
+\end{rozwiazanie}
+
+\begin{zadanie}{3}
+Wyznacz kresy zbioru
+\[ A = \left\{abcd - \frac{a^{2}}{2} - \frac{b^{4}}{4} - \frac{c^{8}}{8} - \frac{d^{16}}{16} : a,b,c,d \in \mathbb{R}\right\} \]
+Czy kresy należą do zbioru A?
+\end{zadanie}
+\begin{rozwiazanie}
+Zacznijmy od podstawienia liczb $z^15$ oraz 15 wystąpień $\frac1z$ do AM-GM:
+\[15\cdot \frac1z + z^{15} \leqslant 16\]
+Załóżmy, że $z > 0$. Dzielimy stronami przez $z^15$, przerzucamy wyrazy i podstawiamy $y = \frac1z$:
+\[16y^{15} - 15y^{16} \leq 1\]
+Możemy podzielić stronami przez 16, podstawić $y = \sqrt[15]{abcd}$ i zapamiętać ten lemat na później:
+\begin{equation}
+abcd - \frac{15}{16}\sqrt[15]{abcd}^{16} \leq \frac{1}{16}
+\end{equation}
+
+Elementy zbioru $A$ mogą być dowolnie małe, bo możemy podstawić $b = c = d = 0$ i wtedy wyrażenie definiujące zbiór jest równe $\frac{-a^2}2$, co jest dowolnie małe dla dowolnie małego $a$. Zatem kresem dolnym jest $\infty$ i nie należy ono do $A$. Zauważmy, że jeśli szukamy kresu górnego, to nie musimy rozpatrzać ujemnych $a, b, c, d$, ponieważ taki element będzie mniejszy od elementu dla $|a|, |b|, |c|, |d|$. Możemy podstawić 8 wystąpień $\frac{a^2}{16}$, 4 wystąpienia $\frac{b^4}{16}$, 2 wystąpienia $\frac{c^8}{16}$ oraz $\frac{d^16}{16}$ do AM-GM:
+\[\frac{a^{2}}{2} + \frac{b^{4}}{4} + \frac{c^{8}}{8} + \frac{d^{16}}{16} \geq \frac{15}{16}\sqrt[15]{abcd}^{16}\]
+Zatem elementy zbioru są mniejsze lub równe $abcd - \frac{15}{16}\sqrt[15]{abcd}^{16}$. Już wiemy, że to jest mniejsze lub równe $\frac1{16}$. Wszystkie nierówności w powyższym rozumowaniu wynikają z AM-GM, czyli zachodzi równość gdy $\frac{a^2}{16} = \frac{b^4}{16} = \frac{c^8}{16} = \frac{d^{16}}{16}$ oraz $abcd=1$, czyli gdy $a,b,c,d=1$. Zatem $\frac{1}{16}$ jest kresem górnym i należy do zbioru $A$.
+\end{rozwiazanie}
+\begin{zadanie}{4}
+Wyznacz kresy zbioru
+\[ A = \{a+4b+8c : a,b,c \in \mathbb{R}, a^{2}+b^{2}+c^{2}=1\} . \]
+Czy kresy należą do zbioru A?
+\end{zadanie}
+\begin{rozwiazanie}
+Zauważmy, że jeśli $x \in A$, to $-x \in A$, czyli kresy mają ten sam moduł. Zauważmy też, że element dla $|a|, |b|, |c|$ ma większy lub równy moduł niż element dla $a, b, c$. Tak więc w poszukiwaniu kresów możemy założyć, że $a, b, c \geq 0$. Podstawmy $a$, 16 wystąpień $\frac{b}4$ i 64 wystąpień $\frac{c}{8}$ do AM-GM:
+\[a+4b+8c \leq 81\sqrt{\frac{a^2+b^2+c^2}{81}} = 9\]
+Równość zachodzi gdy $a = \frac{b}4 = \frac{c}8$, czyli $a=\frac19, b=\frac49, c=\frac89$. Zatem kresem górnym jest 9, kresem dolnym $-9$ i oba należą do $A$.
+\end{rozwiazanie}
+\begin{zadanie}{5}
+Niech $n \ge 2$. Wyznacz kresy zbioru
+\[ A_{n} = \left\{\frac{a_{1}}{a_{1}+a_{2}} + \frac{a_{2}}{a_{2}+a_{3}} + \dots + \frac{a_{n-1}}{a_{n-1}+a_{n}} + \frac{a_{n}}{a_{n}+a_{1}} : a_{1}, \dots, a_{n} \in (0,\infty)\right\}. \]
+Czy kresy należą do zbioru $A_{n}$?
+\end{zadanie}
+\begin{rozwiazanie}
+BSO możemy założyć, że $a_n$ jest największe spośród wszystkich $a_i$. Zauważmy, że 
+\[\frac{a_{1}}{a_{1}+a_{2}} + \frac{a_{2}}{a_{2}+a_{3}} + \dots + \frac{a_{n-1}}{a_{n-1}+a_{n}} + \frac{a_{n}}{a_{n}+a_{1}} > \frac{a_{1}}{a_{1}+a_{2}} + \frac{a_{n}}{a_{n}+a_{1}} \geq \frac{a_{1}}{a_{1}+a_{n}} + \frac{a_{n}}{a_{n}+a_{1}} = 1\]
+Możemy wybrać $a_i = c^i$ dla pewnego $c > 1$. Wtedy wyrażenie definiujące elementy $A_n$ przybiera postać
+\[(n-1) \cdot \frac1{c+1} + \frac{c^{n-1}}{c^{n-1} + 1} = \frac{n-1}{c+1} + 1 - \frac{1}{c^{n-1} + 1}\]
+Dla dowolnie dużego $c$ składniki prawej strony w których jest $c$ są dowolnie bliskie 0, więc $1$ jest kresem dolnym $A_n$ i nie należy do $A_n$. Zauważmy, że jeśli $x \in A_n$, to 
+\[n-x = \frac{a_{2}}{a_{1}+a_{2}} + \frac{a_{3}}{a_{2}+a_{3}} + \dots + \frac{a_{n}}{a_{n-1}+a_{n}} + \frac{a_{1}}{a_{n}+a_{1}}\]
+jest tej samej postaci co $x$ (właśnie taka cykliczna suma ułamków), czyli też jest ograniczone od dołu przez $1$. Zatem kresem górnym $A_n$ jest $n-1$ i nie należy ono do $A_n$.
+\end{rozwiazanie}
+\end{document}
