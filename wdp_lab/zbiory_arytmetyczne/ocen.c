@@ -30,5 +30,10 @@ int main() {
   // I = {}
   zbior_ary I = iloczyn(H, A);
   assert(moc(I) == 0);
+
+  zbior_ary J = ciag_arytmetyczny(7, 5, 12);
+  zbior_ary K = suma(J, J);
+  assert(ary(K) == 1);
+  print(K);
   return 0;
 }

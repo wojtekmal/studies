@@ -6,21 +6,32 @@
 
 typedef struct
 {
-  int begin, end;
+  // All elements of [begin, end) that are x mod q. Because of the closed-open
+  // implementation of Segment, int64_t are used to avoid int overflow.
+  int64_t begin, end;
 } Segment;
 
-typedef struct Node
+typedef struct
 {
-  uint64_t real_size, allocated_size;
-  Segment* segments;
-  uint64_t hash;
-  struct Node* left;
-  struct Node* right;
-} Node;
+  // Works like std::vector<Segment>. Stores a sorted array of segments that
+  // are remainder mod q. Once a SegmentVector is created, its values are never
+  // changed so that new zbior_ary can point to it.
+  uint64_t allocated_size;
+  Segment* begin;
+  Segment* end;
+  int64_t remainder;
+} SegmentVector;
 
-typedef struct zbior_ary {
-  Node* tree;
+typedef struct {
+  // Works like std::vector<SegmentVector>. Stores an array of SegmentVectors
+  // sorted by their remainder. By storing the beginning and past-the-end
+  // pointers, zbior_ary can be iterated over more easily.
+  uint64_t allocated_size;
+  SegmentVector* begin;
+  SegmentVector* end;
 } zbior_ary;
+
+void print(zbior_ary A);
 
 /* Najlepiej nie modyfikowac nic ponizej. */
 

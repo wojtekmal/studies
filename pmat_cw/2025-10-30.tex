@@ -1,0 +1,12 @@
+\documentclass{../note}
+
+\begin{document}
+\begin{zadanie}{1}
+Niech $F:\mathbb{N}^{\mathbb{N}}\rightarrow P(\mathbb{N})$ będzie taką funkcją, że $F(f)=f^{-1}(\{1\})$. Czy F jest różnowartościowa i czy jest na $P(\mathbb{N})?$ Znajdź obraz zbioru funkcji stałych i przeciwobraz zbioru $\{\{10\}\}$ przy przekształceniu F.
+\end{zadanie}
+\begin{rozwiazanie}
+Obrazem funkcji $F$ jest przeciwobraz funkcji $f$ dla zbioru $\{1\}$. $F$ nie jest różnowartościowa, bo np. możemy wybrać $f_1(1) = 1, f_1(n) = 2, f_2(1) = 1, f_2(n) = 3$ dla $n > 1$. Wtedy $F(f_1) = F(f_2) = \{1\}$. $F$ jest na, bo dla dowolnego podzbioru liczb naturalnych $A$ możemy wybrać $f$ będące funkcją charakterystyczną $A$, to wtedy $F(f) = A$.\\
+Gdy $f(n) = c$ i $c \ne 1$, to $f^{-1}(\{1\}) = \emptyset$. Gdy $c = 1$, to $f^{-1}(\{1\}) = \N$. Zatem obrazem zbioru funkcji stałych jest zbiór $\{\emptyset, \N\}$.\\
+Pewien zbiór $A$ należy do przeciwobrazu $F$ wtedy i tylko wtedy, gdy istnieje taka funkcja $f$, dla której $f(a) = 1$ wtedy i tylko wtedy, gdy $a \in A$. Zatem przeciwobrazem zbioru $\{\{10\}\}$ jest zbiór funkcji $f$ takich, że $f(10) = 1$ i $f(n) \ne 1$ dla $n \ne 10$.
+\end{rozwiazanie}
+\end{document}

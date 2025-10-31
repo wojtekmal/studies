@@ -1,3 +1,4 @@
+// So that the compiler doesn't complain about malloc(0).
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Walloc-size"
 #define max(a, b) (a > b ? a : b)
@@ -9,236 +10,167 @@
 #include <limits.h>
 #include <stdio.h>
 
-int global_q;
+int64_t global_q;
 
-uint64_t get_hash(int a)
+int64_t get_remainder(int64_t a)
 {
-    uint64_t x = (uint64_t) ((a % global_q + global_q) % global_q);
-    // splitmix64
-    // This is a bijection, so 64 bit hashes aren't needed.
-    x += 0x9E3779B97F4A7C15ULL;
-    x = (x ^ (x >> 30)) * 0xBF58476D1CE4E5B9ULL;
-    x = (x ^ (x >> 27)) * 0x94D049BB133111EBULL;
-    x = x ^ (x >> 31);
-    return x;
+    // Get positive remainder mod q.
+    return (a % global_q + global_q) % global_q;
 }
 
-Node* add_node(zbior_ary* arithmetic_set, uint64_t hash)
+SegmentVector construct_vector(int64_t remainder)
 {
-    // Add a node to zbior_ary's BST and return the pointer. The keys (hashes)
-    // are random, so there is no need for rebalancing.
-
-    Node** current_node = &arithmetic_set->tree;
-
-    while (true)
-    {
-        if (*current_node == 0)
-        {
-            *current_node = malloc(sizeof(Node));
-            (*current_node)->real_size = 0;
-            (*current_node)->allocated_size = 0;
-            (*current_node)->segments = malloc(0);
-            (*current_node)->hash = hash;
-            (*current_node)->left = 0; // nullptr
-            (*current_node)->right = 0; // nullptr
-            return *current_node;
-        }
-        else if ((*current_node)->hash == hash)
-        {
-            return *current_node;
-        }
-        else if ((*current_node)->hash > hash)
-        {
-            current_node = &(*current_node)->left;
-        }
-        else
-        {
-            current_node = &(*current_node)->right;
-        }
-    }
-}
-
-zbior_ary constructor()
-{
-    zbior_ary result;
-    result.tree = 0; // nullptr
+    SegmentVector result;
+    result.allocated_size = 0;
+    result.begin = malloc(0);
+    result.end = result.begin;
+    result.remainder = remainder;
     return result;
 }
 
-void resize_segments(Node* node, uint64_t requested_size)
+void push_back_segment(SegmentVector* vector, Segment* segment)
 {
-    // A Node's segment array behaves like a std::vector<Segment>.
+    uint64_t old_size = (uint64_t) (vector->end - vector->begin);
 
-    uint64_t old_allocated_size = node->allocated_size;
-    if (old_allocated_size >= requested_size) return;
+    if (old_size == vector->allocated_size)
+    {
+        uint64_t new_size = old_size * 2 + 1;
+        vector->begin = realloc(vector->begin, new_size * sizeof(Segment));
+        vector->end = vector->begin + old_size;
+        vector->allocated_size = new_size;
+    }
 
-    uint64_t new_allocated_size = max(old_allocated_size * 2 + 1, requested_size);
-    uint64_t old_real_size = node->real_size;
-    Segment* new_segment_array = malloc(new_allocated_size * sizeof(Segment));
-    memcpy(new_segment_array, node->segments, old_real_size * sizeof(Segment));
-    free(node->segments);
-    
-    node->segments = new_segment_array;
-    node->allocated_size = new_allocated_size;
+    *vector->end = *segment;
+    vector->end++;
 }
 
-void add_segment(Node* node, Segment segment)
+zbior_ary construct_zbior_ary()
 {
-    // Behaves like node.push_back(segment), if node were a std::vector<Segment>.
-
-    uint64_t old_size = node->real_size;
-    resize_segments(node, old_size + 1);
-    node->segments[old_size] = segment;
-    node->real_size++;
+    zbior_ary result;
+    result.allocated_size = 0;
+    result.begin = malloc(0);
+    result.end = result.begin;
+    return result;
 }
 
-zbior_ary ciag_arytmetyczny(int a, int q, int b)
+void push_back_vector(zbior_ary* set, SegmentVector* vector)
 {
+    uint64_t old_size = (uint64_t) (set->end - set->begin);
+
+    if (old_size == set->allocated_size)
+    {
+        uint64_t new_size = old_size * 2 + 1;
+        set->begin = realloc(set->begin, new_size * sizeof(SegmentVector));
+        set->end = set->begin + old_size;
+        set->allocated_size = new_size;
+    }
+
+    *set->end = *vector;
+    set->end++;
+}
+
+zbior_ary ciag_arytmetyczny(int int_a, int int_q, int int_b)
+{
+    int64_t a = int_a, b = int_b, q = int_q;
     global_q = q;
-    zbior_ary result = constructor();
-
-    uint64_t hash = get_hash(a);
-    Node* node = add_node(&result, hash);
-
+    int64_t remainder = get_remainder(a);
     Segment segment = {a, b + global_q};
-    add_segment(node, segment);
+
+    SegmentVector vector = construct_vector(remainder);
+    push_back_segment(&vector, &segment);
+
+    zbior_ary result = construct_zbior_ary();
+    push_back_vector(&result, &vector);
     return result;
 }
 
 zbior_ary singleton(int a)
 {
-    return ciag_arytmetyczny(a, global_q, a);
-}
-
-void flatten(Node* node, Node** begin, uint64_t* size)
-{
-    // Flatten a BST into a sorted array.
-
-    if (!node)
-    {
-        *begin = malloc(0);
-        *size = 0;
-        return;
-    }
-
-    Node* left_begin;
-    uint64_t left_size;
-    flatten(node->left, &left_begin, &left_size);
-
-    Node* right_begin;
-    uint64_t right_size;
-    flatten(node->right, &right_begin, &right_size);
-
-    *size = left_size + 1ULL + right_size;
-    *begin = malloc((*size) * sizeof(Node));
-    
-    memcpy(*begin, left_begin, left_size * sizeof(Node));
-    free(left_begin);
-
-    memcpy(*begin + left_size, node, sizeof(Node));
-
-    memcpy(*begin + left_size + 1, right_begin, right_size * sizeof(Node));
-    free(right_begin);
-}
-
-void paste_node(zbior_ary* arithmetic_set, const Node* node)
-{
-    // Used by suma, iloczyn and roznica to copy nodes into zbior_ary result.
-    
-    uint64_t hash = node->hash;
-    Node* new_node = add_node(arithmetic_set, hash);
-    new_node->segments = malloc(node->real_size * sizeof(Segment));
-    memcpy(new_node->segments, node->segments, node->real_size * sizeof(Segment));
-
-    new_node->real_size = node->real_size;
-    new_node->allocated_size = node->real_size;
+    return ciag_arytmetyczny(a, (int) global_q, a);
 }
 
 zbior_ary suma(zbior_ary A, zbior_ary B)
 {
-    zbior_ary result = constructor();
+    zbior_ary result = construct_zbior_ary();
+    SegmentVector* a_vector = A.begin;
+    SegmentVector* b_vector = B.begin;
 
-    Node* a_flattened_begin;
-    uint64_t a_flattened_size;
-    flatten(A.tree, &a_flattened_begin, &a_flattened_size);
-    Node* a_flattened_end = a_flattened_begin + a_flattened_size;
-    Node* a_node = a_flattened_begin;
-
-    Node* b_flattened_begin;
-    uint64_t b_flattened_size;
-    flatten(B.tree, &b_flattened_begin, &b_flattened_size);
-    Node* b_flattened_end = b_flattened_begin + b_flattened_size;
-    Node* b_node = b_flattened_begin;
-
-    while (a_node < a_flattened_end || b_node < b_flattened_end)
+    // Iterate over A and B by the order of remainders, in order to iterate
+    // over SegmentVectors with the same remainders simultaneously.
+    while (a_vector < A.end || b_vector < B.end)
     {
-        uint64_t a_hash = a_node < a_flattened_end ? a_node->hash : ULLONG_MAX;
-        uint64_t b_hash = b_node < b_flattened_end ? b_node->hash : ULLONG_MAX;
-
-        if (a_hash < b_hash)
+        // If a SegmentVector in A doesn't have a corresponding SegmentVector
+        // in B (as in holding Segments with the same remainder mod q), then we
+        // can just copy it.
+        if (b_vector == B.end || 
+            (a_vector < A.end && a_vector->remainder < b_vector->remainder))
         {
-            paste_node(&result, a_node);
-            a_node++;
+            push_back_vector(&result, a_vector);
+            a_vector++;
             continue;
         }
-        if (a_hash > b_hash)
+        if (a_vector == A.end ||
+            (b_vector < B.end && a_vector->remainder > b_vector->remainder))
         {
-            paste_node(&result, b_node);
-            b_node++;
+            push_back_vector(&result, b_vector);
+            b_vector++;
             continue;
         }
 
-        uint64_t hash = a_node->hash;
+        Segment* a_segment = a_vector->begin;
+        Segment* b_segment = b_vector->begin;
 
-        uint64_t a_size = a_node->real_size;
-        uint64_t b_size = b_node->real_size;
+        SegmentVector result_vector = construct_vector(a_vector->remainder);
 
-        Node* result_node = add_node(&result, hash);
-
-        uint64_t a_index = 0, b_index = 0;
-
-        Segment current_segment = {INT_MIN, INT_MIN};
-        Segment past_the_end = {INT_MAX, INT_MAX};
-
-        while (a_index < a_size || b_index < b_size)
+        // Iterate over the Segments of A and B simultaneously by their begin
+        // in order to handle overlapping segments. current_segment holds a
+        // sum of the current group of overlapping segments. Once the next
+        // segment in A or B doesn't overlap with current_segment,
+        // current_segment is added to the result.
+        while (a_segment < a_vector->end || b_segment < b_vector->end)
         {
-            Segment a_segment = a_index < a_size ? a_node->segments[a_index] : past_the_end;
-            Segment b_segment = b_index < b_size ? b_node->segments[b_index] : past_the_end;
-            Segment new_segment;
+            Segment current_segment;
+            bool first_segment = true;
             
-            if (a_segment.begin < b_segment.begin)
+            while (a_segment < a_vector->end || b_segment < b_vector->end)
             {
-                new_segment = a_segment;
-                a_index++;
-            }
-            else
-            {
-                new_segment = b_segment;
-                b_index++;
-            }
+                // The first segment in the group has to be handled
+                // differently, because current_segment isn't initialized yet.
+                // The segment with a smallest begin out of 
+                // {a_segment, b_segment} is chosen and pointed to by
+                // new_segment, after which it is added to current_segment
+                // and incremented. If new_segment and current_segment don't
+                // touch, then the inner loop is broken and current_segment is
+                // added to result_vector.
+                bool a_not_end = a_segment < a_vector->end;
+                int64_t a_begin = a_not_end ? a_segment->begin : LLONG_MAX;
 
-            if (current_segment.end < new_segment.begin)
-            {
-                if (current_segment.end != INT_MIN)
+                bool b_not_end = b_segment < b_vector->end;
+                int64_t b_begin = b_not_end ? b_segment->begin : LLONG_MAX;
+
+                Segment** new_segment = a_begin < b_begin ? &a_segment : &b_segment;
+
+                if (first_segment)
                 {
-                    add_segment(result_node, current_segment);
+                    current_segment = **new_segment;
+                    first_segment = false;
+                    (*new_segment)++;
                 }
+                else
+                {
+                    if (current_segment.end < (*new_segment)->begin) break;
+                    int64_t new_end = (*new_segment)->end;
+                    current_segment.end = max(current_segment.end, new_end);
+                    (*new_segment)++;
+                }
+            }
 
-                current_segment = new_segment;
-            }
-            else
-            {
-                current_segment.end = new_segment.end;
-            }
+            push_back_segment(&result_vector, &current_segment);
         }
 
-        if (current_segment.begin < current_segment.end)
-        {
-            add_segment(result_node, current_segment);
-        }
-
-        a_node++;
-        b_node++;
+        push_back_vector(&result, &result_vector);
+        a_vector++;
+        b_vector++;
     }
 
     return result;
@@ -246,64 +178,64 @@ zbior_ary suma(zbior_ary A, zbior_ary B)
 
 zbior_ary iloczyn(zbior_ary A, zbior_ary B)
 {
-    zbior_ary result = constructor();
+    zbior_ary result = construct_zbior_ary();
+    SegmentVector* a_vector = A.begin;
+    SegmentVector* b_vector = B.begin;
 
-    Node* a_flattened_begin;
-    uint64_t a_flattened_size;
-    flatten(A.tree, &a_flattened_begin, &a_flattened_size);
-    Node* a_flattened_end = a_flattened_begin + a_flattened_size;
-    Node* a_node = a_flattened_begin;
-
-    Node* b_flattened_begin;
-    uint64_t b_flattened_size;
-    flatten(B.tree, &b_flattened_begin, &b_flattened_size);
-    Node* b_flattened_end = b_flattened_begin + b_flattened_size;
-    Node* b_node = b_flattened_begin;
-
-    while (a_node < a_flattened_end || b_node < b_flattened_end)
+    // Iterate over A and B by the order of remainders, in order to iterate
+    // over SegmentVectors with the same remainders simultaneously.
+    while (a_vector < A.end && b_vector < B.end)
     {
-        uint64_t a_hash = a_node < a_flattened_end ? a_node->hash : ULLONG_MAX;
-        uint64_t b_hash = b_node < b_flattened_end ? b_node->hash : ULLONG_MAX;
+        int64_t a_remainder = a_vector->remainder;
+        int64_t b_remainder = b_vector->remainder;
 
-        if (a_hash < b_hash)
+        // If a SegmentVector doesn't have a corresponding SegmentVector in the
+        // other set, then we can skip it.
+        if (a_remainder < b_remainder)
         {
-            a_node++;
+            a_vector++;
             continue;
         }
-        if (a_hash > b_hash)
+        if (a_remainder > b_remainder)
         {
-            b_node++;
+            b_vector++;
             continue;
         }
 
-        uint64_t hash = a_node->hash;
+        Segment* a_segment = a_vector->begin;
+        Segment* b_segment = b_vector->begin;
 
-        uint64_t a_size = a_node->real_size;
-        uint64_t b_size = b_node->real_size;
+        SegmentVector result_vector = construct_vector(a_remainder);
 
-        Node* result_node = add_node(&result, hash);
-
-        uint64_t a_index = 0, b_index = 0;
-
-        while (a_index < a_size && b_index < b_size)
+        // We iterate over the SegmentVector's segments simultaneously in
+        // order to handle overlapping segments in the same iteration.
+        while (a_segment < a_vector->end && b_segment < b_vector->end)
         {
-            Segment a_segment = a_node->segments[a_index];
-            Segment b_segment = b_node->segments[b_index];
+            // new_segment is set to the intersection of a_segment and
+            // b_segment and added to result_vector if not empty. Notice that
+            // since segments in a_vector and b_vector don't touch, then the
+            // intersections also don't touch, so we don't have to handle that
+            // case. One segment from a_vector may overlap with two segments
+            // from b_vector, so we have to increment the segment with smaller
+            // end to make sure such cases are handled.
             Segment new_segment;
-            new_segment.begin = max(a_segment.begin, b_segment.begin);
-            new_segment.end = min(a_segment.end, b_segment.end);
+            new_segment.begin = max(a_segment->begin, b_segment->begin);
+            new_segment.end = min(a_segment->end, b_segment->end);
             
             if (new_segment.begin < new_segment.end)
             {
-                add_segment(result_node, new_segment);
+                push_back_segment(&result_vector, &new_segment);
             }
             
-            if (a_segment.end < b_segment.end) a_index++;
-            else b_index++;
+            if (a_segment->end < b_segment->end) a_segment++;
+            else b_segment++;
         }
 
-        a_node++;
-        b_node++;
+        int64_t result_vector_size = result_vector.end - result_vector.begin;
+        if (result_vector_size > 0) push_back_vector(&result, &result_vector);
+
+        a_vector++;
+        b_vector++;
     }
 
     return result;
@@ -311,120 +243,125 @@ zbior_ary iloczyn(zbior_ary A, zbior_ary B)
 
 zbior_ary roznica(zbior_ary A, zbior_ary B)
 {
-    zbior_ary result = constructor();
+    zbior_ary result = construct_zbior_ary();
+    SegmentVector* a_vector = A.begin;
+    SegmentVector* b_vector = B.begin;
 
-    Node* a_flattened_begin;
-    uint64_t a_flattened_size;
-    flatten(A.tree, &a_flattened_begin, &a_flattened_size);
-    Node* a_flattened_end = a_flattened_begin + a_flattened_size;
-    Node* a_node = a_flattened_begin;
-
-    Node* b_flattened_begin;
-    uint64_t b_flattened_size;
-    flatten(B.tree, &b_flattened_begin, &b_flattened_size);
-    Node* b_flattened_end = b_flattened_begin + b_flattened_size;
-    Node* b_node = b_flattened_begin;
-
-    while (a_node < a_flattened_end || b_node < b_flattened_end)
+    while (a_vector < A.end)
     {
-        uint64_t a_hash = a_node < a_flattened_end ? a_node->hash : ULLONG_MAX;
-        uint64_t b_hash = b_node < b_flattened_end ? b_node->hash : ULLONG_MAX;
+        int64_t a_remainder = a_vector->remainder;
 
-        if (a_hash < b_hash)
+        // If there is no corresponding SegmentVector in B, then we can just
+        // add a_vector. If there is no a_vector with the same remainder as
+        // b_vector, then this b_vector can be skipped.
+        if (b_vector == B.end || a_remainder < b_vector->remainder)
         {
-            paste_node(&result, a_node);
-            a_node++;
+            push_back_vector(&result, a_vector);
+            a_vector++;
             continue;
         }
-        if (a_hash > b_hash)
+        if (a_remainder > b_vector->remainder)
         {
-            b_node++;
+            b_vector++;
             continue;
         }
-        
-        uint64_t hash = a_node->hash;
 
-        uint64_t a_size = a_node->real_size;
-        uint64_t b_size = b_node->real_size;
+        Segment* a_segment = a_vector->begin;
+        Segment* b_segment = b_vector->begin;
 
-        Node* result_node = add_node(&result, hash);
-        uint64_t b_index = 0;
+        SegmentVector result_vector = construct_vector(a_remainder);
 
-        for (uint64_t a_index = 0; a_index < a_size; a_index++)
+        for (; a_segment < a_vector->end; a_segment++)
         {
-            Segment a_segment = a_node->segments[a_index];
+            // For each a_segment, we iterate over all b_segment that
+            // overlap with it and add the non-intersection parts to
+            // result_vector. Before incrementing b_segment, we have to check
+            // whether ends after a_segment, because if it does, then it may
+            // overlap with the next a_segment. new_begin is used to store the
+            // next part of a_segment.
+            int64_t new_begin = a_segment->begin;
 
-            while (b_index < b_size)
+            for (; b_segment < b_vector->end; b_segment++)
             {
-                Segment b_segment = b_node->segments[b_index];
-
-                if (b_segment.begin >= a_segment.end) break;
-
-                if (b_segment.end <= a_segment.begin)
+                if (new_begin < b_segment->begin && new_begin < a_segment->end)
                 {
-                    b_index++;
-                    continue;
+                    int64_t new_end = min(a_segment->end, b_segment->begin);
+                    Segment new_segment = {new_begin, new_end};
+                    push_back_segment(&result_vector, &new_segment);
                 }
 
-                if (b_segment.begin > a_segment.begin)
-                {
-                    Segment new_segment = {a_segment.begin, b_segment.begin};
-                    add_segment(result_node, new_segment);
-                }
+                // It's possible for there to be b_segment before this
+                // a_segment, so the begin of the next part is the max of
+                // new_begin and the end of b_segment.
+                new_begin = max(new_begin, b_segment->end);
 
-                a_segment.begin = b_segment.end;
-
-                if (b_segment.end > a_segment.end) break;
-
-                b_index++;
+                if (b_segment->end > a_segment->end) break;
             }
 
-            if (a_segment.begin < a_segment.end)
+            // The last part of a_segment may not have a b_segment after it, so
+            // it has to be added separately.
+            if (new_begin < a_segment->end)
             {
-                add_segment(result_node, a_segment);
+                Segment new_segment = {new_begin, a_segment->end};
+                push_back_segment(&result_vector, &new_segment);
             }
         }
 
-        a_node++;
-        b_node++;
+        int64_t result_vector_size = result_vector.end - result_vector.begin;
+        if (result_vector_size > 0) push_back_vector(&result, &result_vector);
+
+        a_vector++;
+        b_vector++;
     }
 
     return result;
 }
 
-bool nalezy(zbior_ary A, int b)
+bool nalezy(zbior_ary A, int int_b)
 {
-    uint64_t hash = get_hash(b);
-    Node* node = add_node(&A, hash);
+    // Do a double binary search, first over the remainders, and then over the
+    // Segments. begg is set to the remainder/Segment which contains b.
+    int64_t b = int_b;
+    if (A.begin == A.end) return false;
 
-    int begg = -1, endd = (int) node->real_size;
+    int64_t remainder = get_remainder(b);
+    int64_t begg = 0;
+    int64_t endd = A.end - A.begin;
 
     while (endd - begg > 1)
     {
-        int midd = (begg + endd) / 2;
-
-        if (node->segments[midd].begin <= b) begg = midd;
+        int64_t midd = (begg + endd) / 2;
+        if (A.begin[midd].remainder <= remainder) begg = midd;
         else endd = midd;
     }
 
-    if (begg == -1 || node->segments[begg].end <= b) return false;
-    else return true;
+    if (A.begin[begg].remainder != remainder) return false;
+
+    SegmentVector vector = A.begin[begg];
+    begg = 0;
+    endd = vector.end - vector.begin;
+
+    while (endd - begg > 1)
+    {
+        int64_t midd = (begg + endd) / 2;
+        if (vector.begin[midd].begin <= b) begg = midd;
+        else endd = midd;
+    }
+
+    Segment closest_segment = vector.begin[begg];
+    if (closest_segment.begin <= b && b < closest_segment.end) return true;
+    else return false;
 }
 
 unsigned moc(zbior_ary A)
 {
     uint64_t result = 0;
 
-    Node* flattened_begin;
-    uint64_t flattened_size;
-    flatten(A.tree, &flattened_begin, &flattened_size);
-    Node* flattened_end = flattened_begin + flattened_size;
-
-    for (Node* a_node = flattened_begin; a_node < flattened_end; a_node++)
+    for (SegmentVector* vector = A.begin; vector < A.end; vector++)
     {
-        for (uint64_t i = 0; i < a_node->real_size; i++)
+        for (Segment* segment = vector->begin; segment < vector->end; segment++)
         {
-            int element_count = (a_node->segments[i].end - a_node->segments[i].begin) / global_q;
+            int64_t element_count = (segment->end - segment->begin) / global_q;
             result += (uint64_t) element_count;
         }
     }
@@ -436,41 +373,33 @@ unsigned ary(zbior_ary A)
 {
     uint64_t result = 0;
 
-    Node* flattened_begin;
-    uint64_t flattened_size;
-    flatten(A.tree, &flattened_begin, &flattened_size);
-    Node* flattened_end = flattened_begin + flattened_size;
-
-    for (Node* a_node = flattened_begin; a_node < flattened_end; a_node++)
+    for (SegmentVector* vector = A.begin; vector < A.end; vector++)
     {
-        result += a_node->real_size;
+        result += (uint64_t) (vector->end - vector->begin);
     }
 
     return (unsigned) result;
 }
 
+// comp and print are only used for tests and are not part of the zbior_ary
+// functionality themselves. They may be ignored by reviewers and graders.
 int comp(const void* a, const void* b)
 {
-    const int* int_a = (const int*) a;
-    const int* int_b = (const int*) b;
-    return *int_a - *int_b;
+    const int64_t* int_a = (const int64_t*) a;
+    const int64_t* int_b = (const int64_t*) b;
+    return (int) (*int_a - *int_b);
 }
 
 void print(zbior_ary A)
 {
-    Node* flattened_begin;
-    uint64_t flattened_size;
-    flatten(A.tree, &flattened_begin, &flattened_size);
-    Node* flattened_end = flattened_begin + flattened_size;
-
-    int elements[1000];
+    int64_t* elements = malloc(moc(A) * sizeof(int64_t));
     uint64_t element_count = 0;
 
-    for (Node* a_node = flattened_begin; a_node < flattened_end; a_node++)
+    for (SegmentVector* vector = A.begin; vector < A.end; vector++)
     {
-        for (uint64_t i = 0; i < a_node->real_size; i++)
+        for (Segment* segment = vector->begin; segment < vector->end; segment++)
         {
-            for (int element = a_node->segments[i].begin; element < a_node->segments[i].end; element += global_q)
+            for (int64_t element = segment->begin; element < segment->end; element += global_q)
             {
                 elements[element_count] = element;
                 element_count++;
@@ -478,9 +407,8 @@ void print(zbior_ary A)
         }
     }
 
-    qsort(elements, element_count, sizeof(int), comp);
+    qsort(elements, element_count, sizeof(int64_t), comp);
 
-    printf("elements:\n");
-    for (uint64_t i = 0; i < element_count; i++) printf("%d ", elements[i]);
+    for (uint64_t i = 0; i < element_count; i++) printf("%ld ", elements[i]);
     printf("\n");
 }
