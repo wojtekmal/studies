@@ -1,0 +1,46 @@
+\documentclass{../note}
+
+\begin{document}
+\begin{zadanie}{1}
+Niech $f:\mathbb{R}\rightarrow\mathbb{R}$ będzie funkcją nierosnącą. Niech $a_{0}\in\mathbb{R}$ oraz $a_{n+1}=f(a_{n})$ dla $n\ge0$. Wykaż, że ciąg $(a_{n})$ ma co najwyżej dwa różne punkty skupienia.
+\end{zadanie}
+\begin{rozwiazanie}
+Jeśli $a_{n+1} \geq a_n$, to $a_{n+2} = f(a_{n+1}) \leq f(a_n) = a_{n+1}$ i podobnie w przeciwnym wypadku. Jeśli $a_1 < a_0$, to możemy zmienić nazwy na $a_{-1} := a_0, a_0 := a_1 \ldots$, żeby $a_1 \geq a_0$.\\
+Istnieją dwa przypadki: albo $a_2 \geq a_0$, albo nie. Jeśli tak, to możemy pokazać indukcyjnie, że dla parzystych $n$ zachodzi $a{n+2} \geq a_n$, a dla nieparzystych $n$ zachodzi $a{n+2} \leq a_n$. Baza indukcji jest założeniem, a krok wygląda następująco: dla parzystych $n$ zachodzi $a_{n+2} = f(a_{n+1}) \geq f(a_{n-1}) = a_n$ i podobnie dla nieparzystych $n$. To znaczy, że ciąg $(a_n)_{n\geq1}$ składa się z dwóch podciągów (parzyste i nieparzyste indeksy), z których jeden jest niemalejący, a drugi nierosnący. Ciąg monotoniczny może mieć tylko jeden punkt skupienia, czyli ciąg $(a_n)_{n\geq1}$ może mieć co najwyżej dwa punkty skupienia.\\
+Jeśli $a_2 < a_0$, to w podobny sposób możemy pokazać, że dla parzystych $n$ zachodzi $a_{n+2} \leq a_n$, a dla nieparzystych $a_{n+2} \geq a_n$, bo np. dla parzystych $n$ zachodzi $a_{n+2} = f(a_{n+1}) \leq f(a_{n-1}) = a_n$. Wtedy ciąg $(a_n)_{n\geq1}$ też się składa z dwóch monotonicznych podciągów, czyli ma co najwyżej dwa punkty skupienia.
+\end{rozwiazanie}
+
+\begin{zadanie}{4}
+Załóżmy, że $(a_{n})$ jest ograniczonym ciągiem liczb rzeczywistych, dla którego ciąg $(b_{n})$ zadany wzorem $b_{n}=a_{n+1}-a_{n}$ jest zbieżny do 0. Wykaż, że zbiór punktów skupienia ciągu $(a_{n})$ jest jednym punktem lub odcinkiem domkniętym.
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $c = \liminf_{n\to\infty} a_n$ i $d = \limsup_{n\to\infty} a_n$. Skoro ciąg $(a_n)$ jest ograniczony, to $c$ i $d$ muszą być liczbami rzeczywistymi. Skoro zarówno $c$, jak i $d$ są punktami skupienia, to dla dowolnego $\varepsilon > 0$, $(a_n)$ musi przechodzić pomiędzy $[c-\varepsilon, c+\varepsilon]$ i $[d-\varepsilon, d+\varepsilon]$ nieskończenie wiele razy. Załóżmy nie wprost, że dla pewnego $x \in [c, d]$ istnieje takie $\varepsilon$ i takie $n_0$, że dla $n \geq n_0$ zachodzi $a_n \notin [x-\varepsilon, x+\varepsilon]$. Wtedy dla ddd $n$, $b_n = a_{n+1} - a_n < 2\varepsilon$, czyli nie może jednocześnie zachodzić $a_n < x-\varepsilon$ i $a_{n+1} > x+\varepsilon$, czyli ciąg $a_n$ nie może przechodzić pomiędzy $c$ i $d$, co jest sprzecznością. Zatem wszystkie punkty w przedziale $[c, d]$ są punktami skupienia i nic poza tym przedziałem nie jest punktem skupienia z definicji $c$ i $d$. W przypadku gdy $c = d$, ten przedział jest punktem.
+\end{rozwiazanie}
+
+\begin{zadanie}{5}
+Niech $a_{0}$, $a_{1}>0$ oraz $a_{n+1}=\sqrt{a_{n}}+\sqrt{a_{n-1}}$ dla $n\ge1$. Zbadaj zbieżność ciągu $(a_{n})$ w zależności od parametrów $a_{0}$, $a_{1}>0$.
+\end{zadanie}
+\begin{rozwiazanie}
+Zauważmy, że dla $b, c > 0$:
+\[|\sqrt{b} + \sqrt{c} - 4|(\sqrt{b} + \sqrt{c} + 4) = |b + c + 2\sqrt{bc} - 16| \leq 4\max(|b-4|, |c-4|)\]
+Skorzystaliśmy z nierówności trójkąta i z tego, że $\sqrt{bc}$ jest średnią geometryczną $b$ i $c$, czyli leży pomiędzy nimi, czyli musi być bliżej 4 niż jedno z nich. Możemy podstawić $b=a_{n-1}, c=a_n$. Wtedy:
+\[|a_{n+1} - 4| \leq \frac{4}{\sqrt{a_{n-1}} + \sqrt{a_n} + 4}\max(|a_{n-1}-4|, |a_n-4|)\]
+Zatem $|a_n - 4|$ jest nierosnące, czyli $a_n \geq \max(a_0, 4)$. Możemy więc wywnioskować, że:
+\[|a_{n+1} - 4| \leq \frac{4}{\sqrt{\max(a_0, 4)} + 4}\max(|a_{n-1}-4|, |a_n-4|)\]
+czyli $|a_n - 4|$ maleje wykładniczo. Zatem $(a_n)$ jest zawsze zbieżny do 4.
+\end{rozwiazanie}
+
+\begin{zadanie}{6}
+Czy istnieje $c>1$, dla którego ciąg
+\[
+    c^{c}, \quad c^{c^{c}}, \quad \dots
+\]
+jest zbieżny do granicy skończonej?
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $(c_n)$ to ciąg wież potęgowych $c$ dla $c = e^{\frac1e}$ oraz $c_0 = 1$. Wtedy $c_{n+1} = e^{\frac{1}{e}c_n}$ dla $n \geq 0$. Można udowodnić indukcyjnie, że $(c_n)$ jest rosnący oraz ograniczony przez $e$. Dla $n=0$ to jest oczywiste, a dla $n \geq 1$:
+\[\frac{c_{n+1}}{c_n} = \frac{e^{\frac1e c_n}}{e^{\frac1e c_{n-1}}} = e^{\frac1e(c_n - c_{n-1})} > 1\]
+\[c_n = e^{\frac1e c_{n-1}} \leq e^{\frac1e e} = e\]
+Zatem dla tego $c$, ciąg $(c_n)$ jest zbieżny do granicy skończonej.
+\end{rozwiazanie}
+\end{document}

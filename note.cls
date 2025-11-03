@@ -1,6 +1,6 @@
 % note.cls
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{note}[2025/09/14 Custom Math + CS Notes Class]
+%\ProvidesClass{note}[2025/09/14 Custom Math + CS Notes Class]
 
 % Base class
 \LoadClass[12pt]{article}
@@ -31,6 +31,7 @@
 
 % Safer custom commands for math symbols
 \providecommand{\R}{\mathbb{R}}
+\providecommand{\Q}{\mathbb{Q}}
 \providecommand{\N}{\mathbb{N}}
 \providecommand{\Z}{\mathbb{Z}}
 \providecommand{\C}{\mathbb{C}}
