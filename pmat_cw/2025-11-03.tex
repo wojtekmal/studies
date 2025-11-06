@@ -1,0 +1,49 @@
+\documentclass{../note}
+
+\begin{document}
+\textbf{Wojciech Malinowski grupa 5}
+\begin{zadanie}{80}
+Niech $f:P(\mathbb{N})\times P(\mathbb{N})\rightarrow P(\mathbb{N})$ będzie taka, że $f(\langle C,D\rangle)=C-D$, dla dowolnych $C,D\subseteq\mathbb{N}.$
+    Czy $f$ jest różnowartościowa i czy jest na $P(\mathbb{N})$? Znaleźć obraz zbioru $P(\text{Pr})\times P_{\infty}(\mathbb{N})$ i przeciwobraz zbioru $\{\varnothing\}$ przy przekształceniu $f$, gdzie Pr to zbiór wszystkich liczb naturalnych parzystych, a $P_{\infty}(\mathbb{N})$ oznacza zbiór wszystkich nieskończonych podzbiorów zbioru $\mathbb{N}$.
+\end{zadanie}
+\begin{rozwiazanie}
+$f$ nie jest różnowartościowa, bo $f(\varnothing, \varnothing) = f(\varnothing, \{1\})$. $f$ jest na $P(\N)$, ponieważ dla dowolnego $A \in P(\N)$, $A = f(A, \varnothing)$. Niech Nr to zbiór liczb nieparzystych. $\text{Nr} \in P_{\infty}(\mathbb{N})$, więc dla dowolnego $A \in \text{Pr}$, $A = f(A, \text{Nr})$ należy do obrazu $f$. Jednocześnie dla każdych $C, D$, $f(C, D) \subseteq C$, czyli $f(P(\text{Pr})\times P_{\infty}(\mathbb{N})) = P(\text{Pr})$. $x \in f(C, D)$ wtedy i tylko wtedy gdy $x \in C \hat x \notin D$, więc $f(C, D) = \varnothing$ gdy dla każdego $x$, $x \in C \Leftarrow x \in D$, czyli $C \subseteq D$. Zatem przeciwobrazem $\varnothing$ jest $\{(C, D): C \subseteq D\}$.
+\end{rozwiazanie}
+
+\begin{zadanie}{52}
+Niech $T=\bigcup_{s\in S}T_{s}$ i niech $\mathcal{K}$ będzie rodziną wszystkich podzbiorów $T$, które z każdym ze zbiorów $T_{s}$ mają przynajmniej jeden element wspólny. Udowodnić, że jeśli $\mathcal{K}\ne\varnothing$, to dla dowolnej rodziny $\{A_{t}\}_{t\in T}$ zachodzi równość:
+    \[
+        \bigcup_{s\in S}\bigcap_{t\in T_{s}}A_{t}=\bigcap_{Y\in \mathcal{K}}\bigcup_{t\in Y}A_{t}.
+    \]
+\end{zadanie}
+\begin{rozwiazanie}
+Przepiszmy powyższą równość na kwantyfikatory:\\
+Dla każdego $x$ zachodzi
+\[\exists_{s \in S} \forall_{t \in T_s} x \in A_t \Leftrightarrow \forall_{Y\in K} \exists_{t \in Y} x \in A_t\]
+$(\Rightarrow)$ Mamy takie $T_s$, że $\forall_{t \in T_s} x \in A_t$. Tak się składa, że każde $Y \in K$ zawiera chociaż jedno $t \in T_s$, czyli takie $t$, że $x \in A_t$.\\
+$(\Leftarrow)$ Załóżmy nie wprost, że nie ma takiego $T_s$, że $\forall_{t \in T_s} x \in A_t$, czyli że dla każdego $T_s$ istnieje takie $t_s$, że $x \notin A_t$. Możemy wtedy wybrać $Y$ składające się z tych $t_s$. Każdy $T_s$ ma element należący do $Y$ (mianowicie $t_s$), więc $Y \in K$. Istnieje więc takie $Y$, że dla żadnego $t \in Y$ zachodzi $x \in A_t$, co jest sprzeczne z założeniem. Tu skorzystaliśmy z tego, że $K$ nie jest puste, czyli że $T \in K$, czyli że $T_s$ nie są puste, czyli że istnieją te $t_s$ (bo inaczej $Y$ nie miałoby elementów wspólnych z wszystkimi $T_s$).
+\end{rozwiazanie}
+
+\begin{zadanie}{134}
+Niech $\varphi:B\rightarrow C$ i niech $\Phi:A^{C}\rightarrow A^{B}$ będzie taka, że $\Phi(f)=f\circ\varphi$ dla wszystkich $f$.
+Zakładając, że $A$ ma co najmniej dwa elementy, pokazać, że
+\begin{enumerate}[label=(\alph*)]
+    \item $\Phi$ jest różnowartościowa wtedy i tylko wtedy, gdy $\varphi$ jest ,,na'';
+    \item $\Phi$ jest ,,na'' wtedy i tylko wtedy, gdy $\varphi$ jest różnowartościowa.
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\newpage
+\textbf{Wojciech Malinowski grupa 5}
+\begin{enumerate}[label=(\alph*)]
+    \item Przepiszmy to na kwantyfikatory:
+    \[\forall_{f,g : A^C} \exists_{y \in B} f(\varphi(y)) \neq g(\varphi(y)) \Leftrightarrow \forall_{z \in C} \exists_{y \in B} \varphi(y) = z\]
+    $(\Leftarrow)$ Skoro $f$ i $g$ są różnymi funkcjami, to istnieje takie $z \in C$, że $f(z) \neq g(z)$. Z założenia wiemy, że istnieje takie $y \in B$, że $\varphi(y) = z$, czyli takie $y$, dla którego $f(\varphi(y)) \neq g(\varphi(y))$.\\
+    $(\Rightarrow)$ Załóżmy nie wprost, że istnieje takie $z \in C$, że $\forall_{y \in B} \varphi(y) \neq c$. Weźmy takie $f, g: A^C$, które różnią się tylko w $c$ (a istnieją, bo $A$ ma przynajmniej 2 elementy). Wtedy skoro $\varphi(y) \neq z$, to $f(\varphi(y)) = g(\varphi(y))$, dla wszystkich $y \in B$, co jest sprzecznością.
+    \item To również przepiszmy na kwantyfikatory:
+    \[\forall_{h : A^B} \exists_{f : A^C} \forall_{y \in B} f(\varphi(y)) = h(y) \Leftrightarrow \forall_{m, n \in B} \varphi(m) \neq \varphi(n)\]
+    $(\Leftarrow)$ Dla każdych $y \in B$ i $h : A^B$, możemy po prostu wybrać takie $f$, że $f(\varphi(y)) = h(y)$ i skoro $\varphi$ jest różnowartościowa, to decyzję co do wartości $f$ podejmujemy tylko raz dla każdego elementu, czyli $f$ jest dobrze zdefiniowane.\\
+    $(\Rightarrow)$ Załóżmy nie wprost, że istnieją takie $m, n \in B$, że $\varphi(m) = \varphi(n)$. Weźmy pewne takie $h : A^B$, że $h(m) \neq h(n)$ (a istnieje takie $h$, bo $|A| \geq 2$). Wtedy dla pewnego $f$, $f(\varphi(m)) = h(m)$ i $f(\varphi(n)) = h(n)$, ale $f(\varphi(n)) = f(\varphi(m)) = h(m) \neq h(n)$, co jest sprzecznością.
+\end{enumerate}
+\end{rozwiazanie}
+\end{document}

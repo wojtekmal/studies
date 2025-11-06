@@ -138,10 +138,7 @@ zbior_ary suma(zbior_ary A, zbior_ary B)
                 // differently, because current_segment isn't initialized yet.
                 // The segment with a smallest begin out of 
                 // {a_segment, b_segment} is chosen and pointed to by
-                // new_segment, after which it is added to current_segment
-                // and incremented. If new_segment and current_segment don't
-                // touch, then the inner loop is broken and current_segment is
-                // added to result_vector.
+                // new_segment.
                 bool a_not_end = a_segment < a_vector->end;
                 int64_t a_begin = a_not_end ? a_segment->begin : LLONG_MAX;
 
@@ -152,14 +149,23 @@ zbior_ary suma(zbior_ary A, zbior_ary B)
 
                 if (first_segment)
                 {
+                    // If new_segment is the first Segment in the group, we
+                    // just set current_segment to new_segment.
                     current_segment = **new_segment;
                     first_segment = false;
                     (*new_segment)++;
                 }
                 else
                 {
+                    // If current_segment and new_segment don't touch, we leave
+                    // new_segment for later. If they do, we extend
+                    // current_segment to the end of new_segment and increment
+                    // the pointer to which new_segment points to.
                     if (current_segment.end < (*new_segment)->begin) break;
                     int64_t new_end = (*new_segment)->end;
+                    // We pick new_segment by the order of begin, so it's not
+                    // guaranteed that they are also ordered by end, so a
+                    // particular new_segment may not extend current_segment.
                     current_segment.end = max(current_segment.end, new_end);
                     (*new_segment)++;
                 }
@@ -231,6 +237,8 @@ zbior_ary iloczyn(zbior_ary A, zbior_ary B)
             else b_segment++;
         }
 
+        // We want to make sure that zbior_ary doesn't hold empty
+        // SegmentVectors.
         int64_t result_vector_size = result_vector.end - result_vector.begin;
         if (result_vector_size > 0) push_back_vector(&result, &result_vector);
 
@@ -275,16 +283,21 @@ zbior_ary roznica(zbior_ary A, zbior_ary B)
         {
             // For each a_segment, we iterate over all b_segment that
             // overlap with it and add the non-intersection parts to
-            // result_vector. Before incrementing b_segment, we have to check
-            // whether ends after a_segment, because if it does, then it may
-            // overlap with the next a_segment. new_begin is used to store the
+            // result_vector. new_begin is used to store the begin of the
             // next part of a_segment.
             int64_t new_begin = a_segment->begin;
 
             for (; b_segment < b_vector->end; b_segment++)
             {
-                if (new_begin < b_segment->begin && new_begin < a_segment->end)
+                // If all of a_segment is used up, we can break the loop
+                // instead of dealing with degenerate cases.
+                if (new_begin >= a_segment->end) break;
+
+                // If b_segment starts after new_begin, it divides what
+                // currently remains of a_segment into two parts.
+                if (new_begin < b_segment->begin)
                 {
+                    // This may be the last part of a_segment.
                     int64_t new_end = min(a_segment->end, b_segment->begin);
                     Segment new_segment = {new_begin, new_end};
                     push_back_segment(&result_vector, &new_segment);
@@ -295,6 +308,9 @@ zbior_ary roznica(zbior_ary A, zbior_ary B)
                 // new_begin and the end of b_segment.
                 new_begin = max(new_begin, b_segment->end);
 
+                // Before incrementing b_segment, we have to check whether it
+                // ends after a_segment, because if it does, then it may
+                // overlap with the next a_segment. 
                 if (b_segment->end > a_segment->end) break;
             }
 
