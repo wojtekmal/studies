@@ -1,0 +1,103 @@
+\documentclass{../note}
+\usepackage{bbold}
+\begin{document}
+
+\begin{zadanie}{2}
+    Niech $\alpha,\beta\in\mathbb{k}^{n}$ będą wektorami o współrzędnych $\alpha=(a_{1},\dots,a_{n})$, $\beta=(b_{1},\dots,b_{n})$. Oznaczmy przez $M(\alpha,\beta)=(m_{ij})_{i,j\in 1\dots n}$ macierz $n\times n$, której wyrazy są równe $m_{ij}=a_{i}\cdot b_{j}$ dla $i,j\in 1\dots n$.
+\begin{enumerate}
+    \item[(a)] Udowodnij, że dla dowolnych $\alpha,\beta\in\mathbb{k}^{n}$ rząd macierzy $M(\alpha,\beta)$ wynosi co najwyżej 1.
+    \item[(b)] Udowodnij, że każda macierz ze zbioru $M_{n\times n}(\mathbb{k})$ o rzędzie 1 jest równa $M(\alpha,\beta)$ dla pewnych $\alpha,\beta\in\mathbb{k}^n$.
+    \item[(c)] Załóżmy że wektory $\alpha,\alpha^{\prime}\in\mathbb{k}^{n}$ są liniowo niezależne oraz, że wektory $\beta, \beta^{\prime}\in\mathbb{k}^{n}$ są liniowo niezależne. Znajdź rząd macierzy $M(\alpha,\beta)+M(\alpha^{\prime},\beta^{\prime})$.
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item $i$-ty rząd $M(\alpha, \beta)$ to $\beta_i\alpha$. Każdy rząd jest wielokrotnością $\alpha$, czyli każda para rzędów jest liniowo zależna. Zatem wymiar przetrzeni liniowej rozpiętej przez rzędy to maksymalnie 1, czyli rząd macierzy to maksymalnie 1.
+    \item Jeśli rząd macierzy to 1, to każda para rzędów jest liniowo zależna, czyli m.in. każdy rząd jest liniowo zależny od pewnego niezerowego rzędu. Niech ten rząd to $\alpha$. Wtedy $i$-ty rząd musi być postaci $\beta_i\alpha$, czyli cała macierz musi być postaci $M(\alpha, \beta)$.
+    \item Wiadomo, że $r(M(\alpha, \beta) + M(\alpha', \beta')) \leq r(M(\alpha, \beta)) + r(M(\alpha', \beta')) \leq 1 + 1 = 2$. Załóżmy niewprost, że $r(M(\alpha, \beta) + M(\alpha', \beta')) \leq 1$. Wtedy każda para rzędów jest liniowo zależna, czyli dla każdych $i, j \in [1, n]$ istnieją takie $x, y \in \mathbb{k}$, że zachodzi
+    \[x(\beta_i\alpha + \beta'_i\alpha') + y(\beta_j\alpha + \beta'_j\alpha') = 0\]
+    Można to przekształcić:
+    \[(x\beta_i + y\beta_j)\alpha + (x\beta'_i + y\beta'_j)\alpha' = 0\]
+    Skoro $\alpha$ i $\alpha'$ są liniowo niezależne, to 
+    \[x\beta_i + y\beta_j = x\beta'_i + y\beta'_j = 0\]
+    $\beta \neq 0$ bo jest liniowo niezależne od $\beta'$, czyli istnieje takie $j$, że $\beta_j \neq 0$. Wtedy dla każdego $i$
+    \[\frac{\beta_i}{\beta_j} = \frac{-y}{x} = \frac{\beta'_i}{\beta'_j}\]
+    Niech $\gamma_i = \frac{\beta_i}{\beta_j}$ oraz $\gamma = (\gamma_1, \ldots \gamma_n)$. Z powyższego równania wiemy, że $\beta = (\beta_j\gamma_1, \ldots, \beta_j\gamma_n) = \beta_j\gamma$ oraz $\beta' = (\beta'_j\gamma_1, \ldots, \beta'_j\gamma_n) = \beta'_j\gamma$. Zatem $\beta$ i $\beta'$ są wielokrotnością tego samego wektora, czyli są liniowo zależne, co jest sprzecznością. Zatem ranga naszej macierzy to 2.
+\end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{3}
+Udowodnij, że dla dowolnych liczb $a, b, c, d\in\mathbb{C}$ spełniających warunek $ad -bc \ne 0$ zbiór
+\[ \{z\in\mathbb{C} : \left|\frac{az+b}{cz+d}\right|=1\} \]
+jest okręgiem lub prostą na płaszczyźnie zespolonej. Wykaż, że każdy okrąg i każdą prostą na płaszczyźnie zespolonej można przedstawić jako powyższy zbiór dobierając odpowiednio $a, b, c, d\in\mathbb{C}$
+\end{zadanie}
+\begin{rozwiazanie}
+Zbiór $z \in \C$ spełniających $|az + b| = 1$, czyli $\left|z - \left(-\frac{b}{a}\right)\right| = \frac1a$, to zbiór $z$ odległych od $(-\frac{b}{a})$ o $\left|\frac1a\right|$ na płaszczyźnie zespolonej, czyli okrąg o środku $(-\frac{b}{a})$ i promieniu $\left|\frac1a\right|$. Zatem zbiór $z$ spełniających $\left|\frac{az+b}{cz+d}\right|=1$ to zbiór $z$ o stałym stosunku odległości od pewnych dwóch punktów, a konkretnie to te punkty to $-\frac{b}{a}$ i $-\frac{c}{d}$, a stosunek odległości to $\left|\frac{c}a\right|$. Zamiast pokazywać, że to prawda dla dowolnych punktów $-\frac{b}{a}$ i $-\frac{c}{d}$, możemy powołać się na podobieństwo (w znaczeniu geometrzycznym) i pokazać, że dla $A = (0, 0)$ i $B = (1, 0)$, zbiór punktów $C$ dla których $\frac{BC}{AC} = r$, to okrąg albo prosta. Pokażemy to dla $r \geq 1$, a przeciwny przypadek jest analogiczny.\\
+Niech $C = (x, y)$. Gdy $r=1$, to zbiór takich $C$ to prosta. Załóżmy teraz, że $r > 1$, czyli że $r^2 - 1 > 0$. Warunek o stosunku odległości możemy podnieść do kwadratu:
+\[\frac{(x-1)^2+y^2}{x^2+y^2} = r^2\]
+\[x^2(r^2 - 1) + 2x + \frac{1}{r^2 - 1} + y^2(r^2-1) = 1 + \frac{1}{r^2 - 1}\]
+\[\left(x + \frac{1}{r^2 - 1}\right)^2 + y^2 = \frac{r^2}{(r^2 - 1)^2}\]
+Zatem wszystkie takie $C$ spełniają równianie pewnego okręgu. Warto też powiedzieć, że to przekształcenia można cofnąć, czyli każde $C$ na tym okręgu spełnia warunek.\\
+Pozostało wykazać, że każdy okrąg i każdą prostą można przedstawić w ten sposób. Jeśli mamy okrąg o środku $s$ i promieniu $r$, to możemy wybrać $a$ i $b$ takie, że $r= \frac1a$ i $s = -\frac{b}{a}$, czyli $a = \frac1r$ i $b = -\frac{s}{r}$ oraz $c = 0$ i $d = 1$, żeby mianownik był równy 1. Jeśli mamy prostą, to możemy wybrać takie dwa punkty $-b$ i $-d$, dla których ta prosta jest symetralną oraz $a=c=1$, to wtedy $\left|\frac{az+b}{cz+d}\right|=1$ dla punktów na tej prostej.
+\end{rozwiazanie}
+
+\begin{zadanie}{4}
+Załóżmy, że $\mathbb{k}$ jest ciałem charakterystyki $p>0$.
+\begin{enumerate}
+    \item[(a)] Dowiedź, że $(a+b)^{p^{n}}=a^{p^{n}}+b^{p^{n}}$ dla dowolnych $a, b\in\mathbb{k}$ oraz $n\ge 1$.
+    \item[(b)] Wywnioskuj z (a), że odwzorowanie $F:\mathbb{k}\rightarrow\mathbb{k}$ dane wzorem $F(x)=x^{p}$ jest morfizmem ciał, to znaczy zachowuje działania, czyli spełnia $F(a+b)=F(a)+F(b)$ oraz $F(a\cdot b)=F(a)\cdot F(b)$ dla dowolnych $a, b\in\mathbb{k}$. Ponadto $F(0)=0$ i $F(1)=1$.
+    \item[(c)] Uzasadnij, że odwzorowanie $F$ z punktu (b) jest injektywne. W szczególności gdy ciało $\mathbb{k}$ jest skończone, to $F$ jest bijekcją oraz $\mathbb{k}=\mathbb{k}^{p}=\{a^{p}:a\in\mathbb{k}\}$.
+    \item[(d)] Wskaż przykład ciała $\mathbb{k}$, dla którego $\mathbb{k}\ne\mathbb{k}^{p}$, to znaczy takiego, że odwzorowanie $F$ z punktu (b) nie jest surjektywne.
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Wiadomo, że ciała skończone są przestrzenią liniową nad $\Z_p$. Niech $m$ to wymiar tej przestrzeni (dowód działa tylko dla skończonych $m$) i niech $(a_k)_{1 \leq k \leq m}$ to jej baza. Najpierw pokażemy, że jeśli $x = \sum_{k=1}^{m} w_ka_k$, to $x^p = \sum_{k=1}^{m} w_ka_k^p$. Wiemy, że to jest prawda dla $x = 0$. Przeprowadźmy dowód indukcyjny po kolejnych wymiarach $k$ i dla każdego wymiaru przeprowadźmy dowód indukcyny po $w_k$. Załóżmy, że dla danego $x$, $k$ to ostatni wymiar, na którym $w_k > 0$. Wtedy
+    \[x^p = \left(\sum_{i = 1}^{k} w_ia_i\right)^p = \left(a_k + \sum_{i = 1}^{k} (w_i-\delta_{ik})a_i\right)^p = \sum_{l=0}^{p} \binom{p}{l}a_k^l\left(\sum_{i = 1}^{k} (w_i-\delta_{ik})a_i\right)^{p-l}\]
+    Dla $0 < l < p$, $\binom{p}{l} \equiv 0 (\mod p)$, czyli
+    \[x^p = a_k^p + \left(\sum_{i = 1}^{k} (w_i-\delta_{ik})a_i\right)^p\]
+    Możemy teraz skorzystać z założenia indukcyjnego dla tego wymiaru - wiemy, że 
+    \[\left(\sum_{i = 1}^{k} (w_i-\delta_{ik})a_i\right)^p = \sum_{i = 1}^{k} (w_i-\delta_{ik})a_i^p\]
+    Zatem
+    \[x^p = a_k^p + \sum_{i = 1}^{k} (w_i-\delta_{ik})a_i^p = \sum_{i = 1}^{k} w_ia_i^p\]
+    Niech $x = \sum_{k=1}^{m} w_ka_k$ i $y = \sum_{k=1}^{m} v_ka_k$. Wtedy 
+    \[(x + y)^p = \left(\sum_{k=1}^{m} (w_k+v_k)a_k\right)^p = \sum_{k=1}^{m} (w_k+v_k)a_k^p = x^p + y^p\]
+    Możemy teraz poprowadzić dowód indukcyjny po $n$:
+    \[(x + y)^{p^n} = \left((x + y)^p\right)^{p^{n-1}} = \left((x^p + y^p)\right)^{p^{n-1}} = x^{p^n} + y^{p^n}\]
+    \item Już wiemy, że $F(x + y) = (x + y)^p = x^p + y^p = F(x) + F(y)$. Wiadomo, też, że $F(xy)^p = (xy)^p = x^py^p = F(x)F(y)$. Zachodzi też $F(0) = 0^p = 0$ oraz $F(1) = 1^p = 1$.
+\end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{5}
+Niech $\mathbb{R}[x]_{\le 4}\subset\mathbb{R}[x]$ oznacza przestrzeń wielomianów stopnia $\le 4,$ czyli wielomianów postaci $w(x)=a_{0}+a_{1}x+a_{2}x^{2}+a_{3}x^{3}+a_{4}x^{4}$ gdzie $a_{0},\dots,a_{4}\in\mathbb{R}$. Niech $W\subset\mathbb{R}[x]_{\le 4}$ będzie zbiorem tych wielomianów $w$ stopnia 4, dla których funkcje wielomianowe $\tilde{w}:\mathbb{R}\rightarrow\mathbb{R}$ spełniają warunek
+\[ \forall_{x\in\mathbb{R}\backslash\{0\}} \quad x^{4}\cdot\tilde{w}\left(\frac{1}{x}\right)=\tilde{w}(x) \]
+\begin{enumerate}
+    \item[(a)] Przedstaw podzbiór $W\subseteq\mathbb{R}[x]_{\le 4}$ jako zbiór rozwiązań układu równań jednorodnych zadających relacje między współczynnikami $a_{0},\dots,a_{4}\in\mathbb{R}$. Uzasadnij, że $W$ jest przestrzenią liniową nad ciałem $\mathbb{R}$.
+    \item[(b)] Rozpatrzmy wielomiany
+    \[ w_{1}=1+tx^{2}+x^{4}, \quad w_{2}=sx^{2}, \quad w_{3}=1+tx+x^{2}+tx^{3}+x^{4} \]
+    zależne od parametrów $s, t\in\mathbb{R}.$ Jakie warunki muszą spełniać parametry $s$ i $t$, aby wielomiany $w_{1}, w_{2}, w_{3}$ stanowiły bazę przestrzeni $W$?
+    \item[(c)] Połóżmy $s=t=1$. Znajdź współrzędne wielomianu $x+2x^{2}+x^{3}$ w bazie składającej się z $w_{1}, w_{2}$ i $w_{3}$.
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Jeśli $w(x)=a_{0}+a_{1}x+a_{2}x^{2}+a_{3}x^{3}+a_{4}x^{4}$, to dla $x \neq 0$, to $x^4 \tilde{w}\left(\frac1x\right) = a_{0}x^4+a_{1}x^3+a_{2}x^{2}+a_{3}x^{1}+a_{4}$. Jeśli dwa wielomiany stopnia 4 są równe na $\R \backslash \{0\}$, to są równe m.in. w pewnych 5 punktach, czyli z wzoru interpolacji Lagrange'a muszą mieć równe współczynniki. Zatem każde $w \in W$ ma współczynniki spełniające $a_0 = a_4$ i $a_1 = a_3$. Łatwo sprawdzić, że to jest warunek wystarczający. Jest to więc układ równań określający $W$, którego szukamy. Niech $w(x)=a_{0}+a_{1}x+a_{2}x^{2}+a_{3}x^{3}+a_{4}x^{4}$ i $v(x)=b_{0}+b_{1}x+b_{2}x^{2}+b_{3}x^{3}+b_{4}x^{4}$ to dwa wielomiany należące do $W$. Wtedy jeśli $u(x) = w(x) + v(x) =c_{0}+c_{1}x+c_{2}x^{2}+c_{3}x^{3}+c_{4}x^{4}$, to $c_0 = a_0 + b_0 = a_4 + b_4 = c_4$ oraz $c_1 = a_1 + b_1 = a_3 + b_3 = c_3$, czyli $u \in W$. Jeśli $u$ spełnia $u(x) = dw(x)$, to $c_0 = dc_0 = dc_4 = c_4$ i $c_1 = dc_1 = dc_3 = c_3$. Elementem zerowym jest wielomian zerowy. Mamy więc zdefiniowane operacje definiujące przestrzeń liniową. Łatwo sprawdzić, że wszystkie aksjomaty przestrzeni liniowej są spełnione.
+    \item Zauważmy, że $b_1(x) = 1 + x^4, b_2(x) = x + x^3, b_3(x) = x^2$ są bazą $W$, bo dowolne $w \in W$ musi być postaci $ax^4 + bx^3 + cx^2 + bx + a = ab_1 + bb_2 + cb_3$. Widać, że są liniowo niezależne. Wynika z tego, że $\dim(W) = 3$, więc $w_1, w_2, w_3$ muszą być liniowo niezależne. $w_1, w_2, w_3$ mają współrzędne $(1, 0, t), (0, 0, s), (1, t, 1)$ w bazie $(b_1, b_2, b_3)$. Żeby się dowiedzieć, czy są liniowo niezależne, możemy zeschodkować macierz:
+    \[
+    \begin{pmatrix}
+        1 & 0 & t \\
+        1 & t & 1 \\
+        0 & 0 & s
+    \end{pmatrix} \xrightarrow{\text{II - I}}
+    \begin{pmatrix}
+        1 & 0 & t \\
+        0 & t & 1 - t \\
+        0 & 0 & s
+    \end{pmatrix}
+    \]
+    Wektory są liniowo niezależne, gdy są wszystkie schodki, czyli gdy $t \neq 0$ i $s \neq 0$.
+    \item Łatwo sprawdzić, że wektor o współrzędnych $(-1, 2, 1)$ to właśnie wielomian $x+2x^{2}+x^{3}$.
+\end{enumerate}
+\end{rozwiazanie}
+
+\end{document}

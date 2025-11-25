@@ -1,0 +1,54 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{129}
+Niech $A$ będzie zbiorem skończonym i niech $ f: A \underset{\text{na}}{\xrightarrow{1-1}} A $. Udowodnić, że $f^{n}=id_{A}$ dla pewnego $n>0$.
+Uwaga: Notacja $f^{n}$ oznacza tu $n$-krotne złożenie funkcji ze sobą, czyli $f^{0}=id_{A}$ i $f^{n+1}=f^{n}\circ f$.
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $a$ będzie dowolnym elementem zbioru $A$. Zbiór $B = \{f^k(a) : k \in [0, |A|]\}$ jest podzbiorem $A$, czyli $|B| \leq |A|$, czyli $f^l(a) = f^r(a)$ dla pewnych $l, r \in [0, |A|]$ spełniających $l < r$. Załóżmy nie wprost, że najmniejsze takie $l$ jest większe od 0. Wtedy skoro $f$ jest różnowartościowe, to $f^l(a) = f(f^{l-1}(a)) \neq f(f^{r-1}(a)) = f^r(a)$, co jest sprzecznością. Zatem dla każdego $a$ istnieje takie $g(a) \in \N$, że $f^{g(a)}(a) = a$. Możemy pokazać indukcyjnie, że $f^{kg(a)}(a) = a$ dla $k \in \N$. Już znamy bazę $k = 0$ oraz zachodzi $f^{(k+1)g(a)}(a) = f^{kg(a)}(f^{g(a)}(a)) = f^{kg(a)}(a)$. Niech $G = \prod_{a\in A} g(a)$. Wtedy dla dowolnego $a$, $g(a)$ dzieli $G$, czyli $f^G(a) = a$ dla każdego $a \in A$.
+\end{rozwiazanie}
+
+\begin{zadanie}{209}
+Obliczyć moce zbiorów:
+\begin{enumerate}[label=(\alph*)]
+    \item $X=\{A : A \subseteq \mathbb{R} \text{ i } A \text{ ma element najmniejszy i największy}\}$;
+    \item $Y=\{A : A \subseteq \mathbb{Z} \text{ i } A \text{ ma element najmniejszy i największy}\}$;
+    \item $Z=\{A : A \subseteq \mathbb{Q} \text{ i } A \text{ ma element najmniejszy i największy}\}$.
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Niech $B = $ to zbiór podzbiorów $[-2, 2]$ zawierających $-2$ i $2$. Zdefiniujmy funckję $f : \R \to [-2, 2]$ w następujący sposób:
+    \[f(x) = \begin{cases}
+        -1 - \frac1x & \text{gdy } x \in (-\infty, -1) \\
+        x & \text{gdy } x \in [-1, 1] \\
+        1 + \frac1x & \text{gdy } x \in (1, \infty)
+    \end{cases}\]
+    Zauważmy, że $f$ jest różnowartościowa. Możemy teraz zdefiniować $g : P(\R) \to B$ tak, że dla $x \in \R$, $\text{Id}_{g(X)}(f(x)) = \text{Id}_{X}(x)$ oraz $-2, 2 \in g(X)$. Jeśli $X \neq Y$, czyli BSO istnieje $x$ takie, że $x \in X $ oraz $x \notin Y$, to $f(x) \in g(X)$ oraz $f(x) \notin g(Y)$. Zatem $g$ jest różnowartościowa, czyli $|P(\R)| \leq |B|$. Wiemy też, że $B \subseteq P(\R)$, zatem $|B| = |P(\R)| = 2^{\mathfrak{c}}$.
+    \item Skoro każde $A \in Y$ ma element maksymalny i minimalny, to jest ograniczony, czyli skończony. Niech $Y_m = \{A : A \in Y, |A| = m\}$. Dla danego $m$ możemy stworzyć taką funkcję $f : Y_m \to \N^m$, że $k$-ty element krotki to $k$-ty element $Y_m$. $f$ jest różnowartościowa, bo jeśli $A, B \in Y_m$ i $A \neq B$, to musi istnieć takie $k$, że $k$-te elementy $A$ i $B$ są różne, czyli $k$-te pozycje w $f(A)$ i $f(B)$ są różne. Zatem $|Y_m| \leq |\N^m| = \aleph_0$. Wiadomo, że suma przeliczalnie wielu zbiorów przeliczalnych jest przeliczalna, czyli $|Y| = |\bigcup Y_m| \leq \aleph_0$. Wiemy też, że $Y$ zawiera singleton każdej liczby naturalnej, czyli $|Y| = \aleph_0$.
+    \item Można przeprowadzić taki sam argument jak w (a), tyle że $B$ zawiera tylko te podzbiory przedziału $[-2, 2]$, które zawierają tylko liczby wymierne, $f \in \Q \to [-2, 2]$ i $g \in P(\Q) \to B$. Wychodzi, że $|B| = |P(\Q)| = |P(\N)| = \mathfrak{c}$.
+\end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{223}
+Ile jest funkcji z $N$ do $N$: (a) nierosnących? (b) niemalejących?
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Każda funkcja nierosnąca do liczb naturalnych musi maleć skończenie wiele razy; w przeciwnym wypadku nie byłaby ograniczona od dołu. Niech $F$ to zbiór funkcji malejących $\N \to \N$ i niech $F_m$ to podzbiór $F$ funkcji, które maleją $m$ razy. Możemy określić funkcję $\phi : F_m \to \N^{2m}$ w następujący sposób: Niech $k_i$ to $i$-ta pozycja, na której $f(k_i + 1) < f(k_i)$. Wtedy 
+    \[\phi(f) = (k_1, f(k_1 + 1) - f(k_1), \ldots, k_m, f(k_m + 1) - f(k_m))\]
+    $\phi$ jest różnowartościowa, ponieważ dwie różne funkcje nierosnące muszą się różnić po raz pierwszy na jakiejś pozycji $k$; wtedy albo jedna z nich nie maleje na tej pozycji, albo maleją o różną wartość i wtedy te różnice pojawiają się w obrazach w $\phi$. Wiadomo, że $\N^{2m}$ jest przeliczalne, więc $F_m$ też musi być. Suma przeliczalnie wielu zbiorów przeliczalnych jest przeliczalna, więc $F = \bigcup F_m$ też jest przeliczalne. Wiadomo też, że $F$ zawiera nieskończenie wiele funkcji, m.in. dla każdego $n \in \N$, $F$ zawiera takie $f$, że $f(k) = 1$ dla $k < n$ i $f(k) = 0$ w przeciwnym przypadku. Zatem $|F| = \aleph_0$.
+    
+    \item Możemy określić funkcję $\phi : \N^\N \to \N^\N$ przypisującą każdej funkcji $f : \N^\N$ funckję niemalejącą rekurencyjnie w następujący sposób:
+    \[\phi(f)(n) = \begin{cases}
+        f(0) & \text{gdy } n = 0\\
+        \phi(f)(n-1) + f(n) & \text{gdy } n > 0
+    \end{cases}\]
+    $\phi(f)$ jest rosnące, bo różnica pomiędzy kolejnymi wartościami to $f(n) \geq 0$. $\phi$ jest różnowartościowe, ponieważ jeśli mamy dwie różne funkcje $f$ i $g$, to one muszą się różnić po raz pierwszy na jakiejś pozycji $n$, wtedy jeśli $n > 0$ to \[\phi(f)(n) = \phi(f)(n-1) + f(n) = \phi(g)(n-1) + f(n) \neq \phi(g)(n-1) + g(n) = \phi(g)(n)\]
+    oraz $\phi(f)(n) = f(0) \neq g(0) = \phi(g)(n)$ gdy $n = 0$. Zatem zbiór funkcji niemalejących ma moc nie mniejszą niż zbiór $\N^\N$. Jest też podzbiorem tego zbioru, czyli ma moc nie większą niż $\N^\N$. Tak więc zbiór funkcji niemalejących ma moc $|\N^\N| = \mathfrak{c}$.
+\end{enumerate}
+\end{rozwiazanie}
+
+\end{document}

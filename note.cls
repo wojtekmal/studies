@@ -17,9 +17,34 @@
 \RequirePackage{listings}
 \RequirePackage{environ}
 \RequirePackage{enumitem}
+\RequirePackage{lastpage}
+\RequirePackage{bbm}
+\RequirePackage{tikz}
 
 % Page layout
 \geometry{a4paper, margin=1in}
+
+% --- Header and Footer Setup ---
+\RequirePackage{fancyhdr}
+
+% 1. Define a command to store the name
+\newcommand{\studentname}[1]{\def\thestudentname{#1}}
+\studentname{Wojciech Malinowski} % Default to empty if not set
+
+% 2. Configure the standard 'fancy' style (pages 2+)
+\pagestyle{fancy}
+\fancyhf{} % Clear all default headers/footers
+\fancyhead[L]{\thestudentname} % Left Header: Name
+\fancyhead[R]{\thepage\ / \pageref*{LastPage}}        % Right Header: Page Number
+\setlength{\headheight}{15.5pt}
+
+% 3. Redefine the 'plain' style (Page 1 usually uses this)
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyhead[L]{\thestudentname}
+    \fancyhead[R]{\thepage}
+    \renewcommand{\headrulewidth}{0.4pt} % Adds the line below the header
+}
 
 % Hyperlinks
 \hypersetup{

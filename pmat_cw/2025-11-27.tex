@@ -1,0 +1,15 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Dwa prostokąty na płaszczyźnie są w relacji $r$ wtedy i tylko wtedy, gdy istnieje przesunięcie przekształcające jeden na drugi.
+
+Ile klas abstrakcji ma relacja $r$ i jakie są ich moce?
+\end{zadanie}
+\begin{rozwiazanie}
+Każdy prostokąt jest wyznaczony swoim lewym dolnym wierzchołkiem, czyli parą współrzędnych $(x, y) \in \R^2$, oraz szerokością i wysokością $w, h \in \R_+$. Wtedy dwa prostokąty są w relacji, czyli jeden jest przesunięciem drugiego, gdy mają równą wysokość i szerokość, czyli wysokość i szerokość wyznaczają klasę abstrakcji. Zatem jest tyle klas abstrakcji, ile par $(w, h)$, czyli $|\R_+^2|$. $\R_+$ zawiera odcinek $(0, 1)$, o którym wiemy, że ma moc $\mathfrak{c}$, oraz jest podzbiorem $\R$, które ma moc $\mathfrak{c}$, więc $|\R_+| = |\R|$. Zatem zbiór klas abstrakcji ma moc $|\R_+^2| = |\R^2| = \mathfrak{c}$.\\
+Wszystkie prostokąty z jednej klasy abstrakcji są wyznaczone przez pozycję, czyli przez $(x, y)$. Zatem moc każdej klasy abstrakcji to $|\R^2| = \mathfrak{c}$.
+\end{rozwiazanie}
+
+\end{document}

@@ -1,0 +1,104 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+\begin{enumerate}
+    \item [(d)] Oblicz granicę $ \lim_{n\rightarrow\infty}(n^{2}e^{\frac{1}{n}}-n(n+1)) $
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}
+    \item [(d)] Możemy przekształcić wyrażenie z granicy na $\frac{e^{\frac1n} - \frac1n - 1}{\frac{1}{n^2}}$. Sprawdźmy, że zachodzą założenia, żeby zastosować tw. Stolza-Cezaro na takim ciągu. Widać, że mianownik jest monotoniczny, niezerowy i dąży do $0$. Możemy ograniczyć licznik:
+    \[e^{\frac1n} - \frac1n - 1 \leq \frac{1}{1 - \frac1n} - \frac1n - 1 = \frac{n}{n-1} - \frac1n - 1 = \frac{1}{n(n-1)}\]
+    Z nierówności $e^x \geq 1 + x$ wiemy, że licznik jest nieujemny i widzimy, że jego ograniczenie odgórne zbiega do 0, czyli z tw. o trzech ciągach licznik też zbiega do 0. Możemy więc równie dobrze obliczyć taką granicę:
+    \[\lim_{n\to\infty} \frac{e^{\frac1{n+1}} - \frac1{n+1} - 1 - e^{\frac1n} + \frac1n + 1}{\frac{1}{(n+1)^2} - \frac{1}{n^2}} =\]
+    \[\lim_{n\to\infty} \frac{\left(e^{\frac{1}{n+1}}\left(e^{\frac{1}{n(n+1)}} - 1\right) - \frac{1}{n(n+1)}\right)n^2(n+1)^2}{2n + 1}\]
+    Najpierw oszacujmy od dołu. Z $e^x \geq 1 + x$ mamy:
+    \[\lim_{n\to\infty} \frac{\left(e^{\frac{1}{n+1}}\left(e^{\frac{1}{n(n+1)}} - 1\right) - \frac{1}{n(n+1)}\right)n^2(n+1)^2}{2n + 1} \geq\] 
+    \[\lim_{n\to\infty} \frac{\left(\left(1 + \frac{1}{n+1}\right)\left(1 + \frac{1}{n(n+1)} - 1\right) - \frac{1}{n(n+1)}\right)n^2(n+1)^2}{2n + 1} = \lim_{n\to\infty}  \frac{n}{2n + 1} = \frac12\]
+    Teraz oszacujmy od góry. Z $e^x < \frac{1}{1-x}$ dla $x < 1$ mamy:
+    \[\lim_{n\to\infty} \frac{\left(e^{\frac{1}{n+1}}\left(e^{\frac{1}{n(n+1)}} - 1\right) - \frac{1}{n(n+1)}\right)n^2(n+1)^2}{2n + 1} \leq\]
+    \[\lim_{n\to\infty} \frac{\left(\frac{n + 1}{n} \frac{1}{n(n+1) - 1} - \frac{1}{n(n+1)}\right)n^2(n+1)^2}{2n + 1} \leq \lim_{n\to\infty} \frac{\left(\frac{n + 1}{n} \frac{1}{n(n+1)} - \frac{1}{n(n+1)}\right)n^2(n+1)^2}{2n + 1} =\]
+    \[\lim_{n\to\infty} \frac{n+1}{2n+1} = \lim_{n\to\infty} \frac{1 + \frac1n}{2 + \frac1n} = \frac12\]
+    Zatem z tw. o trzech ciągach dostajemy, że szukana granica to $\frac12$.
+\end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{3}
+Czy ciąg \[ a_{n}=\sqrt{1+\sqrt{2+\dots+\sqrt{n}}} \] jest zbieżny do granicy skończonej?
+\end{zadanie}
+\begin{rozwiazanie}
+Zauważmy, że $(a_n)$ jest rosnący, bo pierwiawiastek jest rosnący. Udowodnijmy, że $a_n < 3$. Niech $b_k$ to wyrażenie pod $k$-tym pierwiastkiem w definicji $a_n$ oraz $b_{n+1} = 0$. Niech $c_1 = 3$, $c_{k+1} = c_k^2 - k$. Zacznijmy od indukcyjnego dowodu, że $c_k > k^2$. To jest prawda dla $k=2$, bo $c_2 = 8$. Dla $k \geq 2$:
+\[c_{k+1} = c_k^2 - k > k^4 - k > 4k^2 - k > 3k^2 > k^2 + 2k + 1 = (k + 1)^2\]
+Z tego też wynika, że $c_k > 0$. Możemy teraz za pomocą indukcji wstecznej wykazać, że $\sqrt{b_k} < c_k$. Jest to prawda dla $k = n + 1$, bo $\sqrt{b_{n+1}} = 0 < c_{n+1}$. Możemy teraz skorzystać z założenia indukcyjnego:
+\[\sqrt{b_{k+1}} < c_{k+1}\]
+Obie strony są dodatnie, więc możemy stronami dodać $k$ i spierwiastkować:
+\[\sqrt{k + \sqrt{b_{k+1}}} < \sqrt{c_{k+1} + k}\]
+Lewa strona to $\sqrt{b_k}$, a prawa to $c_k$, czyli mamy, że $\sqrt{b_k} < c_k$. Po podstawieniu $k = 1$ otrzymujemy $a_n < 3$.
+\end{rozwiazanie}
+
+\begin{zadanie}{4}
+Niech $a_{0}>-1$ oraz $ a_{n}=\sqrt{2^{n+1}a_{n-1}+4^{n}}-2^{n} $. Oblicz $ \lim_{n\rightarrow\infty}a_{n} $.
+\end{zadanie}
+\begin{rozwiazanie}
+Możemy przemnożyć przez sprzężenie:
+\[a_n\left(\sqrt{2^{n+1}a_{n-1}+4^{n}}+2^{n}\right) =\]
+\[\left(\sqrt{2^{n+1}a_{n-1}+4^{n}}+2^{n}\right)\left(\sqrt{2^{n+1}a_{n-1}+4^{n}}-2^{n}\right) = 2^{n+1}a_{n-1}\]
+\[a_n = \frac{2^{n+1}a_{n-1}}{\sqrt{2^{n+1}a_{n-1}+4^{n}}+2^{n}}\]
+Z powyższej równości wynika, że ciąg $(a_n)$ nigdy nie zmienia znaku. Gdy $a_0 \geq 0$ i ciąg jest nieujemny, to iloraz dwóch kolejnych elementów ciągów spełnia
+\[\frac{2^{n+1}}{\sqrt{2^{n+1}a_{n-1}+4^{n}}+2^{n}} \leq \frac{2^{n+1}}{\sqrt{4^{n}}+2^{n}} = 1\]
+czyli ciąg jest nierosnący. Wiemy również, że jest ograniczony od dołu, czyli musi być jakaś granica $g$. Musi ona spełniać
+\[g = lim_{n\to\infty} a_n = lim_{n\to\infty} \frac{2^{n+1}a_{n-1}}{\sqrt{2^{n+1}a_{n-1}+4^{n}}+2^{n}} = \frac{2^{n+1}g}{\sqrt{2^{n+1}g+4^{n}}+2^{n}}\]
+czyli $g = 0$.\\
+Gdy $a_0 < 0$ i ciąg jest ujemny, to
+\[\frac{2^{n+1}}{\sqrt{2^{n+1}a_{n-1}+4^{n}}+2^{n}} > \frac{2^{n+1}}{\sqrt{4^{n}}+2^{n}} = 1\]
+czyli wtedy ciąg jest malejący. To znaczy, że $a_{n-1} \leq a_0$, czyli
+\[\frac{2^{n+1}}{\sqrt{2^{n+1}a_{n-1}+4^{n}}+2^{n}} > \frac{2^{n+1}}{\sqrt{2^{n+1}a_0+4^{n}}+2^{n}} > 1 + \varepsilon\]
+dla pewnego $\varepsilon > 0$. Zatem w tym przypadku ciąg $(a_n)$ rośnie geometrycznie i nie ma granicy. Warto też zauważyć, że skoro $a_n = \sqrt{2^{n+1}a_{n-1}+4^{n}}-2^{n} > -2^n$, to część wyrażenia definiującego $a_{n+1}$, która jest pod pierwiastkiem, spełnia $2^{n+2}a_{n}+4^{n+1} > 0$, czyli ciąg $(a_n)$ jest dobrze zdefiniowany.
+\end{rozwiazanie}
+
+\begin{zadanie}{5}
+Niech $(a_{n})$ będzie ciągiem liczb dodatnich spełniającym $ \lim_{n\rightarrow\infty}\frac{a_{n-1}a_{n+1}}{a_{n}^{2}}=4 $. Wykaż, że ciąg $ b_{n}=\sqrt[n^{2}]{a_{n}} $ jest zbieżny i oblicz jego granicę.
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $c_n = \log a_n$ i niech $d = \log 4$. Logarytmując równanie definiujące kolejne elementy ciągu $(a_n)$ dostajemy $c_{n+1} = 2c_n - c_{n-1} + d$. Możemy tę równość zsumować stronami dla $n \in [1, m]$. Dostajemy
+\[\sum_{n=2}^{m+1} c_n = 2\left(\sum_{n=1}^{m} c_n\right) - \left(\sum_{n=0}^{m-1} c_n\right) + \left(\sum_{n=1}^{m} d\right)\]
+Odejmujemy $\sum_{n=1}^{m} c_n$ stronami:
+\[c_{m+1} - c_1 = c_m - c_0 + md\]
+Sumujemy stronami po $m \in [1, k]$:
+\[\left(\sum_{m=2}^{k+1} c_m\right) - \left(\sum_{m=1}^{k} c_1\right) = \left(\sum_{m=1}^{k} c_m\right) - \left(\sum_{m=1}^{k} c_0\right) + \left(\sum_{m=1}^{k} md\right)\]
+Po skróceniu i przekształceniu dostajemy:
+\[c_{k+1} = (k+1)c_1 - kc_0 + \frac{k(k+1)}{2} d\]
+Wtedy:
+\[\lim_{n\to\infty} \log(b_{n}) = \lim_{n\to\infty} \frac{1}{n^2} c_n = \lim_{n\to\infty} \frac1n c_1 - \frac1n c_0 + \frac{1}{n^2} c_0 - \frac{1}{2n}d + \frac12 d = \frac12 d\]
+Zatem $\lim_{n\to\infty} b_{n} = e^{\frac12 d} = e^{\frac12 \log 4} = 4^{\frac12} = 2$.
+\end{rozwiazanie}
+
+\begin{zadanie}{6}
+Dany jest ciąg ograniczony $(a_{n})$ spełniający warunek $ \lim_{n\rightarrow\infty}(a_{n}-a_{n-1}-a_{n-2})=0 $. Rozstrzygnij, czy z tego wynika, że $a_{n}\rightarrow 0$.
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $A = \sup |a_n|$. Załóżmy nie wprost, że istnieje nieskończony podciąg, na którym $|a_n| > M$. Dla dowolnego $\varepsilon > 0$ istnieje takie $n$, że $a_n$ należy do tego podciągu i $|a_{m}-a_{m-1}-a_{m-2}| < \varepsilon$ dla $m \in [n - d, n + d]$ ($\varepsilon$ i $d$ zostaną dobrane później). Przyjmijmy nazwy $x = a_n, y = a_{n+1}$. Możemy udowodnić indukcyjnie, że dla $m \leq d$ zachozi 
+$|a_{n+m} - F_{m-1}x - F_my| < G_m\varepsilon$, gdzie $F_k$ to $k$-ta liczba Fibonacciego, a ciąg $(G_k)$ spełnia $G_0 = G_1 = 0$ oraz $G_k = G_{k-1} + G_{k-2} + 1$. Baza jest oczywista. Zachodzi 
+\[|a_{n+m} - F_{m-1}x - F_my| = |a_{n+m-1} + a_{n+m-2} + (a_{n+m} - a_{n+m-1} + a_{n+m-2}) - F_{m-1}x - F_my| \leq\]
+\[|a_{n+m} - a_{n+m-1} + a_{n+m-2}| + |a_{n+m-1} + a_{n+m-2} - F_{m-1}x - F_my| <\]
+\[\varepsilon + |(a_{n+m-1} - F_{m-2}x - F_{m-1}y) + (a_{n+m-2} - F_{m-3}x - F_{m-2}y) + \]\[F_{m-2}x + F_{m-1}y + F_{m-3}x + F_{m-2}y - F_{m-1}x - F_my| <\]
+\[\varepsilon + |a_{n+m-1} - F_{m-2}x - F_{m-1}y| + |a_{n+m-2} - F_{m-3}x - F_{m-2}y| <\]
+\[\varepsilon + G_{m-1}\varepsilon + G_{m-2}\varepsilon = G_m\varepsilon\]
+Można też odwrócić warunek z ciągu $(a_n)$: $|a_{n-2} + (a_{n-1} - a_n)| < \varepsilon$. Za pomocą tego można w podobny sposób otrzymać analogiczny "wzór" na $a_{n-m}$: 
+\[|a_{n-m} - (-1)^mF_{m-1}x + (-1)^mF_my| < G_{m+1}\varepsilon\]
+Te dwie nierówności możemy połączyć, żeby dowiedzieć się czegoś o $a_{n+m} + a_{n-m}$ dla pewnego parzystego $m$:
+\[|a_{n+m} + a_{n-m} - 2F_{m-1}x| = |a_{n+m} + a_{n-m} - F_{m-1}x - F_{m-1}x - F_my + F_my| <\]
+\[|a_{n+m} - F_{m-1}x - F_my| + |a_{n-m} - (-1)^mF_{m-1}x + (-1)^mF_my| <\]
+\[G_m\varepsilon + G_{m+1}\varepsilon < G_{m+2}\varepsilon\]
+Z tego wynika, że
+\[|2F_{m-1}x| < |2F_{m-1}x - a_{n+m} - a_{n-m}| + |a_{n+m} + a_{n-m}| < |a_{n+m} + a_{n-m}| + G_{m+2}\varepsilon\]
+Możemy podstawić $m = d$ wywnioskować, że jedno z $a_{n+d}$ i $a_{n-d}$ ma duży moduł:
+\[max(|a_{n+d}|, |a_{n-d}|) \geq \frac12|a_{n+d} + a_{n-d}| > |F_{d-1}x| - \frac12G_{d+2}\varepsilon\]
+Wiadomo, że liczby Fibonacciego są dowolnie duże. Możemy więc wybrać takie parzyste $d$, że $F_{d-1} > \frac{A}{M} + 1$ oraz $\varepsilon = \frac{2}{G_{d+2}}$. Wtedy 
+\[max(|a_{n+d}|, |a_{n-d}|) > A = \sup a_n\]
+co jest sprzecznością.
+\end{rozwiazanie}
+
+\end{document}
