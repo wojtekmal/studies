@@ -1,0 +1,90 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Zbadaj zbieżność szeregów oraz, jeśli są zbieżne, oblicz ich sumy:
+\begin{enumerate}[label=(\alph*)]
+    \item $\sum_{n=1}^{\infty}\frac{1}{n(n+4)}$
+    \item $\sum_{n=0}^{\infty}n^{3}2^{-n}$
+    \item $\sum_{n=0}^{\infty}(-1)^{n}\frac{(2n+1)^{3}}{(2n+1)^{4}+4}$
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Zachodzi
+    \[\sum_{n=1}^{\infty}\frac{1}{n(n+4)} = \lim_{k\to\infty} \sum_{n=1}^{k}\frac{1}{n(n+4)} = \lim_{k\to\infty} \frac14\left(\sum_{n=1}^{k}\frac{1}{n} - \frac{1}{n+4}\right) =\]
+    \[\lim_{k\to\infty} \frac14\left(\frac11 + \frac12 + \frac13 + \frac14 + \frac{1}{k+1} + \frac{1}{k+2} + \frac{1}{k+3} + \frac{1}{k+4}\right) = \frac{25}{48}\]
+    \item Zachodzi
+    \[\sum_{n=0}^{\infty}n^{3}2^{-n} = \sum_{n=0}^{\infty} \frac{n^3+3n^2+9n+13}{2^{n-1}} - \frac{(n+1)^3+3(n+1)^2+9(n+1)+13}{2^n}\]
+    Z hierarchii ciągów wynika, że $\frac{n^3+3n^2+9n+13}{2^{n-1}}$ zbiega do 0, czyli z tw. o sumie teleskopowej, powyższy szereg jest równy pierwszemu składnikowy pierwszego składnika, czyli $\frac{0^3+3\cdot0^2+9\cdot0+13}{2^{0-1}} = 26$.
+    \item Skorzystajmy z tożsamości Sophie-Germain:
+    \[-\sum_{n=0}^{\infty}(-1)^{n}\frac{(2n+1)^{3}}{(2n+1)^{4}+4} = -\sum_{n=1}^{\infty}(-1)^{n-1} \frac{(2n-1)^{3}}{(2n-1)^{4}+4} =\]
+    \[\sum_{n \text{ nieparzyste}}\frac{(2n+1)^{3}}{(2n+1)^{4}+4} - \frac{(2n-1)^{3}}{(2n-1)^{4}+4} =\]
+    \[ \sum_{n \text{ nieparzyste}}\frac{1}{4n^2+1}\left(\frac{(2n+1)^{3}}{4n^2+8n+5} - \frac{(2n-1)^{3}}{4n^2-8n+5}\right) =\]
+    \[ \sum_{n \text{ nieparzyste}} \frac{-2(16n^4-16n^2-5)}{(4n^2-8n+5)(4n^2+1)(4n^2+8n+5)} =\]
+    \[\sum_{n \text{ nieparzyste}} \frac{-2(4n^2+1)(4n^2-5)}{(4n^2-8n+5)(4n^2+1)(4n^2+8n+5)} =\]
+    \[\sum_{n \text{ nieparzyste}} \frac{-2(4n^2-5)}{-16n}\left(\frac{1}{4n^2+8n+5} - \frac{1}{4n^2-8n+5}\right) =\]
+    \[\sum_{n=0}^{\infty} \frac{16n^2+16-1}{16n+8}\left(\frac{1}{16n^2+32n+17} - \frac{1}{16n^2+1}\right)\]
+    Zauważmy, że w powyższej sumie jest różnica kolejnych wyrazów typu $\frac{1}{16n^2+1}$, czyli możemy zastosować sumowanie na części na sumach częściowych, które zbiegają do powyższej sumy:
+    \[\sum_{n=0}^{\infty} \frac{16n^2+16n-1}{16n+8}\left(\frac{1}{16n^2+32n+17} - \frac{1}{16n^2+1}\right) =\]
+    \[ \lim_{N\to\infty} \sum_{n=0}^{N} \frac{16n^2+16n-1}{16n+8}\left(\frac{1}{16n^2+32n+17} - \frac{1}{16n^2+1}\right) =\]
+    \[ \lim_{N\to\infty} \frac{16(N+1)^2+16(N+1)-1}{(16(N+1)+8)(16N^2+32N+17)} - \frac{16\cdot0^2+16\cdot0-1}{(16\cdot0+8)(16\cdot0^2+1)} - T_N\]
+    gdzie
+    \[T_n = \sum_{n=0}^{N} \frac{1}{16(n+1)^2+1} \left(\frac{16(n+1)^2+16(n+1)-1}{16(n+1)+8} - \frac{16(n+1)^2-16(n+1)-1}{16(n+1)-8}\right)=\]
+    \[\frac18\sum_{n=1}^{N} \frac{1}{16n^2+1} \left(\frac{16n^2+16n-1}{2n+1} - \frac{16n^2-16n-1}{2n-1}\right) =\]
+    \[\frac18\sum_{n=1}^{N} \frac{1}{16n^2+1} \left(\frac{2(16n^2+1)}{(2n+1)(2n-1)}\right) = \frac14\sum_{n=1}^{N} \frac{1}{(2n+1)(2n-1)} =\]
+    \[\frac18\sum_{n=1}^{N}\left(\frac{1}{2n-1} - \frac{1}{2n+1}\right) = \frac18\left(1-\frac{1}{2N+1}\right)\]
+    Zatem suma, którą liczymy, jest równa
+    \[-\lim_{N\to\infty} \frac{16(N+1)^2+16(N+1)-1}{(16(N+1)+8)(16N^2+32N+17)} - \frac{16\cdot0^2+16\cdot0-1}{(16\cdot0+8)(16\cdot0^2+1)} - \frac18\left(1-\frac{1}{2N+1}\right) =\]
+    \[\frac18 + \frac18 = \frac14\]
+\end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+Udowodnij zbieżność i oblicz wartość iloczynów nieskończonych:
+\begin{enumerate}[label=(\alph*)]
+    \item $\prod_{n=2}^{\infty}\frac{n^{3}-1}{n^{3}+1}$
+    \item $\prod_{n=0}^{\infty}(1+x^{2^{n}}), \quad |x|<1$
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Niech $P_k$ to $k$-ty (w sensie do $n=k$) iloczyn częściowy. Skorzystajmy z wzorów skróconego mnożenia: $x^3-1 = (x-1)(x^2+x+1)$ oraz $x^3+1 = (x+1)(x^2-x+1)$:
+    \[P_k = \prod_{n=2}^{k}\frac{(n-1)(n^2+n+1)}{(n+1)(n^2-n+1)} = \frac{\left(\prod_{n=1}^{k-1} n\right) \left(\prod_{n=2}^{k} n^2+n+1\right)}{\left(\prod_{n=3}^{k+1} n\right) \left(\prod_{n=1}^{k-1} n^2+n+1\right)} = \frac{2(k^2+k+1)}{3k(k+1)}\]
+    Zatem
+    \[\prod_{n=2}^{\infty}\frac{n^{3}-1}{n^{3}+1} = \lim_{n\to\infty} P_n = \lim_{n\to\infty} \frac{2(n^2+n+1)}{3n(n+1)} = \lim_{n\to\infty} \frac{2+\frac2n+\frac{2}{n^2}}{3+\frac3n} = \frac23\]
+    \item Niech $P_k$ to $k$-ty iloczyn częściowy. Zauważmy, że $1+x^{2^{n}} = \frac{1-x^{2^{n+1}}}{1-x^{2^{n}}}$. Większość czynników się skraca i zostaje
+    \[P_k = \prod_{n=0}^{k}1+x^{2^{n}} = \prod_{n=0}^{k} \frac{1-x^{2^{n+1}}}{1-x^{2^{n}}} = \frac{1-x^{2^{k+1}}}{1-x}\]
+    Zatem korzystając z założenia, że $|x|<1$:
+    \[\prod_{n=0}^{\infty}(1+x^{2^{n}}) = \lim_{n\to\infty} P_n = \lim_{n\to\infty} \frac{1-x^{2^{n+1}}}{1-x} = \frac{1}{1-x}\]
+\end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{3}
+Załóżmy, że ciągi liczb rzeczywistych $(a_{n}),(b_{n}),(c_{n})$ spełniają $a_{n}\le b_{n}\le c_{n}$ dla $n\ge1$. Załóżmy, że szeregi $\sum_{n=1}^{\infty}a_{n}$ oraz $\sum_{n=1}^{\infty}c_{n}$ są zbieżne. Czy wówczas szereg $\sum_{n=1}^{\infty}b_{n}$ musi być zbieżny?
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $A_n, B_n, C_n$ to odpowiednie sumy częściowe. Możemy wykazać indukcyjnie, że $A_n \leq B_n \leq C_n$. Wiemy, że $A_0 = B_0 = C_0$, a dla $n+1$ ta nierówność powstaje, gdy się doda stronami $a_{n}\le b_{n}\le c_{n}$ i $A_n \leq B_n \leq C_n$. Skoro $\sum_{n=1}^{\infty}a_{n}$ i $\sum_{n=1}^{\infty}c_{n}$ są zbieżne, to $A_n$ i $C_n$ są zbieżne, czyli $B_n$ jest zbieżne, czyli szereg $\sum_{n=1}^{\infty}b_{n}$ jest zbieżny.
+\end{rozwiazanie}
+
+%\begin{zadanie}{4}
+%Niech $(a_{n})$ będzie nierosnącym ciągiem liczb dodatnich. Załóżmy, że szereg $\sum_{n=1}^{\infty}a_{n}$ jest rozbieżny. Czy z tego wynika, że szereg
+%$ \sum_{n=1}^{\infty}\min\left(a_{n},\frac{1}{n}\right) $
+%jest również rozbieżny?
+%\end{zadanie}
+%\begin{rozwiazanie}
+%Dla każdego $k$, jest $2k$ składników w $2k$-tej sumie częściowej, czyli albo 
+%\end{rozwiazanie}
+
+\begin{zadanie}{6}
+Czy dla każdej bijekcji $f:\mathbb{N}\rightarrow\mathbb{N}$ szereg
+$ \sum_{n=1}^{\infty}\frac{1}{n+f(n)} $
+jest rozbieżny?
+\end{zadanie}
+\begin{rozwiazanie}
+Nie. Możemy podzielić $\N$ na dwa ciągi: $a_n = 2^n$ i ciąg $(b_n)$ zawierający pozostałe liczby naturalne. Wtedy jeśli $n = a_k$ dla pewnego $k$, to niech $f(n) = b_k$, a jeśli $n = b_k$, to niech $f(n) = a_k$. Wtedy
+\[\sum_{n=1}^{\infty}\frac{1}{n+f(n)} = \left(\sum_{k=1}^{\infty}\frac{1}{a_k+b_k}\right) + \left(\sum_{k=1}^{\infty}\frac{1}{b_k+a_k}\right) = 2\sum_{k=1}^{\infty}\frac{1}{2^k+b_k} < 2\sum_{k=1}^{\infty}\frac{1}{2^k} = 2 < \infty\]
+\end{rozwiazanie}
+
+\end{document}

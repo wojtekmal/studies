@@ -33,6 +33,11 @@ double dist(Point p_1, Point p_2)
 
 Point get_reflection(Point point, Point p_1, Point p_2)
 {
+    // Calculates the dot product of p_2 - p_1 and point - p_1. Makes use of
+    // the formula ab = |a||b|sin(alpha). |a|sin(alpha)/|b|, where a = p_2-p_1
+    // and b = point-p_1, happens to be the proportion (proj-p_1)/(p_2-p_1),
+    // where proj is the projection of point onto the line passing through p_1
+    // and p_2.
     Point axis_vector = {p_2.x - p_1.x, p_2.y - p_1.y};
     double axis_vector_len = dist(p_1, p_2);
     Point p_1_to_point_vector = {point.x - p_1.x, point.y - p_1.y};
@@ -49,6 +54,9 @@ Point get_reflection(Point point, Point p_1, Point p_2)
 
 bool is_on_folded_side(Point point, Point p_1, Point p_2)
 {
+    // Calculates the signed area of the triangle with verticies point, p_1,
+    // p_2 using the shoelace formula. Returns true if point is on the side
+    // that was folded over.
     double half_area = p_1.x * p_2.y + p_2.x * point.y + point.x * p_1.y
         - p_1.y * p_2.x - p_2.y * point.x - point.y * p_1.x;
     return half_area < 0;

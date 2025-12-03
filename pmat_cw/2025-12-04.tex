@@ -1,0 +1,16 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Dana jest następująca relacja równoważności $r$ w zbiorze $\mathbb{N}$:
+
+$$ m \mathrel{r} n \iff m \text{ i } n \text{ mają równą liczbę jedynek w zapisie dwójkowym.} $$
+
+Jaka jest moc zbioru ilorazowego relacji $r$ i jakie liczby kardynalne są mocami klas abstrakcji $r$?
+\end{zadanie}
+\begin{rozwiazanie}
+Dla każdego $n \in \N$ istnieje przedstawiciel klasy abstrakcji z $n$ jedynkami w zapisie binarnym, a mianowicie $2^n-1$, czyli jest przynajmniej $|\N|$ klas abstrakcji, a z kolei klas abstrakcji jest co najwyżej tyle, ile łącznie ich elementów, czyli $|\N|$. Zatem moc zbioru klas abstrakcji to $|\N|=\aleph_0$. Jeśli $n > 0$, to do klasy abstrakcji z $n$ jedynkami w zapisie binarnym należy $(2^n-1)2^k$ dla każdego $k$, czyli do tych klas należy przynajmniej $|\N| = \aleph_0$ elementów, a jest to też ograniczenie górne, bo każdy element klasy abstrakcji jest liczbą naturalną. Jedyną liczbą z $n=0$ jedynkami w zapisie binarnym to 0, czyli 1 też jest mocą klasy abstrakcji. Zatem jedyne liczby kardynalne, które są mocami klas abstrakcji, to 0 i $\aleph_0$.
+\end{rozwiazanie}
+
+\end{document}
