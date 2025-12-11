@@ -1,0 +1,113 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Zbadaj zbieżność i zbieżność bezwzględną szeregów:
+
+\begin{enumerate}[label=(\alph*)]
+    \item $\displaystyle \sum_{n=1}^{\infty}n^{n}(\sqrt[n]{a}-1)^{n}, \quad a\ge0$
+    
+    \item $\displaystyle \sum_{n=1}^{\infty}\frac{(1\cdot4\cdot7\cdot...(3n-2))^{3}}{(3n)!}x^{n}, \quad x\in\mathbb{R}$
+    
+    \item $\displaystyle \sum_{n=2}^{\infty}\frac{1}{(\log n)^{\log n}}$
+    
+    \item $\displaystyle \sum_{n=1}^{\infty}(\sqrt{n^{2}+1}-\sqrt[3]{n^{3}+1})^{p}, \quad p\in\mathbb{R}$
+    
+    \item $\displaystyle \sum_{n=2}^{\infty}\frac{(-1)^{n}}{n^{a}+(-1)^{n}}, \quad a>0$
+    
+    \item $\displaystyle \sum_{n=1}^{\infty}\frac{(-1)^{\lfloor\sqrt{n}\rfloor}}{n}$
+    
+    \item $\displaystyle \sum_{n=1}^{\infty}(-1)^{n}\frac{(\sin n)^{2}}{n}$
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Skorzystajmy z kryterium Cauchy'ego. Zachodzi
+    \[\lim_{n\to\infty} \sqrt[n]{\left|n^{n}(\sqrt[n]{a}-1)^{n}\right|} = \lim_{n\to\infty}|n(\sqrt[n]{a} - 1)| = |\log a|\]
+    Czyli dla $a \in (\frac1e, e)$ szereg jest zbieżny bezwzględnie, a dla $a \notin [\frac1e, e]$ jest rozbieżny. Gdy $a = e$, to ratuje nas dodatek do kryterium Cauchy'ego, ponieważ nierówność
+    \[\sqrt[n]{\left|n^{n}(\sqrt[n]{a}-1)^{n}\right|} = n(\sqrt[n]{e} - 1) \geq 1\]
+    Jest równoważna znanej nierówności $\left(1 + \frac1n\right)^n \leq e$, czyli w tym przypadku szereg jest rozbieżny.
+    \item Niech 
+    \[R_N = \prod_{n=1}^{N} \frac{n + \frac53 + \frac6{9n}}{n + \frac53 + \frac1{9n+9}}\]
+    Zauważmy, że ciąg $(R_N)$ jest ograniczony od dołu przez 1 i od góry:
+    \[R_N = \exp\left(\sum_{n=1}^{N} \log\left(\frac{n + \frac53 + \frac6{9n}}{n + \frac53 + \frac1{9n+9}}\right)\right) =\]
+    \[\exp\left(\sum_{n=1}^{N} \log\left(1 + \left(\frac{6}{9n} - \frac1{9n+9}\right) \frac{1}{n + \frac53 + \frac1{9n+9}}\right)\right) < \exp\left(\sum_{n=1}^{N} \log\left(1 + \frac{6}{9n^2}\right)\right) <\]
+    \[\exp\left(\sum_{n=1}^{N} \frac{6}{9n^2}\right) < e^{\frac69C}\]
+    Gdzie $C$ to suma odwrotności kwadratów liczb naturalnych. Zachodzi:
+    \[\frac{(1\cdot4\cdot7\cdot...(3N-2))^{3}}{(3N)!} = \prod_{n=1}^{N-1} \frac{(3n+1)^2}{(3n+2)(3n+3)} = \prod_{n=1}^{N-1} \frac{n+\frac23+\frac{1}{9n}}{n+\frac53+\frac{6}{9n}}=\]
+    \[R_{N-1}\prod_{n=1}^{N-1} \frac{n+\frac23+\frac{1}{9n}}{n+\frac53+\frac{1}{9n+9}} = \frac{16}{9}R_{N-1}\frac{1}{N+\frac23+\frac{1}{9N}}\]
+    Niech $a_N$ to ten właśnie iloczyn. Zachodzi
+    \[\limsup_{n\to\infty} \sqrt[n]{|a_n|} = \lim_{n\to\infty} \sqrt[n]{|a_n|} = \lim_{n\to\infty} \sqrt[n]{\frac{16}{9}R_{n-1}\frac{1}{n+\frac23+\frac{1}{9n}}} = 1\]
+    czyli z kryterium na zbieżność szeregu potęgowego mamy, że szereg jest zbieżny bezwzględnie gdy $|x| < 1$ oraz rozbieżny gdy $|x| > 1$. W przypadku gdy $x = 1$, szereg ma składniki dodatnie i z I kryterium porównawczego jest rozbieżny, ponieważ ma większe składniki niż szereg $\sum_{n=1}^{\infty} \frac{1}{2n}$. Gdy $x = -1$, to skoro $a_n$ jest dodatnie i malejące (co wynika z definicji, bo domnażamy ciągle przez czynniki mniejsze od 1), z kryterium Leibniza mamy, że w tym przypadku szereg jest zbieżny (oczywiście nie bezwzględnie, bo wtedy jest równe szeregowi dla $x = 1$).
+    \item Zauważmy, że dla $n, m > 1$ nierówność
+    \[\frac{1}{(\log n)^{\log n}} > \frac{1}{(\log m)^{\log m}}\]
+    Jest równoważna nierówności
+    \[e^{\log\log n \cdot \log n} < e^{\log\log m \cdot \log m}\]
+    która zachodzi dla $e < n < m$, bo logarytm jest rosnący, a podwójne złożenie logarytmu jest dodatnie. Zatem dla ddd $n$ ciąg, którego szereg liczymy, jest nierosnący i nieujemny, czyli możemy użyć kryterium kondensacyjnego. Możemy równie dobrze sprawdzić zbieżność takiego szeregu:
+    \[\sum_{n=1}^{\infty}2^n\frac{1}{(\log 2^n)^{\log 2^n}} = \sum_{n=1}^{\infty}2^n\frac{1}{(n\log2)^{n\log2}}\]
+    Możemy skorzystać z kryterium Cauchy'ego. Mamy:
+    \[\lim_{n\to\infty} \sqrt[n]{\left|2^n\frac{1}{(n\log2)^{n\log2}}\right|} = \lim_{n\to\infty} \frac{2}{(n\log2)^{\log2}} = 0\]
+    Zatem szereg, który badamy, jest zbieżny bezwzględnie.
+    \item ,
+    \item Zbieżność bezwzględna jest taka sama jak dla szeregu modelowego $\sum \frac1{n^a}$. Gdy $a > 1$, to ddd $n$ zachodzi
+    \[(n+1)^a - n^a = n^a\left(\left(1+\frac1n\right)^a - 1\right) > n^a \frac{a}{n} > 2\]
+    czyli wtedy $\frac{1}{(n+1)^a - 1} < \frac{1}{n^a+1}$, czyli zbieżność wynika z kryterium Leibniza. Gdy $a \leq 1$, to $(n+1)^a \leq n^a+1^a$, czyli $(n+1)^a-n^a \leq 1$. Możemy pogrupować składniki szeregu w pary:
+    \[\sum_{n=2}^{\infty}\frac{(-1)^{n}}{n^{a}+(-1)^{n}} = \sum_{n \text{ parzyste}} \frac{1}{n^a+1} - \frac{1}{(n+1)^a-1} = \sum_{n \text{ parzyste}} \frac{(n+1)^a-n^a-2}{(n^a+1)((n+1)^a-1)} =\]
+    \[\sum_{n \text{ parzyste}} \frac{(n+1)^a-n^a-2}{n^a(n+1)^a + (n+1)^a - n^a - 1}\]
+    Skoro $(n+1)^a-n^a < 2 < n^a(n+1)^a$, to równie dobrze możemy zbadać zbieżność 
+    \[\sum_{n \text{ parzyste}} \frac{2}{n^a(n+1)^a}\]
+    albo dalej upraszczając za pomocą znanych reguł, równie dobrze możemy zbadać zbieżność
+    \[\sum_{n}^{\infty} \frac{1}{n^{2a}}\]
+    czyli nasz szereg jest zbieżny wtedy i tylko wtedy, gdy $a > \frac12$.
+    \item Widać, że szereg jest rozbieżny bezwzględnie. Zachodzi
+    \[\sum_{n=1}^{\infty}\frac{(-1)^{\lfloor\sqrt{n}\rfloor}}{n} = \sum_{m=1}^{\infty} (-1)^m \sum_{n=m^2}^{(m+1)^2-1} \frac1n = -\frac{11}{6} + \sum_{m \text{ parzyste}} \left(\sum_{n=m^2}^{(m+1)^2-1} \frac1n - \sum_{n=(m+1)^2}^{(m+2)^2-1} \frac1n\right) =\]
+    \[-\frac{11}{6} + \sum_{m \text{ parzyste}}\sum_{n=m^2}^{(m+1)^2-1} \left(\frac1n - \frac{1}{n + 2m + 1}\right) - \sum_{m \text{ parzyste}} \left(\frac{1}{m^2+4m+2} + \frac{1}{m^2+4m+3}\right)\]
+    Pierwszy składnik jest stałą, a trzeci jest zbieżny, ponieważ jest malejący i ma elementy większe niż szereg $\sum_{m=1}^{\infty}\frac{2}{m^2}$, czyli zbieżność wynika z I kryterium porównawczego. Wystarczy więc zbadać zbieżność środkowego składnika. Jest on rosnący oraz
+    \[\sum_{m \text{ parzyste}}\sum_{n=m^2}^{(m+1)^2-1} \left(\frac1n - \frac{1}{n + 2m + 1}\right) < \sum_{m =1}^\infty\sum_{n=m^2}^{(m+1)^2-1} \left(\frac1n - \frac{1}{n + 2m + 1}\right) =\]
+    \[\sum_{n=1}^{\infty} \left(\frac1n - \frac{1}{n + 2\lfloor\sqrt{n}\rfloor + 1}\right) = \sum_{n=1}^{\infty} \frac{2\lfloor\sqrt{n}\rfloor + 1}{n(n + 2\lfloor\sqrt{n}\rfloor + 1)} < \sum_{n=1}^{\infty} \frac{3\sqrt{n}}{n^2} = 3\sum_{n=1}^{\infty} \frac{1}{n^{\frac32}} < \infty\]
+    czyli z I kryterium porównawczego drugi składnik też jest zbieżny, czyli całość jest zbieżna.
+    \item Możemy połączyć wszytkie $n$ w pary i w każdej parze przynajmniej jedno z $2n + 1$ i $2n + 2$ nie jest w przedziale typu $\left(k\pi - \frac12, k\pi + \frac12\right)$ (tu korzystamy z tego, że $\pi > 3$, czyli tego typu przedziały są oddalone o więcej niż 1), czyli jedno z $\sin^2(2n + 1)$ i $\sin^2(2n + 2)$ jest większe od pewnej stałej $C$, czyli wersja bezwzględna jest ograniczone od dołu przez
+    \[\sum_{n=1}^{\infty} \frac{C}{2n + 2} = \infty\]
+    czyli z I kryterium porównawczego, nasz szereg nie jest zbieżny bezwzględnie.\\
+    Zachodzi
+    \[\sum_{n=1}^{\infty}(-1)^{n}\frac{(\sin n)^{2}}{n} = \sum_{n=1}^{\infty}(-1)^{n}\frac{\frac12(1 - \cos(2n))}{n}\]
+    Zauważmy, że mamy wzór:
+    \[\sum_{n=0}^{N} \cos(4n) = \sum_{n=1}^{N} \frac{e^{4ni} + e^{-4ni}}{2} = \frac{e^{(4N+4)i} - 1}{2(e^{4i} - 1)} + \frac{e^{-(4N+4)i} - 1}{2(e^{-4i} - 1)}\]
+    czyli $\sum_{n=0}^{N} \cos(4n)$ jest ograniczone. Podobnie można pokazać, że $\sum_{n=0}^{N} \cos(4n+2)$ jest ograniczone. Mamy więc z kryterium Dirichleta, że zbieżne są szeregi
+    \[\sum_{n=1}^{\infty} \frac{\cos(4n)}{n} \text{ oraz } \sum_{n=1}^{\infty} \frac{\cos(4n+2)}{n}\]
+    czyli zbieżna jest również ich różnica $\sum_{n=1}^{\infty} (-1)^n \frac{\cos(2n)}{n}$. Z kryterium Leibniza mamy, że $\sum_{n=1}^{\infty} (-1)^n \frac1{n}$ jest zbieżne. Możemy te dwa zbieżne szeregi odjąć od siebie i podzielić przez 2 i dostać, że zbieżny jest szereg
+    \[\sum_{n=1}^{\infty} (-1)^n \frac{\frac12(1-\cos(2n))}{n} = \sum_{n=1}^{\infty} (-1)^n \frac{(\sin(n))^2}{n}\]
+\end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+Powiemy, że ciąg liczb dodatnich $(a_{n})_{n\ge1}$ jest \textit{fajny}, jeśli 
+$$ \sum_{n=1}^{\infty}\frac{1}{n^{1+a_{n}}}<\infty. $$
+Czy iloczyn dwóch fajnych ciągów musi być fajnym ciągiem?
+\end{zadanie}
+\begin{rozwiazanie}
+Nie. Możemy wybrać $a_n=b_n=\log_n((\log n)^2)=\frac{2\log\log n}{\log n}$, czyli tak, żeby $\sum_{n=1}^{\infty}\frac{1}{n^{1+a_{n}}} = \sum_{n=1}^{\infty}\frac{1}{n(\log n)^2} < \infty$. Wtedy szereg dla iloczynu tych ciągów jest równy
+\[\sum_{n=1}^{\infty} \frac{1}{n^{1+a_{n}b_n}} = \sum_{n=1}^{\infty} \frac{1}{n^{1+\frac{4(\log\log n)^2}{(\log n)^2}}} = \sum_{n=1}^{\infty} \frac{1}{n (\log n)^{\frac{4\log\log n}{\log n}}}\]
+Ddd $n$ zachodzi $\frac{4\log\log n}{\log n} < 1$, czyli możemy za pomocą I kryterium porównawczego porównać powyższy szereg do szeregu $\sum_{n=1}^{\infty} \frac{1}{n (\log n)}$, który jest rozbieżny, czyli szereg, który badamy, też jest rozbieżny.
+\end{rozwiazanie}
+
+\begin{zadanie}{3}
+Niech $(a_{n})$ będzie ustalonym ciągiem liczb rzeczywistych. Załóżmy, że dla każdego ciągu $(b_{n})$ liczb rzeczywistych, spełniającego $b_{n}\rightarrow0,$ szereg $\sum_{n=1}^{\infty}a_{n}b_{n}$ jest zbieżny. Czy z tego wynika, że $\sum_{n=1}^{\infty}|a_{n}|<\infty$?
+\end{zadanie}
+\begin{rozwiazanie}
+Załóżmy nie wprost, że istnieje taki ciąg $(a_n)$, że tak nie jest. To jest jednak sprzeczne z faktem z skryptu (fakt 3.11, podpunkt a), bo ono mówi, że zawsze znajdzie się ciąg liczb dodatnich $(b_n)$ zbieżny do 0, taki że szereg $\sum_{n=1}^{\infty}|a_{n}|b_{n} = \sum_{n=1}^{\infty}|a_{n}b_{n}|$ jest zbieżny, czyli szereg $\sum_{n=1}^{\infty}a_{n}b_{n}$ jest zbieżny bezwzględnie, czyli jest zbieżny.
+\end{rozwiazanie}
+
+\begin{zadanie}{5}
+Niech $(a_{n})$ będzie nierosnącym ciągiem liczb nieujemnych, przy czym zakładamy, że szereg $\sum_{n=1}^{\infty}a_{n}$ jest rozbieżny. Niech $\epsilon_{n}\in\{-1,1\}$ będą takie, że szereg $\sum_{n=1}^{\infty}a_{n}\epsilon_{n}$ jest zbieżny. Wykaż nierówności
+$$ \liminf_{n\rightarrow\infty}\frac{\epsilon_{1}+...+\epsilon_{n}}{n}\le0\le \limsup_{n\rightarrow\infty}\frac{\epsilon_{1}+...+\epsilon_{n}}{n}. $$
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $E_n = \epsilon_{1}+...+\epsilon_{n}$. Załóżmy niewprost, że $\liminf_{n\to\infty} \frac{E_n}{n} > 0$, czyli że istnieje takie $\delta$, że dla ddd $n$ zachodzi $E_n > n\delta$. Niech $n_0$ to takie dostatecznie duże $n$ oraz niech $F_N = \sum_{n=n_0}^{N} \epsilon_n$. $E_n - F_n$ jest stałe, czyli dla $n > n_0$ i pewnego $\zeta$ zachodzi $F_n > n\zeta$. Oszacujmy sumy częściowe szeregu, który ma być zbieżny, korzystając z przekształcenia Abel'a:
+\[\sum_{n=1}^{N} a_{n}\epsilon_{n} = \sum_{n=1}^{n_0-1} a_{n}\epsilon_n + F_Na_N + \sum_{n=n_0}^{N}F_n(a_n - a_{n+1}) > C + \sum_{n=n_0}^{N}n\zeta(a_n - a_{n+1}) =\]
+\[C + \zeta Na_N + \zeta\left((n_0-1)a_{n_0}-Na_{N+1} + \sum_{n=n_0}^{N-1}a_n\right) > C + \zeta\sum_{n=n_0}^{N-1}a_n\]
+Otrzymaliśmy, że nasz szereg jest większy od czegoś rozbieżnego, czyli wbrew założeniu też sam jest rozbieżny. Drugą nierówność można udowodnić analogicznie.
+\end{rozwiazanie}
+
+\end{document}
