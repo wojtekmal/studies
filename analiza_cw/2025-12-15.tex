@@ -1,0 +1,25 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Zbadaj zbieżność i zbieżność bezwzględną szeregów:
+\begin{enumerate}
+    \item[(a)] $ \sum_{n=2}^{\infty}\frac{(-1)^{n}}{\sqrt[3]{n}+(-1)^{\frac{n(n+1)}{2}}} $
+    \item[(b)] $ \sum_{n=2}^{\infty}\left(\sqrt[n]{a}-\frac{\sqrt[n]{b}+\sqrt[n]{c}}{2}\right), \quad a, b, c > 0 $
+    \item[(c)] $ \sum_{n=1}^{\infty}\frac{(-1)^{\lfloor \log n\rfloor}}{n} $
+    \item[(d)] $ \sum_{n=1}^{\infty}\frac{(c+(-1)^{n})^{n}}{n^{2}(3^{n}-n)}, \quad c \in \mathbb{R} $
+    \item[(e)] $ \sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor}\frac{\cos(\frac{\pi}{n})(\log n)^{2}}{n} $
+    \item[(f)] $ \sum_{n=2}^{\infty}(-1)^{\lfloor\frac{n^{3}+n+1}{3n^{2}-1}\rfloor}\frac{1}{n-\ln n} $
+    \item[(g)] $ \sum_{n=2}^{\infty}\frac{\sin n}{n^{\alpha}+\sin n}, \quad \alpha > 0 $
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Rozbieżność bezwzględną można pokazać korzystając z I kryterium porównawczgo i szacując szeregiem $\sum_{n=2}^{\infty}{\sqrt[3]{n}+1}$, a ten z kolei, z asymtotycznego kryterium porównawczgo, jest zbieżny w.t.w. gdy $\sum_{n=2}^{\infty}{\sqrt[3]{n}}$ jest zbieżny, bo
+    \[\lim_{n\to\infty}\frac{\sqrt[3]{n}+1}{\sqrt[3]{n}} = \lim_{n\to\infty} 1 + \frac{1}{\sqrt[3]{n}} = 1\]
+    a ten z kolei jest rozbieżny, bo to szereg modelowy, który znamy.
+\end{enumerate}
+\end{rozwiazanie}
+
+\end{document}
