@@ -18,7 +18,16 @@ Zbadaj zbieżność i zbieżność bezwzględną szeregów:
 \begin{enumerate}[label=(\alph*)]
     \item Rozbieżność bezwzględną można pokazać korzystając z I kryterium porównawczgo i szacując szeregiem $\sum_{n=2}^{\infty}{\sqrt[3]{n}+1}$, a ten z kolei, z asymtotycznego kryterium porównawczgo, jest zbieżny w.t.w. gdy $\sum_{n=2}^{\infty}{\sqrt[3]{n}}$ jest zbieżny, bo
     \[\lim_{n\to\infty}\frac{\sqrt[3]{n}+1}{\sqrt[3]{n}} = \lim_{n\to\infty} 1 + \frac{1}{\sqrt[3]{n}} = 1\]
-    a ten z kolei jest rozbieżny, bo to szereg modelowy, który znamy.
+    a ten z kolei jest rozbieżny, bo to szereg modelowy, który znamy. Aby wykazać zbieżność, pomińmy pierwszy składnik i przedstawmy jako różnicę dwóch szeregów, o których trzeba wykazać, że są zbieżne (w sensie wtedy przedstawienie jako różnica szeregów będzie uzasadnione). Korzystamy przy okazji z tw. o kontenerach, żeby pogrupować wyrazy (widać, że po pogrupowaniu składniki są nieujemne, czyli założenie tego twierdzenia jest spełnione):
+    \[\sum_{n=3}^{\infty}\frac{(-1)^{n}}{\sqrt[3]{n}+(-1)^{\frac{n(n+1)}{2}}} = \]\[
+    \sum_{n>2, 2\nmid n, 4\mid n+1}^{\infty}\left(\frac{1}{\sqrt[3]{n+1}+1} - \frac{1}{\sqrt[3]{n}+1}\right) - 
+    \sum_{n>2, 2\nmid n, 4\nmid n+1}^{\infty}\left(\frac{1}{\sqrt[3]{n+1}-1} - \frac{1}{\sqrt[3]{n}-1}\right)\]
+    Pokażę zbieżność pierwszej sumy, bo druga wychodzi analogicznie. Możemy odwrócić znak i korzystając z I kryterium porównawczgo, dorzucić wyrazy dla pozostałych $n$, czyli badamy zbieżność czegoś takiego:
+    \[\sum_{n=1}^{\infty}\left(\frac{1}{\sqrt[3]{n}+1} - \frac{1}{\sqrt[3]{n+1}+1}\right) = \sum_{n=1}^{\infty}\frac{\sqrt[3]{n+1}-\sqrt[3]{n}}{(\sqrt[3]{n}+1)(\sqrt[3]{n+1}+1)}=\]
+    \[\sum_{n=1}^{\infty}\frac{1}{(\sqrt[3]{n}+1)(\sqrt[3]{n+1}+1)(\sqrt[3]{n}^2 + \sqrt[3]{n}\sqrt[3]{n+1} + \sqrt[3]{n+1}^2)}\]
+    To możemy porównać do szeregu modelowego $\sum_{n=1}^{\infty}\frac{1}{n^\frac43}$, o którym wiadomo, że jest zbieżny:
+    \[\lim_{n\to\infty}\frac{(\sqrt[3]{n}+1)(\sqrt[3]{n+1}+1)(\sqrt[3]{n}^2 + \sqrt[3]{n}\sqrt[3]{n+1} + \sqrt[3]{n+1}^2)}{n^\frac43}=\]
+    \[\lim_{n\to\infty}\left(1 + \frac{1}{\sqrt[3]{n}}\right)\left(\sqrt[3]{1+\frac1n} + \frac{1}{\sqrt[3]{n}}\right)\left(1 + \sqrt[3]{1+\frac1n} + \sqrt[3]{1+\frac2n+\frac1{n^2}}\right) = 1\]
 \end{enumerate}
 \end{rozwiazanie}
 
