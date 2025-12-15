@@ -74,8 +74,11 @@ Szereg jest bezwzględnie rozbieżny, ponieważ ddd $n$ zachodzi $\cos(\frac{\pi
     \[(\sin n)^{k+1} = \left(\frac{e^{in} - e^{-in}}{2}\right)^{k+1} = 2^{-k-1}\sum_{m=0}^{k+1} \binom{k+1}{m} e^{inm}e^{-in(k+1-m)} =\]\[ 2^{-k-1}\sum_{m=0}^{k+1} \binom{k+1}{m} e^{2inm-in(k+1)}\]
     \[\sum_{n=2}^{N} (\sin n)^{k+1} = \sum_{n=2}^{N} 2^{-k-1}\sum_{m=0}^{k+1} \binom{k+1}{m} e^{n(2im-i(k+1))}= \sum_{m=0}^{k+1} C_m \sum_{n=2}^{N} e^{n(2im-i(k+1))} =\]
     \[\sum_{m=0}^{k+1} C_m e^{2(2im-i(k+1))}\frac{e^{(N-1)(2im-i(k+1)) - 1}}{e^{i(2m-k-1)} - 1}\]
-    To jest ograniczone, ponieważ $2m-k-1$ jest nieparzyste dla parzystego $k$. Możemy więc zastosować kryterium Dirichleta i otrzymać, że szeregi dla parzystych $k$ są zbieżne. Niech $k$ teraz będzie liczbą nieparzystą. Wszystkie składniki szeregu
+    To jest ograniczone, ponieważ $2m-k-1$ jest nieparzyste dla parzystego $k$. Możemy więc zastosować kryterium Dirichleta i otrzymać, że szeregi dla parzystych $k$ są zbieżne. Niech $k$ teraz będzie liczbą nieparzystą. Jeśli $a(h-k)>1$, to szereg 
     \[\sum_{n=2}^{\infty}\frac{(\sin n)^{k+1}}{n^{a(h-k)}+\frac{(\sin n)^h}{a^k}}\]
+    jest zbieżny, bo możemy go porównać za pomocą I kryterium porównawczego do szeregu modelowego $\sum_{n=2}^{\infty} \frac{2}{n^{a(h-k)}}$. Jeśli $a(h-k)\leq1$, to możemy pogrupować liczby $n$ w pary, to wtedy jedno z $n$, $n+1$ nie leży w przedziale typu $(2k\pi - \frac12, 2k\pi - \frac12)$, czyli zachodzi $\max(\sin n, \sin(n+1)) > C$, gdzie $C$ zależy od $k$. Wszystkie składniki szeregu są dodatnie, więc dzięki I kryterium porównawczego możemy równie dobrze wykazać rozbieżność szeregu, $\sum_{2 \nmid n}\frac{C}{2n^{a(h-k)}}$, czyli z I kryterium porównawczego i asymptotycznego rozbieżność wynika z rozbieżności szeregu modelowego $\sum_{n=2}^{\infty}\frac{1}{n^{a(h-k)}}$.\\
+    Wnioskujemy, że będzie przynajmniej jedno nieparzyste $k$, dla którego będzie rozbieżne, gdy dla chociaż jednego $k$ zachodzi $a(h-k)\leq1$. Najlepszym kandydatem jest największe $k$, czyli $k = h-2$, czyli szereg wejściowy jest zbieżny w.t.w. gdy $2a > 1$.\\
+    Gdy $a > 1$, to za pomocą I kryterium porównawczego możemy porównać wersję bezwzględną szeregu wejściowego do szeregu $\sum_{n=2}^{\infty} \frac{2}{n^a}$, czyli wtedy jest bezwzględnie zbieżny, a gdy $a \leq 1$, to możemy poparować liczby $n$ jak wcześniej i porównać do szeregu $\sum_{n=2}^{\infty} \frac{C}{n^a}$, czyli wtedy szereg wejściowy jest bezwzględnie rozbieżny.
 \end{enumerate}
 \end{rozwiazanie}
 
@@ -122,8 +125,9 @@ Dodając szeregi dla $a_n \le 1$ i dla $a_n > 1$ otrzymujemy tezę.
 \begin{rozwiazanie}
 \begin{enumerate}
     \item[(a)] .
-    \item[(b)] Wiemy, że iloczyn Cauchy'ego tych szeregów jest zbieżny w.t.w. gdy ciągi $\frac{1}{n^a} \sum_{k=1}^{n}\frac{1}{k^b}$ oraz $\frac{1}{n^b} \sum_{k=1}^{n}\frac{1}{k^a}$. Skupmy się na razie na pierwszym z nich, bo drugi wychodzi analogicznie. Gdy $b > 1$, to $\sum_{k=1}^{\infty}\frac{1}{k^b} < \infty$, czyli $\sum_{k=1}^{n}\frac{1}{k^b}$ jest ograniczone, a $\frac{1}{n^a}$ jest dowolnie małe, czyli wtedy ciąg jest zbieżny. Gdy $b = 1$, to $\sum_{k=1}^{n}\frac{1}{k^b} = H_n < \log n + 1$, czyli z hierarchii ciągów $\frac{1}{n^a} \sum_{k=1}^{n}\frac{1}{k^b}$ zbiega do 0. Możemy oszacować od dołu i od góry metodą kondensacyjną:
-    \[\sum_{min}^{max}\]
+    \item[(b)] Wiemy, że iloczyn Cauchy'ego tych szeregów jest zbieżny w.t.w. gdy ciągi $\frac{1}{n^a} \sum_{k=1}^{n}\frac{1}{k^b}$ oraz $\frac{1}{n^b} \sum_{k=1}^{n}\frac{1}{k^a}$. Skupmy się na razie na pierwszym z nich, bo drugi wychodzi analogicznie. Gdy $b > 1$, to $\sum_{k=1}^{\infty}\frac{1}{k^b} < \infty$, czyli $\sum_{k=1}^{n}\frac{1}{k^b}$ jest ograniczone, a $\frac{1}{n^a}$ jest dowolnie małe, czyli wtedy ciąg jest zbieżny. Gdy $b = 1$, to $\sum_{k=1}^{n}\frac{1}{k^b} = H_n < \log n + 1$, czyli z hierarchii ciągów $\frac{1}{n^a} \sum_{k=1}^{n}\frac{1}{k^b}$ zbiega do 0. Możemy oszacować część z $b$ od dołu i od góry metodą kondensacyjną:
+    \[\sum_{k=1}^{n}\frac{1}{k^b} \geq \sum_{m=0}^{\lfloor\log_2 n \rfloor} 2^{m-1}\frac{1}{2^{mb}} = \frac12\sum_{m=0}^{\lfloor\log_2 n \rfloor}2^{m(1-b)} =\]\[ \frac{1}{2} \frac{\left(2^{1-b}\right)^{\lfloor\log_2 n \rfloor + 1} - 1}{2^{1-b}-1} \geq \frac{n^{1-b} - 1}{2^{2-b}-2} \geq \frac{C_1}{n^{b-1}}\]
+    gdzie $C_1$ to pewna stała zależna od $b$. W podobny sposób można pokazać, że $\sum_{k=1}^{n}\frac{1}{k^b} \leq \frac{C_2}{n^{b-1}}$. Z tw. o trzech ciągach wynika, że $\frac{1}{n^a} \sum_{k=1}^{n}\frac{1}{k^b}$ zbiega do zera gdy $\frac{1}{n^a} \frac{1}{n^{b-1}} = \frac{1}{n^{a+b-1}}$ zbiega do 0, czyli gdy $a+b>1$. Tak się składa, że to też jest prawda dla $b \leq 1$ i że to jest symetryczne w $a$ i $b$, czyli to jest warunek konieczny i wystarczający na zbieżność iloczynu Cauchy'ego, który badamy.
 \end{enumerate}
 \end{rozwiazanie}
 
