@@ -131,4 +131,16 @@ Dodając szeregi dla $a_n \le 1$ i dla $a_n > 1$ otrzymujemy tezę.
 \end{enumerate}
 \end{rozwiazanie}
 
+\begin{zadanie}{6}
+Załóżmy, że $\epsilon_{n}\in\{-1,1\}$ oraz
+$$ \lim_{n\rightarrow\infty}\frac{\epsilon_{1}+...+\epsilon_{n}}{n}=0 $$
+Czy stąd wynika, że szereg $\sum_{n=1}^{\infty}\frac{\epsilon_{n}}{n}$ jest zbieżny?
+\end{zadanie}
+\begin{rozwiazanie}
+Nie. Wystarczy, że $E_n = \sum_{k=1}^{n} \varepsilon_k$ będzie asymptotycznie równe $\frac{n}{\log n}$. Można taki ciąg skonstruować indukcyjnie: $\varepsilon_1 = \varepsilon_2 = \varepsilon_3 = 1$ i $\varepsilon_{n+1} = \text{sgn}\left(\frac{n+1}{\log(n+1)} - E_n\right)$. Wtedy zawsze zachodzi $\left|\frac{n+1}{\log(n+1)} - E_n\right| < 2$, bo
+\[\left|\frac{n+2}{\log(n+2)} - E_{n+1}\right| \leq \left|\frac{n+2}{\log(n+2)} - \frac{n+1}{\log(n+1)}\right| + max\left(1, \left|\frac{n+1}{\log(n+1)} - E_n\right| - 1\right) < 2\]
+Tu wykorzystujemy to, że $\frac{n+1}{\log(n+1)} - \frac{n}{\log n} < \frac{n+1}{\log n} - \frac{n}{\log n} = \frac{1}{\log n} < 1$ dla $n \geq 3$. Taki ciąg spełnia warunek z założenia, bo $\frac{E_n}{n} < \frac{2n}{n\log n} = \frac{2}{\log n} \to 0$. Użyjmy przekształcenia Abela żeby zbadać sumy częściowe szeregu z tezy:
+\[\sum_{k=1}^{max}\]
+\end{rozwiazanie}
+
 \end{document}
