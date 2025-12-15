@@ -18,7 +18,7 @@ Zbadaj zbieżność i zbieżność bezwzględną szeregów:
 \begin{enumerate}[label=(\alph*)]
     \item Rozbieżność bezwzględną można pokazać korzystając z I kryterium porównawczego i szacując szeregiem $\sum_{n=2}^{\infty}{\sqrt[3]{n}+1}$, a ten z kolei, z asymptotycznego kryterium porównawczego, jest zbieżny w.t.w. gdy $\sum_{n=2}^{\infty}{\sqrt[3]{n}}$ jest zbieżny, bo
     \[\lim_{n\to\infty}\frac{\sqrt[3]{n}+1}{\sqrt[3]{n}} = \lim_{n\to\infty} 1 + \frac{1}{\sqrt[3]{n}} = 1\]
-    a ten z kolei jest rozbieżny, bo to szereg modelowy, który znamy. Aby wykazać zbieżność, pomińmy pierwszy składnik i przedstawmy jako różnicę dwóch szeregów, o których trzeba wykazać, że są zbieżne (w sensie wtedy przedstawienie jako różnica szeregów będzie uzasadnione). Korzystamy przy okazji z tw. o kontenerach, żeby pogrupować wyrazy (widać, że po pogrupowaniu składniki są nieujemne, czyli założenie tego twierdzenia jest spełnione):
+    a ten z kolei jest rozbieżny, bo to szereg modelowy, który znamy. Aby wykazać zbieżność, pomińmy pierwszy składnik i przedstawmy jako różnicę dwóch szeregów, o których trzeba wykazać, że są zbieżne (w sensie wtedy przedstawienie jako różnica szeregów będzie uzasadnione). Przy okazji grupujemy składniki, co jest uzasadnione, bo one zbiegają do 0:
     \[\sum_{n=3}^{\infty}\frac{(-1)^{n}}{\sqrt[3]{n}+(-1)^{\frac{n(n+1)}{2}}} = \]\[
     \sum_{n>2, 2\nmid n, 4\mid n+1}^{\infty}\left(\frac{1}{\sqrt[3]{n+1}+1} - \frac{1}{\sqrt[3]{n}+1}\right) - 
     \sum_{n>2, 2\nmid n, 4\nmid n+1}^{\infty}\left(\frac{1}{\sqrt[3]{n+1}-1} - \frac{1}{\sqrt[3]{n}-1}\right)\]
@@ -59,7 +59,13 @@ $$ \left(\frac{\log(n+1)}{\log n}\right)^4 = \left(1+\frac{\log(1+\frac{1}{n})}{
 Możemy więc znowu skorzystać z kryterium Dirichleta i wywnioskować zbieżność szeregu wejściowego:
 \[\sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor} \frac{\cos(\frac{\pi}{n})}{\sqrt{n}} \frac{(\log n)^2}{\sqrt{n}} = \sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor}\frac{\cos(\frac{\pi}{n})(\log n)^{2}}{n}\]
 Szereg jest bezwzględnie rozbieżny, ponieważ ddd $n$ zachodzi $\cos(\frac{\pi}{n}) > \frac{1}{2}$, czyli za pomocą asymptotycznego kryterium porównawczego możemy go porównać do $\sum_{n=1}^{\infty}\frac{1}{n}$, który jest rozbieżny.
-    \item Zauważmy, że $\frac{\frac43 n + 1}{3n^2-1} < \frac13$ dla ddd $n$, czyli wtedy $\lfloor\frac{n^{3}+n+1}{3n^{2}-1}\rfloor = \lfloor \frac13n + \frac{\frac43 n + 1}{3n^2-1}\rfloor = \lfloor \frac13n\rfloor$, czyli możemy równie dobrze policzyć zbieżność i zbieżność bezwzględną szeregu $ \sum_{n=2}^{\infty}(-1)^{\lfloor \frac13n\rfloor}\frac{1}{n-\ln n} $
+    \item Zauważmy, że $\frac{\frac43 n + 1}{3n^2-1} < \frac13$ dla ddd $n$, czyli wtedy $\lfloor\frac{n^{3}+n+1}{3n^{2}-1}\rfloor = \lfloor \frac13n + \frac{\frac43 n + 1}{3n^2-1}\rfloor = \lfloor \frac13n\rfloor$, czyli możemy równie dobrze policzyć zbieżność i zbieżność bezwzględną szeregu $ \sum_{n=2}^{\infty}(-1)^{\lfloor \frac13n\rfloor}\frac{1}{n-\ln n} $. Niech $k \in \{0, 1, 2\}$. Zbadajmy zbieżność takiego szeregu:
+    \[ \sum_{m=m_0}^{\infty}\frac{1}{6m+k+3-\log(6m+k+3)} - \frac{1}{6m+k-\log(6m+k)} =\]
+    \[-\sum_{m=m_0}^{\infty}\frac{3-\log(6m+k+3)+\log(6m+k)}{(6m+k+3-\log(6m+k+3))(6m+k-\log(6m+k))}=\]
+    \[-\sum_{m=m_0}^{\infty}\frac{3+\log\left(\frac{6m+k}{6m+k+3}\right)}{(6m+k+3-\log(6m+k+3))(6m+k-\log(6m+k))}\]
+    Wszystkie składniki tego mają ten sam znak, więc skoro ddd $x$ zachodzi $\log x < \frac x2$, to z I kryterium porównawczego możemy równie dobrze wykazać zbieżność tego:
+    \[\sum_{m=m_0}^{\infty}\frac{16}{(6m+k+3)(6m+k)}\]
+    Używając ponownie I kryterium porównawczego dostajemy, że powyższy szereg jest zbieżny, ponieważ szereg modelowy $\sum_{m=m_0}^{\infty} \frac{1}{m^2}$ jest zbieżny. Możemy więc zsumować te szeregi po $k \in \{0, 1, 2\}$ i otrzymujemy, że zbieżny jest szereg $ \sum_{n=2}^{\infty}(-1)^{\lfloor \frac13n\rfloor}\frac{1}{n-\ln n} $. Jest on bezwzględnie rozbieżny, ponieważ z I kryterium porównawczego możemy go porównać do $\sum_{n=2}^{\infty} \frac{1}{2n}$.
 \end{enumerate}
 \end{rozwiazanie}
 
