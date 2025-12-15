@@ -16,18 +16,47 @@ Zbadaj zbieżność i zbieżność bezwzględną szeregów:
 \end{zadanie}
 \begin{rozwiazanie}
 \begin{enumerate}[label=(\alph*)]
-    \item Rozbieżność bezwzględną można pokazać korzystając z I kryterium porównawczgo i szacując szeregiem $\sum_{n=2}^{\infty}{\sqrt[3]{n}+1}$, a ten z kolei, z asymtotycznego kryterium porównawczgo, jest zbieżny w.t.w. gdy $\sum_{n=2}^{\infty}{\sqrt[3]{n}}$ jest zbieżny, bo
+    \item Rozbieżność bezwzględną można pokazać korzystając z I kryterium porównawczego i szacując szeregiem $\sum_{n=2}^{\infty}{\sqrt[3]{n}+1}$, a ten z kolei, z asymtotycznego kryterium porównawczego, jest zbieżny w.t.w. gdy $\sum_{n=2}^{\infty}{\sqrt[3]{n}}$ jest zbieżny, bo
     \[\lim_{n\to\infty}\frac{\sqrt[3]{n}+1}{\sqrt[3]{n}} = \lim_{n\to\infty} 1 + \frac{1}{\sqrt[3]{n}} = 1\]
     a ten z kolei jest rozbieżny, bo to szereg modelowy, który znamy. Aby wykazać zbieżność, pomińmy pierwszy składnik i przedstawmy jako różnicę dwóch szeregów, o których trzeba wykazać, że są zbieżne (w sensie wtedy przedstawienie jako różnica szeregów będzie uzasadnione). Korzystamy przy okazji z tw. o kontenerach, żeby pogrupować wyrazy (widać, że po pogrupowaniu składniki są nieujemne, czyli założenie tego twierdzenia jest spełnione):
     \[\sum_{n=3}^{\infty}\frac{(-1)^{n}}{\sqrt[3]{n}+(-1)^{\frac{n(n+1)}{2}}} = \]\[
     \sum_{n>2, 2\nmid n, 4\mid n+1}^{\infty}\left(\frac{1}{\sqrt[3]{n+1}+1} - \frac{1}{\sqrt[3]{n}+1}\right) - 
     \sum_{n>2, 2\nmid n, 4\nmid n+1}^{\infty}\left(\frac{1}{\sqrt[3]{n+1}-1} - \frac{1}{\sqrt[3]{n}-1}\right)\]
-    Pokażę zbieżność pierwszej sumy, bo druga wychodzi analogicznie. Możemy odwrócić znak i korzystając z I kryterium porównawczgo, dorzucić wyrazy dla pozostałych $n$, czyli badamy zbieżność czegoś takiego:
+    Pokażę zbieżność pierwszej sumy, bo druga wychodzi analogicznie. Możemy odwrócić znak i korzystając z I kryterium porównawczego, dorzucić wyrazy dla pozostałych $n$, czyli badamy zbieżność czegoś takiego:
     \[\sum_{n=1}^{\infty}\left(\frac{1}{\sqrt[3]{n}+1} - \frac{1}{\sqrt[3]{n+1}+1}\right) = \sum_{n=1}^{\infty}\frac{\sqrt[3]{n+1}-\sqrt[3]{n}}{(\sqrt[3]{n}+1)(\sqrt[3]{n+1}+1)}=\]
     \[\sum_{n=1}^{\infty}\frac{1}{(\sqrt[3]{n}+1)(\sqrt[3]{n+1}+1)(\sqrt[3]{n}^2 + \sqrt[3]{n}\sqrt[3]{n+1} + \sqrt[3]{n+1}^2)}\]
     To możemy porównać do szeregu modelowego $\sum_{n=1}^{\infty}\frac{1}{n^\frac43}$, o którym wiadomo, że jest zbieżny:
     \[\lim_{n\to\infty}\frac{(\sqrt[3]{n}+1)(\sqrt[3]{n+1}+1)(\sqrt[3]{n}^2 + \sqrt[3]{n}\sqrt[3]{n+1} + \sqrt[3]{n+1}^2)}{n^\frac43}=\]
     \[\lim_{n\to\infty}\left(1 + \frac{1}{\sqrt[3]{n}}\right)\left(\sqrt[3]{1+\frac1n} + \frac{1}{\sqrt[3]{n}}\right)\left(1 + \sqrt[3]{1+\frac1n} + \sqrt[3]{1+\frac2n+\frac1{n^2}}\right) = 1\]
+    \item Zauważmy, że $|\sqrt[n]{a}-1-\frac{1}{n}\log a| = |e^{\frac{1}{n}\log a}-1-\frac{1}{n}\log a| \le |\frac{1}{n}\log a|^{2}$, czyli skoro szereg $\sum_{n=2}^{\infty} \left|\frac{1}{n}\log a\right|^{2} = |\log a|^{2}\sum_{n=2}^{\infty}\frac{1}{n^{2}}$ jest zbieżny, to z I kryterium porównawczego szereg $\sum_{n=2}^{\infty} \left|\sqrt[n]{a}-1-\frac{1}{n}\log a\right|$ jest zbieżny, czyli $\sum_{n=2}^{\infty}(\sqrt[n]{a}-1-\frac{1}{n}\log a)$ też. Podobnie dla $b$ i $c$, czyli
+    \[\sum_{n=2}^{\infty}\left(\sqrt[n]{a}-\frac{\sqrt[n]{b}+\sqrt[n]{c}}{2}\right) = \sum_{n=2}^{\infty}\left(1+\frac{1}{n}\log a - \frac{1+\frac{1}{n}\log b + 1 + \frac{1}{n}\log c}{2}\right) +\]\[ \sum_{n=2}^{\infty}\left(\sqrt[n]{a}-1-\frac{1}{n}\log a - \frac{\sqrt[n]{b}-1-\frac{1}{n}\log b + \sqrt[n]{c}-1-\frac{1}{n}\log c}{2}\right)\]
+    i to jest zbieżne, gdy pierwszy człon jest zbieżny. Możemy uprościć pierwszy człon, jest on równy $\left(\log a - \frac{\log b + \log c}{2}\right)\sum_{n=2}^{\infty}\frac{1}{n}$ czyli to jest zbieżne w.t.w. gdy \[\log a - \frac{\log b + \log c}{2} = 0\]
+    $\sqrt[n]{a}-\frac{\sqrt[n]{b}+\sqrt[n]{c}}{2}$ różni się od $\frac{1}{n}(\log a-\frac{\log b+\log c}{2})$ o maksymalnie
+    $$ \frac{1}{n^{2}}\left((\log a)^{2}+\frac{(\log b)^{2}+(\log c)^{2}}{2}\right) $$
+    a iloraz tych wyrażeń zbiega do 0 (tak jak $\frac{1}{n}$), czyli od pewnego momentu ciąg $\sqrt[n]{a}-\frac{\sqrt[n]{b}+\sqrt[n]{c}}{2}$ ma ten sam znak, czyli zbieżność bezwzględna też zachodzi w.t.w. gdy $\log a - \frac{\log b + \log c}{2} = 0$.
+    \item Szereg jest bezwzględnie rozbieżny, bo $\sum_{n=1}^{\infty}$ jest rozbieżny. Sprawdźmy, czy warunek Cauchy'ego jest spełniony dla przedziału składników od $e^m$ do $e^{m+1}$, gdzie $m$ jest dowolnie duże. Te składniki mają ten sam wykładnik w $(-1)^{\lfloor \log n \rfloor}$, czyli ten sam znak, więc wartość bezwzględna ich sumy jest równa $H_{\lfloor e^{m+1} \rfloor} - H_{\lfloor e^m \rfloor - 1}$. Możemy obliczyć granicę tego wyrażenia:
+    $$ \lim_{m\to\infty} \left( H_{\lfloor e^{m+1}\rfloor} - H_{\lfloor e^m \rfloor - 1} \right) = \lim_{m\to\infty} H_{\lfloor e^{m+1}\rfloor} - \log(\lfloor e^{m+1}\rfloor) -$$
+    $$ \log\left(\frac{e^{m+1}}{\lfloor e^{m+1}\rfloor}\right) - \gamma - \left( H_{\lfloor e^m \rfloor - 1} - \log(\lfloor e^m \rfloor - 1) - \gamma \right) +\log\left(\frac{e^m}{\lfloor e^m \rfloor - 1}\right) + 1 = 1 $$
+    Suma składników na przedziale nie zbiega do 0, czyli szereg nie jest zbieżny.
+    \item Gdy $c \notin [-2, 2]$, to co drugi składnik ma wartość bezwzględną równą:
+$$ \frac{(3a)^n}{n^{2}(3^{n}-n)} \ge \frac{(3)^n a^n}{n^{2} 3^{n}} = \frac{a^{n}}{n^{2}} \to \infty $$
+gdzie $a > 1$, czyli wtedy nie jest spełniony warunek konieczny. 
+
+Gdy $c \in [-2, 2]$, to okazuje się, że szeregi składające się z co drugich wyrazów są zbieżne bezwzględnie, czyli ich suma też.
+Badamy $\sum \frac{|c+1|^n}{n^2(3^n-n)}$ oraz $\sum \frac{|c-1|^n}{n^2(3^n-n)}$.
+Zauważmy, że oba te szeregi są postaci $\sum \frac{(3d)^n}{n^2(3^n-n)}$, gdzie $d \le 1$.
+Porównajmy to do szeregu modelowego $\sum \frac{1}{n^2}$ za pomocą asymtotycznego kryterium porównawczego:
+$$ \lim_{n \to \infty} \frac{\frac{3^n}{n^2(3^n-n)}}{\frac{1}{n^2}} = \lim \frac{3^n}{3^n-n} = \lim \frac{1}{1-\frac{n}{3^n}} = 1 $$
+Skoro szereg modelowy jest zbieżny, to badane szeregi też. Zatem szereg wejściowy jest zbieżny bezwzględnie gdy $c \in (-2, 2)$.
+
+\item Ciąg sum częściowych $(-1)^{\lfloor n/13 \rfloor}$ jest ograniczony (przez 13) i ciągi $\frac{1}{\sqrt{n}}$ oraz $\frac{2\left(\sin \frac{\pi}{2n}\right)^2}{\sqrt{n}}$ są monotoniczne i zbieżne do 0, czyli z kryterium Dirichleta zbieżny jest szereg
+\[\sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor} \frac{1}{\sqrt{n}} - \sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor} \frac{2\left(\sin \frac{\pi}{2n}\right)^2}{\sqrt{n}} = \sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor} \frac{\cos(\frac{\pi}{n})}{\sqrt{n}}\]
+
+Wykażmy, że ciąg $\frac{(\log n)^2}{\sqrt{n}}$ jest malejący. Wystarczy wykazać nierówność pomiędzy kolejnymi elementami, albo równoważnie:
+$$ \left( \frac{\log(n+1)}{\log n} \right)^2 < \frac{n+1}{n} = 1 + \frac{1}{n} $$
+Z odwrotnej nierówności Bernoulliego:
+$$ \left(\frac{\log(n+1)}{\log n}\right)^4 = \left(1+\frac{\log(1+\frac{1}{n})}{\log n}\right)^4 < \left(1+\frac{1}{n \log n}\right)^4 < \frac{1}{1-\frac{4}{n \log n}} \dots < 1 + \frac{4}{n \log n} $$
+Możemy więc znowu skorzystać z kryterium Dirichleta i wywnioskować zbieżność.
 \end{enumerate}
 \end{rozwiazanie}
 
@@ -41,7 +70,8 @@ Zbadaj zbieżność i zbieżność bezwzględną szeregów:
 \begin{rozwiazanie}
 \begin{enumerate}
     \item[(a)] .
-    \item[(b)] Wiemy, że iloczyn Cauchy'ego tych szeregów jest zbieżny w.t.w. gdy ciągi $\frac{1}{n^a} \sum_{k=1}^{n}\frac{1}{k^b}$ oraz $\frac{1}{n^b} \sum_{k=1}^{n}\frac{1}{k^a}$. Skupmy się na razie na pierwszym z nich, bo drugi wychodzi analogicznie.
+    \item[(b)] Wiemy, że iloczyn Cauchy'ego tych szeregów jest zbieżny w.t.w. gdy ciągi $\frac{1}{n^a} \sum_{k=1}^{n}\frac{1}{k^b}$ oraz $\frac{1}{n^b} \sum_{k=1}^{n}\frac{1}{k^a}$. Skupmy się na razie na pierwszym z nich, bo drugi wychodzi analogicznie. Gdy $b > 1$, to $\sum_{k=1}^{\infty}\frac{1}{k^b} < \infty$, czyli $\sum_{k=1}^{n}\frac{1}{k^b}$ jest ograniczone, a $\frac{1}{n^a}$ jest dowolnie małe, czyli wtedy ciąg jest zbieżny. Gdy $b = 1$, to $\sum_{k=1}^{n}\frac{1}{k^b} = H_n < \log n + 1$, czyli z hierarchii ciągów $\frac{1}{n^a} \sum_{k=1}^{n}\frac{1}{k^b}$ zbiega do 0. Możemy oszacować od dołu i od góry metodą kondensacyjną:
+    \[\sum_{min}^{max}\]
 \end{enumerate}
 \end{rozwiazanie}
 
