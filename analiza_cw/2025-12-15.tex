@@ -16,7 +16,7 @@ Zbadaj zbieżność i zbieżność bezwzględną szeregów:
 \end{zadanie}
 \begin{rozwiazanie}
 \begin{enumerate}[label=(\alph*)]
-    \item Rozbieżność bezwzględną można pokazać korzystając z I kryterium porównawczego i szacując szeregiem $\sum_{n=2}^{\infty}{\sqrt[3]{n}+1}$, a ten z kolei, z asymtotycznego kryterium porównawczego, jest zbieżny w.t.w. gdy $\sum_{n=2}^{\infty}{\sqrt[3]{n}}$ jest zbieżny, bo
+    \item Rozbieżność bezwzględną można pokazać korzystając z I kryterium porównawczego i szacując szeregiem $\sum_{n=2}^{\infty}{\sqrt[3]{n}+1}$, a ten z kolei, z asymptotycznego kryterium porównawczego, jest zbieżny w.t.w. gdy $\sum_{n=2}^{\infty}{\sqrt[3]{n}}$ jest zbieżny, bo
     \[\lim_{n\to\infty}\frac{\sqrt[3]{n}+1}{\sqrt[3]{n}} = \lim_{n\to\infty} 1 + \frac{1}{\sqrt[3]{n}} = 1\]
     a ten z kolei jest rozbieżny, bo to szereg modelowy, który znamy. Aby wykazać zbieżność, pomińmy pierwszy składnik i przedstawmy jako różnicę dwóch szeregów, o których trzeba wykazać, że są zbieżne (w sensie wtedy przedstawienie jako różnica szeregów będzie uzasadnione). Korzystamy przy okazji z tw. o kontenerach, żeby pogrupować wyrazy (widać, że po pogrupowaniu składniki są nieujemne, czyli założenie tego twierdzenia jest spełnione):
     \[\sum_{n=3}^{\infty}\frac{(-1)^{n}}{\sqrt[3]{n}+(-1)^{\frac{n(n+1)}{2}}} = \]\[
@@ -45,7 +45,7 @@ gdzie $a > 1$, czyli wtedy nie jest spełniony warunek konieczny.
 Gdy $c \in [-2, 2]$, to okazuje się, że szeregi składające się z co drugich wyrazów są zbieżne bezwzględnie, czyli ich suma też.
 Badamy $\sum \frac{|c+1|^n}{n^2(3^n-n)}$ oraz $\sum \frac{|c-1|^n}{n^2(3^n-n)}$.
 Zauważmy, że oba te szeregi są postaci $\sum \frac{(3d)^n}{n^2(3^n-n)}$, gdzie $d \le 1$.
-Porównajmy to do szeregu modelowego $\sum \frac{1}{n^2}$ za pomocą asymtotycznego kryterium porównawczego:
+Porównajmy to do szeregu modelowego $\sum \frac{1}{n^2}$ za pomocą asymptotycznego kryterium porównawczego:
 $$ \lim_{n \to \infty} \frac{\frac{3^n}{n^2(3^n-n)}}{\frac{1}{n^2}} = \lim \frac{3^n}{3^n-n} = \lim \frac{1}{1-\frac{n}{3^n}} = 1 $$
 Skoro szereg modelowy jest zbieżny, to badane szeregi też. Zatem szereg wejściowy jest zbieżny bezwzględnie gdy $c \in (-2, 2)$.
 
@@ -53,11 +53,47 @@ Skoro szereg modelowy jest zbieżny, to badane szeregi też. Zatem szereg wejśc
 \[\sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor} \frac{1}{\sqrt{n}} - \sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor} \frac{2\left(\sin \frac{\pi}{2n}\right)^2}{\sqrt{n}} = \sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor} \frac{\cos(\frac{\pi}{n})}{\sqrt{n}}\]
 
 Wykażmy, że ciąg $\frac{(\log n)^2}{\sqrt{n}}$ jest malejący. Wystarczy wykazać nierówność pomiędzy kolejnymi elementami, albo równoważnie:
-$$ \left( \frac{\log(n+1)}{\log n} \right)^2 < \frac{n+1}{n} = 1 + \frac{1}{n} $$
+$$ \left( \frac{\log(n+1)}{\log n} \right)^4 < \frac{n+1}{n} = 1 + \frac{1}{n} $$
 Z odwrotnej nierówności Bernoulliego:
-$$ \left(\frac{\log(n+1)}{\log n}\right)^4 = \left(1+\frac{\log(1+\frac{1}{n})}{\log n}\right)^4 < \left(1+\frac{1}{n \log n}\right)^4 < \frac{1}{1-\frac{4}{n \log n}} \dots < 1 + \frac{4}{n \log n} $$
-Możemy więc znowu skorzystać z kryterium Dirichleta i wywnioskować zbieżność.
+$$ \left(\frac{\log(n+1)}{\log n}\right)^4 = \left(1+\frac{\log(1+\frac{1}{n})}{\log n}\right)^4 < \left(1+\frac{1}{n \log n}\right)^4 <$$ $$ \frac{1}{1-\frac{4}{n \log n}}< 1 + \frac{4}{n \log n} < 1+\frac1n $$
+Możemy więc znowu skorzystać z kryterium Dirichleta i wywnioskować zbieżność szeregu wejściowego:
+\[\sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor} \frac{\cos(\frac{\pi}{n})}{\sqrt{n}} \frac{(\log n)^2}{\sqrt{n}} = \sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor}\frac{\cos(\frac{\pi}{n})(\log n)^{2}}{n}\]
+Szereg jest bezwzględnie rozbieżny, ponieważ ddd $n$ zachodzi $\cos(\frac{\pi}{n}) > \frac{1}{2}$, czyli za pomocą asymptotycznego kryterium porównawczego możemy go porównać do $\sum_{n=1}^{\infty}\frac{1}{n}$, który jest rozbieżny.
+    \item Zauważmy, że $\frac{\frac43 n + 1}{3n^2-1} < \frac13$ dla ddd $n$, czyli wtedy $\lfloor\frac{n^{3}+n+1}{3n^{2}-1}\rfloor = \lfloor \frac13n + \frac{\frac43 n + 1}{3n^2-1}\rfloor = \lfloor \frac13n\rfloor$, czyli możemy równie dobrze policzyć zbieżność i zbieżność bezwzględną szeregu $ \sum_{n=2}^{\infty}(-1)^{\lfloor \frac13n\rfloor}\frac{1}{n-\ln n} $
 \end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{3}
+Niech $(a_{n})_{n\ge1}$ będzie ciągiem liczb dodatnich, przy czym $n\left(\frac{a_{n}}{a_{n+1}}-1\right)\ge c$ dla pewnej stałej $c>0$. Wykaż, że szereg $\sum_{n=1}^{\infty}(-1)^{n}a_{n}$ jest zbieżny.
+\end{zadanie}
+\begin{rozwiazanie}
+Zachodzi $\frac{a_{n}}{a_{n+1}} \ge 1 + \frac{c}{n}$. To znaczy, że ciąg $(a_n)$ jest malejący oraz że
+$$ \frac{a_1}{a_{n+1}} = \prod_{k=1}^{n}\frac{a_k}{a_{k+1}} > \prod_{k=1}^{n}\left(1+\frac{c}{k}\right) >$$ $$ \prod_{k=1}^{n} \log\left(\frac{c}{k}\right) = \log(c H_n) = \log H_n + \log c > \log\log n + \log c$$
+czyli gdy $\log(\log n) + \log c > 0$ zachodzi
+$$ a_{n+1} < \frac{a_1}{\log(\log n) + \log c} $$
+a $\log(\log n)$ jest dowolnie duże, czyli składniki szeregu są malejące i zbieżne do zera, czyli teza wynika z kryterium Leibniza.
+\end{rozwiazanie}
+
+\begin{zadanie}{4}
+Niech $b_{n}\in(0,1)$ będą takie, że szereg $\sum_{n=2}^{\infty}\frac{b_{n}}{(\ln b_{n})^{2}}$ jest zbieżny. Wykazać, że również szereg
+$ \sum_{n=2}^{\infty}\frac{\sqrt{b_{n}}}{\sqrt{n}(\ln n)^{2}} $
+jest zbieżny.
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $b_{n}=\frac{a_{n}}{n}$. Możemy oddzielnie wykazać, że szereg jest zbieżny dla tych $n$, gdzie $a_n \le 1$ oraz oddzielnie dla pozostałych $n$.
+
+Dla $a_n \le 1$:
+$$ \sum_{n:a_{n}\le1}\frac{\sqrt{b_{n}}}{\sqrt{n(\log n)^{2}}} = \sum_{n:a_{n}\le1}\frac{\sqrt{a_{n}}}{n(\log n)^{2}} $$
+Możemy to porównać za pomocą I kryterium porównawczego do szeregu modelowego $\sum_{n=2}^{\infty}\frac{1}{n(\log n)^{2}}$, o którym wiadomo, że jest zbieżny.
+
+Dla $a_n > 1$:
+Wiemy, że zbieżny jest szereg 
+$$ \sum_{n=2}^{\infty}\frac{\frac{a_{n}}{n}}{(\log \frac{a_n}{n})^{2}} = \sum_{n=2}^{\infty}\frac{a_{n}}{n(\log a_{n} - \log n)^{2}} = \sum_{n=2}^{\infty}\frac{a_{n}}{n((\log a_{n})^{2} - 2(\log a_{n})(\log n) + (\log n)^{2})} $$
+Zachodzi $a_{n} = n b_{n} < n$ i $a_{n} > 1$, więc $(\log a_n)^{2} < (\log n)^{2}$. Czyli z I kryterium porównawczego wnioskujemy, że zbieżny jest szereg:
+$ \sum_{n=2}^{\infty}\frac{a_{n}}{2n(\log n)^{2}} $
+czyli też szereg $\sum_{n=2}^{\infty}\frac{a_{n}}{n(\log n)^{2}}$.
+Skoro $a_{n} > 1$, to z I kryterium porównawczego $\frac{\sqrt{a_n}}{n(\log n)^2}$  jest zbieżny.
+Dodając szeregi dla $a_n \le 1$ i dla $a_n > 1$ otrzymujemy tezę.
 \end{rozwiazanie}
 
 \begin{zadanie}{5}
