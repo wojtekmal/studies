@@ -11,7 +11,7 @@ Zbadaj zbieżność i zbieżność bezwzględną szeregów:
     \item[(d)] $ \sum_{n=1}^{\infty}\frac{(c+(-1)^{n})^{n}}{n^{2}(3^{n}-n)}, \quad c \in \mathbb{R} $
     \item[(e)] $ \sum_{n=1}^{\infty}(-1)^{\lfloor\frac{n}{13}\rfloor}\frac{\cos(\frac{\pi}{n})(\log n)^{2}}{n} $
     \item[(f)] $ \sum_{n=2}^{\infty}(-1)^{\lfloor\frac{n^{3}+n+1}{3n^{2}-1}\rfloor}\frac{1}{n-\ln n} $
-    \item[(g)] $ \sum_{n=2}^{\infty}\frac{\sin n}{n^{\alpha}+\sin n}, \quad \alpha > 0 $
+    \item[(g)] $ \sum_{n=2}^{\infty}\frac{\sin n}{n^{a}+\sin n}, \quad a > 0 $
 \end{enumerate}
 \end{zadanie}
 \begin{rozwiazanie}
@@ -66,6 +66,16 @@ Szereg jest bezwzględnie rozbieżny, ponieważ ddd $n$ zachodzi $\cos(\frac{\pi
     Wszystkie składniki tego mają ten sam znak, więc skoro ddd $x$ zachodzi $\log x < \frac x2$, to z I kryterium porównawczego możemy równie dobrze wykazać zbieżność tego:
     \[\sum_{m=m_0}^{\infty}\frac{16}{(6m+k+3)(6m+k)}\]
     Używając ponownie I kryterium porównawczego dostajemy, że powyższy szereg jest zbieżny, ponieważ szereg modelowy $\sum_{m=m_0}^{\infty} \frac{1}{m^2}$ jest zbieżny. Możemy więc zsumować te szeregi po $k \in \{0, 1, 2\}$ i otrzymujemy, że zbieżny jest szereg $ \sum_{n=2}^{\infty}(-1)^{\lfloor \frac13n\rfloor}\frac{1}{n-\ln n} $. Jest on bezwzględnie rozbieżny, ponieważ z I kryterium porównawczego możemy go porównać do $\sum_{n=2}^{\infty} \frac{1}{2n}$.
+    \item Niech $h$ będzie najmniejszą liczbą nieparzystą taką, że $ah > 1$. Przemnóżmy licznik i mianownik każdego składnika przez sprzężenie od wielomianu stopnia $h$:
+    \[\sum_{n=2}^{\infty}\frac{\sin n\sum_{k=0}^{h-1}(-1)^kn^{ak}(\sin n)^k}{n^{ah}+(\sin n)^h} = \sum_{n=2}^{\infty}\frac{\sum_{k=0}^{h-1}(-1)^kn^{ak}(\sin n)^{k+1}}{n^{ah}+(\sin n)^h}\]
+    W liczniku wszedzie tam, gdzie są parzyste potęgi $\sin n$, są minusy, a tam, gdzie są nieparzyste potęgi, są plusy i wszystkich $k$ jest skończenie wiele, więc jeśli wykażemy, że szeregi po wszystkich $n$ i pojedynczych parzystych $k$ są zbieżne, to szereg będzie zbieżny wtedy i tylko wtedy, gdy wszystkie szeregi dla pojedynczych nieparzystych $k$ będą zbieżne. Chcemy więc pokazać, że dla pewnego parzystego $k$ zbieżny jest taki szereg:
+    \[\sum_{n=2}^{\infty}\frac{n^{ak}(\sin n)^{k+1}}{n^{ah}+(\sin n)^h} = \sum_{n=2}^{\infty}\frac{(\sin n)^{k+1}}{n^{a(h-k)}+\frac{(\sin n)^h}{a^k}}\]
+    Mianowkiki składników tego szeregu są zbieżne do 0 i malejące ddd $n$, ponieważ $(n+1)^{ah} - n^{ah} = n^{ah}\left(\left(1 + \frac1n\right)^{ah} - 1\right) > n^{ah}\frac{ah}{n} > n^{ah-1} > 2 > \sin(n+1) - \sin n$ dla ddd $n$.
+    \[(\sin n)^{k+1} = \left(\frac{e^{in} - e^{-in}}{2}\right)^{k+1} = 2^{-k-1}\sum_{m=0}^{k+1} \binom{k+1}{m} e^{inm}e^{-in(k+1-m)} =\]\[ 2^{-k-1}\sum_{m=0}^{k+1} \binom{k+1}{m} e^{2inm-in(k+1)}\]
+    \[\sum_{n=2}^{N} (\sin n)^{k+1} = \sum_{n=2}^{N} 2^{-k-1}\sum_{m=0}^{k+1} \binom{k+1}{m} e^{n(2im-i(k+1))}= \sum_{m=0}^{k+1} C_m \sum_{n=2}^{N} e^{n(2im-i(k+1))} =\]
+    \[\sum_{m=0}^{k+1} C_m e^{2(2im-i(k+1))}\frac{e^{(N-1)(2im-i(k+1)) - 1}}{e^{i(2m-k-1)} - 1}\]
+    To jest ograniczone, ponieważ $2m-k-1$ jest nieparzyste dla parzystego $k$. Możemy więc zastosować kryterium Dirichleta i otrzymać, że szeregi dla parzystych $k$ są zbieżne. Niech $k$ teraz będzie liczbą nieparzystą. Wszystkie składniki szeregu
+    \[\sum_{n=2}^{\infty}\frac{(\sin n)^{k+1}}{n^{a(h-k)}+\frac{(\sin n)^h}{a^k}}\]
 \end{enumerate}
 \end{rozwiazanie}
 
