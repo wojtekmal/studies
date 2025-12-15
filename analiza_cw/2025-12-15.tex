@@ -140,7 +140,8 @@ Czy stąd wynika, że szereg $\sum_{n=1}^{\infty}\frac{\epsilon_{n}}{n}$ jest zb
 Nie. Wystarczy, że $E_n = \sum_{k=1}^{n} \varepsilon_k$ będzie asymptotycznie równe $\frac{n}{\log n}$. Można taki ciąg skonstruować indukcyjnie: $\varepsilon_1 = \varepsilon_2 = \varepsilon_3 = 1$ i $\varepsilon_{n+1} = \text{sgn}\left(\frac{n+1}{\log(n+1)} - E_n\right)$. Wtedy zawsze zachodzi $\left|\frac{n+1}{\log(n+1)} - E_n\right| < 2$, bo
 \[\left|\frac{n+2}{\log(n+2)} - E_{n+1}\right| \leq \left|\frac{n+2}{\log(n+2)} - \frac{n+1}{\log(n+1)}\right| + max\left(1, \left|\frac{n+1}{\log(n+1)} - E_n\right| - 1\right) < 2\]
 Tu wykorzystujemy to, że $\frac{n+1}{\log(n+1)} - \frac{n}{\log n} < \frac{n+1}{\log n} - \frac{n}{\log n} = \frac{1}{\log n} < 1$ dla $n \geq 3$. Taki ciąg spełnia warunek z założenia, bo $\frac{E_n}{n} < \frac{2n}{n\log n} = \frac{2}{\log n} \to 0$. Użyjmy przekształcenia Abela żeby zbadać sumy częściowe szeregu z tezy:
-\[\sum_{k=1}^{max}\]
+\[\sum_{k=1}^{n}\frac{\varepsilon_k}{k} = \frac{1}{n}E_n + \sum_{k=1}^{n-1}E_k\left(\frac1k - \frac{1}{k+1}\right) = \frac{E_n}{n} + \sum_{k=1}^{n-1}\frac{E_k}{k(k+1)}\]
+$\frac{E_n}{n}$ zbiega do 0, więc wystarczy sprawdzić, czy $\sum_{k=1}^{\infty}\frac{E_k}{k(k+1)}$ zbiega do 0. Możemy zastosować asymptotyczne kryterium porównawcze; ten szereg jest rozbieżny, bo \[\lim_{k\to\infty} \frac{E_k}{k(k+1)}k\log k = \lim_{k\to\infty} \frac{k+1}{k} = 1\] czyli rozbieżność wynika z rozbieżności szeregu modelowego $\sum_{k=1}^{\infty}\frac{1}{k\log k}$.
 \end{rozwiazanie}
 
 \end{document}
