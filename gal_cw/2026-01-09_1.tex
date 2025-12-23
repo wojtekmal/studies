@@ -1,0 +1,15 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Niech $V$ i $W$ będą przestrzeniami liniowymi nad ciałem $K$ i niech $f,g:V\rightarrow W$ będą przekształceniami spełniającymi warunek: dla każdego wektora $v\in V$ istnieje skalar $c_{v}\in K$ taki, że $g(v)=c_{v}f(v)$. Wykaż, że istnieje $c\in K$, dla którego $g=cf$.
+\end{zadanie}
+\begin{rozwiazanie}
+Załóżmy nie wprost, że nie ma jednego takiego $c$, czyli że są dwa niezerowe wektory $v, w \in V$, takie że $g(v) = c_vf(v)$, $g(w) = c_wf(w)$ i $c_v \neq c_w$. Niech $u = v + w$ i $g(u) = c_uf(u)$. Wtedy
+\[c_vf(v) + c_wf(w) = g(v) + g(w) = g(v + w) = g(u) = c_uf(u) = c_uf(v + w) = c_uf(v) + c_uf(w)\]
+\[(c_v - c_u)f(v) + (c_w - c_u)f(w) = 0\]
+Skoro $c_v \neq c_w$, to jedno z nich nie jest równe $c_u$, czyli 
+\end{rozwiazanie}
+
+\end{document}
