@@ -2,6 +2,24 @@
 
 \begin{document}
 
+\begin{zadanie}{1}
+Niech $V$ i $W$ będą przestrzeniami liniowymi nad ciałem $K$ i niech $f,g:V\rightarrow W$ będą przekształceniami spełniającymi warunek: dla każdego wektora $v\in V$ istnieje skalar $c_{v}\in K$ taki, że $g(v)=c_{v}f(v)$. Wykaż, że istnieje $c\in K$, dla którego $g=cf$.
+\end{zadanie}
+\begin{rozwiazanie}
+Załóżmy nie wprost, że nie ma jednego takiego $c$, czyli że są dwa niezerowe wektory $v, w \in V$ bez wspólnego $c$, czyli $g(v) = c_vf(v)$, $g(w) = c_wf(w)$ i $c_v \neq c_w$. Zauważmy, że $f(v) \neq 0$ i $f(w) \neq 0$, bo inaczej $0 = c_vf(v) = g(v) = c_wf(v) = 0$ i wtedy jest wspólne $c$. Niech $u = v + w$ i $g(u) = c_uf(u)$. Wtedy
+\[c_vf(v) + c_wf(w) = g(v) + g(w) = g(v + w) = g(u) = c_uf(u) = c_uf(v + w) = c_uf(v) + c_uf(w)\]
+\[(c_v - c_u)f(v) + (c_w - c_u)f(w) = 0\]
+Skoro $c_v \neq c_w$, to jedno z nich nie jest równe $c_u$, czyli z powyższego równania wynika, żę $f(v)$ i $f(w)$ są liniowo zależne, czyli skoro są niezerowe, to $f(v) = af(w)$ dla pewnego niezerowego $a$. Mamy więc:
+\[f(v) - af(w) = 0\]
+\[f(v - aw) = 0\]
+\[c_{v - aw}f(v - aw) = 0\]
+\[g(v - aw) = 0\]
+\[g(v) - ag(w) = 0\]
+\[c_vf(v) = ac_wf(w)\]
+\[ac_vf(w) = ac_wf(w)\]
+$af(w) \neq 0$, czyli z powyższej równości wynika $c_v = c_w$, sprzeczność.
+\end{rozwiazanie}
+
 \begin{zadanie}{2}
 Niech $n>1$ oraz $A, B\in M_{n\times n}(\mathbb{C})$. Przypomnijmy, że $r(A)$ oznacza rząd macierzy $A$. Udowodnij lub podaj kontrprzykład:
 \begin{enumerate}[label=(\alph*)]
