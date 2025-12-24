@@ -78,4 +78,20 @@ Niech $n>1$ oraz $A, B\in M_{n\times n}(\mathbb{C})$. Przypomnijmy, że $r(A)$ o
 \end{enumerate}
 \end{rozwiazanie}
 
+\begin{zadanie}{4}
+Niech $W\subseteq V$ będzie podprzestrzenią przestrzeni liniowej $V$ nad ciałem $K$. Oznaczmy $\iota:W\hookrightarrow V$ jako naturalne zanurzenie, to znaczy przekształcenie liniowe przestrzeni liniowych zdefiniowane tak: dla $w\in W$ kładziemy $\iota(w)=w\in V$. Natomiast niech $\pi:V\rightarrow V/W$ będzie kanonicznym rzutowaniem, czyli $\pi(v)=v+W$.
+\begin{enumerate}[label=(\alph*)]
+    \item Pokaż, że $\pi^{*}:(V/W)^{*}\rightarrow V^{*}$ jest monomorfizmem i $\text{im}(\pi^{*})=W^{\perp}$, gdzie $W^{\perp}$ zdefiniowano w serii przedświątecznej.
+    \item Pokaż, że mamy naturalny izomorfizm $\kappa:V^{*}/W^{\perp}\rightarrow W^{*}$ taki, że złożenie odwzorowania ilorazowego i $\kappa$, czyli
+    $$ V^{*}\longrightarrow V^{*}/W^{\perp}\longrightarrow W^{*} $$
+    jest tożsame z odwzorowaniem $\iota^{*}:V^{*}\rightarrow W^{*}$.
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Wiadomo, że $\pi^*(\phi) = \phi \circ \pi$. Jeśli $\phi, \psi \in (V / W)^*$ są różne, to istnieje taka warstwa $v + W$, na której te funkcjonały się różnią, czyli istnieje przedstawiciel $v$ tej warstwy, na którym $\phi \circ \pi(v) = \phi(v + W) \neq \psi(v + W) = \psi \circ \pi(v)$, czyli $\pi^*(\phi) \neq \pi^*(\psi)$. Zatem $\pi^*$ jest monomorfizmem.\\
+    Jeśli $v \in W$, a $\phi \in (V / W)^*$, to $\phi \circ \pi(v) = \phi(v + W) = \phi(W) = 0$, ponieważ $W$ jest zerem przestrzeni $V / W$, zatem $\text{im}(\pi^{*})\subseteq W^{\perp}$. Niech $(v_1, ..., w_1, ...)$ będzie bazą $V$ z wydzieloną bazą $W$; jeśli $\lambda \in W^\perp$ i $v = k_1v_1 +... + l_1w_1 + ...$, to $\lambda(v) = \lambda(k_1v_1 +... + l_1w_1 + ...) = \lambda(k_1v_1 +...)$ jest wektorem w przestrzeni o bazie $(k_1, ...)$, czyli możemy wybrać takie $\phi \in (V / W)^*$, że $\phi(v + W)$ jest równe $\lambda(v)$ dla każdego $v$, a mianowicie takie, które robi z $k_1v_1 +...$ to samo, co $\lambda$, czyli $\lambda = \pi^*(\phi)$, zatem $W^{\perp} \subseteq \text{im}(\pi^{*})$. Mamy więc, że $\text{im}(\pi^{*})=W^{\perp}$.
+\end{enumerate}
+\end{rozwiazanie}
+
 \end{document}
