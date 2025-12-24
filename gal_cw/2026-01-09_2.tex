@@ -1,0 +1,63 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{2}
+Niech $n>1$ oraz $A, B\in M_{n\times n}(\mathbb{C})$. Przypomnijmy, że $r(A)$ oznacza rząd macierzy $A$. Udowodnij lub podaj kontrprzykład:
+\begin{enumerate}[label=(\alph*)]
+    \item jeśli $A^{2}=B^{2}$, to $A=B$ lub $A=-B$.
+    \item jeśli $r(A)=r(B)$, to $r(A^{2})=r(B^{2})$.
+    \item jeśli $r(AB)=0$, to $r(BA)=0$.
+    \item jeśli $r(AB)=0$, to $r(A)=0$ lub $r(B)=0$.
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Niech $A = 
+    \begin{pmatrix}
+        0 & 1 \\
+        0 & 0
+    \end{pmatrix}$,
+    $B = 
+    \begin{pmatrix}
+        0 & 0 \\
+        1 & 0
+    \end{pmatrix}$. Wtedy $A^2 = B^2 = 0$, ale $A \neq B$ i $A \neq -B$.
+    \item Niech $A = 
+    \begin{pmatrix}
+        0 & 1 \\
+        0 & 0
+    \end{pmatrix}$,
+    $B = 
+    \begin{pmatrix}
+        1 & 0 \\
+        1 & 0
+    \end{pmatrix}$. Oba są rzędu 1, ale $A^2 = 0$ i $B^2 = B$, czyli $0 = r(A^2) \neq r(B^2) = 1$.
+    \item Niech $A = 
+    \begin{pmatrix}
+        1 & -1 \\
+        0 & 0
+    \end{pmatrix}$,
+    $B = 
+    \begin{pmatrix}
+        1 & 0 \\
+        1 & 0
+    \end{pmatrix}$. Wtedy $AB = 0$ i $BA =
+    \begin{pmatrix}
+        1 & -1 \\
+        1 & -1
+    \end{pmatrix}$, czyli $0 = r(AB) \neq r(BA) = 1$.
+    \item Niech $A = 
+    \begin{pmatrix}
+        1 & -1 \\
+        0 & 0
+    \end{pmatrix}$,
+    $B = 
+    \begin{pmatrix}
+        1 & 0 \\
+        1 & 0
+    \end{pmatrix}$. Wtedy $AB = 0$, czyli $r(AB) = 0$, ale $r(A) = 1$ i $r(B) = 1$.
+\end{enumerate}
+\end{rozwiazanie}
+
+\end{document}
