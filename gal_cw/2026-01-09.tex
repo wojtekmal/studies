@@ -85,7 +85,16 @@ $$ \ker(p(f)\circ q(f))=\ker(p(f))\oplus \ker(q(f)) $$
 \end{zadanie}
 \begin{rozwiazanie}
 Gdy mamy dwa wielomiany $a = \sum_{i=0}^{n}a_{i}x^{i}, b = \sum_{i=0}^{n}b_{i}x^{i} \in K[x]$, to skoro $f$ jest liniowe:
-\[(a \circ b)(f) = \sum_{i=0}^{n}a_{i}f^{i}\left(\sum_{j=0}^{n}b_{j}f^j\right) = \sum_{i=0}^{n}\sum_{j=0}^{n}a_{i}b_{j}f^{i+j} = (a \cdot b)(f) = (b \cdot a)(f) = (b \circ a)(f)\]
+\begin{equation}
+a(f) \circ b(f) = \sum_{i=0}^{n}a_{i}f^{i}\left(\sum_{j=0}^{n}b_{j}f^j\right) = \sum_{i=0}^{n}\sum_{j=0}^{n}a_{i}b_{j}f^{i+j} = (a \cdot b)(f) = (b \cdot a)(f) = b(f) \circ a(f)
+\end{equation}
+Z powyższej równości wynika, że choć złożenie funkcji nie jest operacją, przy której możemy zastowować algorytm Euklidesa, to jest ona tak naprawdę równoważna mnożeniu wielomianów, przy którym możemy zastowować ten algorytm. Tak więc z tożsamości Bezout i względnej pierwszości $p$ i $q$ mamy, że istnieją takie wielomiany $a$ i $b$, że
+\begin{equation}
+a(f) \circ p(f) + b(f) \circ q(f) = \text{Id}
+\end{equation}
+$a(f)$ i $b(f)$, jako funkcje liniowe, zerują się w 0, więc jeśli $p(f)$ i $q(f)$ mają wspólny pierwiastek $x$, to:
+\[0 = a(f)(0) + q(f)(0) = (a(f) \circ p(f) + b(f) \circ q(f))(x) = \text{Id}(x) = x\]
+zatem $x = 0$ jest jedynym wspólnym elementem $\ker(p(f))$ i $\ker(q(f))$. Pozostało jeszcze udowodnić, że $\ker(p(f) \circ q(f)) = \ker(p(f)) + \ker(q(f))$. Jeśli $v \in \ker(p(f))$ i $w \in \ker(q(f))$, to $(p(f) \circ q(f))(v) = (q(f) \circ p(f))(v) = 0$ i $(p(f) \circ q(f))(w) = 0$. $p(f) \circ q(f)$ jest liniowe, bo jest złożeniem funkcji liniowych, czyli $(p(f) \circ q(f))(v + w) = 0$, czyli zachodzi $\ker(p(f)) + \ker(q(f)) \subseteq \ker(p(f) \circ q(f))$
 \end{rozwiazanie}
 
 \begin{zadanie}{4}
