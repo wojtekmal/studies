@@ -78,6 +78,16 @@ Niech $n>1$ oraz $A, B\in M_{n\times n}(\mathbb{C})$. Przypomnijmy, że $r(A)$ o
 \end{enumerate}
 \end{rozwiazanie}
 
+\begin{zadanie}{3}
+Załóżmy, że $V$ jest przestrzenią liniową nad ciałem $K$. Dla $f:V\rightarrow V$ oraz $p(x)=\sum_{j=0}^{n}a_{j}x^{j}\in K[x]$ zdefiniujmy $p(f):V\rightarrow V$ wzorem $p(f)=\sum_{j=0}^{n}a_{j}f^{j}$, gdzie $f^{j}(v)=f(f\dots f(v))$ jest $j$-krotnym złożeniem $f$ ze sobą. \\
+Uzasadnij, że gdy wielomiany $p, q\in K[x]$ są względnie pierwsze (tzn. gdy $p$ oraz $q$ nie mają wspólnego dzielnika w $K[x]$ dodatniego stopnia), to:
+$$ \ker(p(f)\circ q(f))=\ker(p(f))\oplus \ker(q(f)) $$
+\end{zadanie}
+\begin{rozwiazanie}
+Gdy mamy dwa wielomiany $a = \sum_{i=0}^{n}a_{i}x^{i}, b = \sum_{i=0}^{n}b_{i}x^{i} \in K[x]$, to skoro $f$ jest liniowe:
+\[(a \circ b)(f) = \sum_{i=0}^{n}a_{i}f^{i}\left(\sum_{j=0}^{n}b_{j}f^j\right) = \sum_{i=0}^{n}\sum_{j=0}^{n}a_{i}b_{j}f^{i+j} = (a \cdot b)(f) = (b \cdot a)(f) = (b \circ a)(f)\]
+\end{rozwiazanie}
+
 \begin{zadanie}{4}
 Niech $W\subseteq V$ będzie podprzestrzenią przestrzeni liniowej $V$ nad ciałem $K$. Oznaczmy $\iota:W\hookrightarrow V$ jako naturalne zanurzenie, to znaczy przekształcenie liniowe przestrzeni liniowych zdefiniowane tak: dla $w\in W$ kładziemy $\iota(w)=w\in V$. Natomiast niech $\pi:V\rightarrow V/W$ będzie kanonicznym rzutowaniem, czyli $\pi(v)=v+W$.
 \begin{enumerate}[label=(\alph*)]
@@ -93,5 +103,6 @@ Niech $W\subseteq V$ będzie podprzestrzenią przestrzeni liniowej $V$ nad ciał
     Jeśli $v \in W$, a $\phi \in (V / W)^*$, to $\phi \circ \pi(v) = \phi(v + W) = \phi(W) = 0$, ponieważ $W$ jest zerem przestrzeni $V / W$, zatem $\text{im}(\pi^{*})\subseteq W^{\perp}$. Niech $(v_1, ..., w_1, ...)$ będzie bazą $V$ z wydzieloną bazą $W$; jeśli $\lambda \in W^\perp$ i $v = k_1v_1 +... + l_1w_1 + ...$, to $\lambda(v) = \lambda(k_1v_1 +... + l_1w_1 + ...) = \lambda(k_1v_1 +...)$ jest wektorem w przestrzeni o bazie $(k_1, ...)$, czyli możemy wybrać takie $\phi \in (V / W)^*$, że $\phi(v + W)$ jest równe $\lambda(v)$ dla każdego $v$, a mianowicie takie, które robi z $k_1v_1 +...$ to samo, co $\lambda$, czyli $\lambda = \pi^*(\phi)$, zatem $W^{\perp} \subseteq \text{im}(\pi^{*})$. Mamy więc, że $\text{im}(\pi^{*})=W^{\perp}$.
 \end{enumerate}
 \end{rozwiazanie}
+
 
 \end{document}
