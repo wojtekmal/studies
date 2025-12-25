@@ -94,7 +94,19 @@ a(f) \circ p(f) + b(f) \circ q(f) = \text{Id}
 \end{equation}
 $a(f)$ i $b(f)$, jako funkcje liniowe, zerują się w 0, więc jeśli $p(f)$ i $q(f)$ mają wspólny pierwiastek $x$, to:
 \[0 = a(f)(0) + q(f)(0) = (a(f) \circ p(f) + b(f) \circ q(f))(x) = \text{Id}(x) = x\]
-zatem $x = 0$ jest jedynym wspólnym elementem $\ker(p(f))$ i $\ker(q(f))$. Pozostało jeszcze udowodnić, że $\ker(p(f) \circ q(f)) = \ker(p(f)) + \ker(q(f))$. Jeśli $v \in \ker(p(f))$ i $w \in \ker(q(f))$, to $(p(f) \circ q(f))(v) = (q(f) \circ p(f))(v) = 0$ i $(p(f) \circ q(f))(w) = 0$. $p(f) \circ q(f)$ jest liniowe, bo jest złożeniem funkcji liniowych, czyli $(p(f) \circ q(f))(v + w) = 0$, czyli zachodzi $\ker(p(f)) + \ker(q(f)) \subseteq \ker(p(f) \circ q(f))$
+zatem $x = 0$ jest jedynym wspólnym elementem $\ker(p(f))$ i $\ker(q(f))$. Jeśli $v \in \ker(p(f))$ i $w \in \ker(q(f))$, to 
+\[(p(f) \circ q(f))(v) = (q(f) \circ p(f))(v) = 0\]
+\[(p(f) \circ q(f))(w) = 0\]
+\[(p(f) \circ q(f))(v + w) = 0\] czyli $\ker(p(f)) + \ker(q(f)) \subseteq \ker(p(f) \circ q(f))$. Wiemy już, że $\ker(p(f)) \cap \ker(q(f)) = \{0\}$, czyli z tw. o dopełnieniu bazy każde $x \in V$ możemy przedstawić jako $x = v_x + w_x + u_x$, gdzie pierwsze dwa składniki należą do kerneli $p(f)$ i $q(f)$, a trzeci nie należy do ich sumy lub jest zerowy. Jeśli $(p(f) \circ q(f))(x) = 0$, to:
+\[(p(f) \circ q(f))(v_x) = (q(f) \circ p(f))(v_x) = 0\]
+\[(p(f) \circ q(f))(w_x) = 0\]
+\[(p(f) \circ q(f))(x) = (p(f) \circ q(f))(v_x + w_x + u_x) = (p(f) \circ q(f))(u_x) = 0\]
+\[(b(f) \circ p(f) \circ q(f))(u_x) = 0\]
+\[(p(f) \circ b(f) \circ q(f))(u_x) = 0\]
+Zatem $(b(f) \circ q(f))(u_x) = v_b \in \ker(p(f))$ i podobnie $(a(f) \circ p(f))(u_x) = w_a \in \ker(q(f))$.
+Wstawmy $u_x$ do równania funkcyjnego (2):
+\[(a(f) \circ p(f) + b(f) \circ q(f))(u_x) = v_b + w_a = u_x\]
+Zatem $u_x = 0$, czyli $\ker(p(f) \circ q(f)) \subseteq \ker(p(f)) + \ker(q(f))$. Wychodzi więc, że \[\ker(p(f) \circ q(f)) = \ker(p(f)) \oplus \ker(q(f))\]
 \end{rozwiazanie}
 
 \begin{zadanie}{4}
