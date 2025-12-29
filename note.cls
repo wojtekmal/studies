@@ -110,3 +110,5 @@
 }
 
 \setlength{\parindent}{0pt}
+
+\DeclareMathOperator{\lin}{lin}

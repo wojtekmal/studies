@@ -127,11 +127,16 @@ Niech $W\subseteq V$ będzie podprzestrzenią przestrzeni liniowej $V$ nad ciał
 
 \begin{zadanie}{5}
 Niech $V=M_{n\times n}(\mathbb{R})$ będzie przestrzenią liniową macierzy kwadratowych o współczynnikach rzeczywistych. Rozważamy podprzestrzeń $W_{g}$ składającą się z macierzy ściśle górnotrójkątnych oraz podprzestrzeń $W_{d}$ składającą się z macierzy ściśle dolnotrójkątnych.
-Niech $W=\text{lin}(A\cdot B \mid A\in W_{g}, B\in W_{d})$ oraz $\psi:V\rightarrow V/W$ będzie odwzorowaniem ilorazowym.
+Niech $W=\lin(A\cdot B \mid A\in W_{g}, B\in W_{d})$ oraz $\psi:V\rightarrow V/W$ będzie odwzorowaniem ilorazowym.
 Znaleźć wymiar przestrzeni $V/W$ oraz odwzorowanie $\varphi:V/W\rightarrow V$ takie, że $\psi\circ\varphi=Id_{V/W}$.
 \end{zadanie}
 \begin{rozwiazanie}
-
+Jeśli $y, x < n$, to macierz $J_{yx}$ o wyrazach $c_{ij}$, w której $c_{yx} = 1$, a pozostałe elementy to 0, jest iloczynem macierzy o wyrazach $a_{ij}$ i macierzy o wyrazach $b_{ij}$, gdzie $a_{yn} = b_{nx} = 1$, a pozostałe elementy tych macierzy to 0. $[a_{ij}] \in W_g$ i $[b_{ij}] \in W_d$, więc $[c_{ij}] \in W$. Wszystkie macierze $[d_{ij}]$, które mają zera w $n$-tym wierszu i kolumnie, są kombinacją liniową macierzy $J_{ij}$:
+\[[d_{ij}] = \sum_{i=1}^{n}\sum_{j=1}^{n} d_ijJ_ij\]
+zatem te macierze też należą do $W$. Jeśli $[c_{ij}] = [a_{ij}][b_{ij}]$, gdzie $A \in W_g$ i $B \in W_d$, to 
+\[c_{yn} = \sum_{i=1}^{n} a_{yi}b_{in} = \sum_{i=1}^{n} a_{yi} \cdot 0 = 0\]
+\[c_{nx} = \sum_{i=1}^{n} a_{ix}b_{ni} = \sum_{i=1}^{n} a_{ix} \cdot 0 = 0\]
+zatem macierze, które mają zera w $n$-tym wierszu i kolumnie, tworzą cały zbiór $W$. Mamy pełną dowolność w wyborze pozostałych elementów macierzy, więc $\dim(W) = (n-1)^2$. $\dim(V/W) = \dim(V) - \dim(W) = n^2 - (n-1)^2 = 2n - 1$. Niech $(w_i)$ będzie bazą $W$ i niech $(v_i)$ będzie dopełnieniem do bazy $V$. 
 \end{rozwiazanie}
 
 \end{document}
