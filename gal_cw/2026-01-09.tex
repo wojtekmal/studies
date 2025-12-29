@@ -132,11 +132,13 @@ Znaleźć wymiar przestrzeni $V/W$ oraz odwzorowanie $\varphi:V/W\rightarrow V$ 
 \end{zadanie}
 \begin{rozwiazanie}
 Jeśli $y, x < n$, to macierz $J_{yx}$ o wyrazach $c_{ij}$, w której $c_{yx} = 1$, a pozostałe elementy to 0, jest iloczynem macierzy o wyrazach $a_{ij}$ i macierzy o wyrazach $b_{ij}$, gdzie $a_{yn} = b_{nx} = 1$, a pozostałe elementy tych macierzy to 0. $[a_{ij}] \in W_g$ i $[b_{ij}] \in W_d$, więc $[c_{ij}] \in W$. Wszystkie macierze $[d_{ij}]$, które mają zera w $n$-tym wierszu i kolumnie, są kombinacją liniową macierzy $J_{ij}$:
-\[[d_{ij}] = \sum_{i=1}^{n}\sum_{j=1}^{n} d_ijJ_ij\]
+\[[d_{ij}] = \sum_{i=1}^{n}\sum_{j=1}^{n} d_{ij}J_{ij}\]
 zatem te macierze też należą do $W$. Jeśli $[c_{ij}] = [a_{ij}][b_{ij}]$, gdzie $A \in W_g$ i $B \in W_d$, to 
 \[c_{yn} = \sum_{i=1}^{n} a_{yi}b_{in} = \sum_{i=1}^{n} a_{yi} \cdot 0 = 0\]
 \[c_{nx} = \sum_{i=1}^{n} a_{ix}b_{ni} = \sum_{i=1}^{n} a_{ix} \cdot 0 = 0\]
-zatem macierze, które mają zera w $n$-tym wierszu i kolumnie, tworzą cały zbiór $W$. Mamy pełną dowolność w wyborze pozostałych elementów macierzy, więc $\dim(W) = (n-1)^2$. $\dim(V/W) = \dim(V) - \dim(W) = n^2 - (n-1)^2 = 2n - 1$. Niech $(w_i)$ będzie bazą $W$ i niech $(v_i)$ będzie dopełnieniem do bazy $V$. 
+zatem macierze, które mają zera w $n$-tym wierszu i kolumnie, tworzą cały zbiór $W$. Mamy pełną dowolność w wyborze pozostałych elementów macierzy, więc $\dim(W) = (n-1)^2$. $\dim(V/W) = \dim(V) - \dim(W) = n^2 - (n-1)^2 = 2n - 1$. Niech $(w_i)$ będzie bazą $W$ i niech $(v_i)$ będzie jej dopełnieniem do bazy $V$. Wiadomo, że $(v_i + W)$ stanowi bazę przestrzeni $V/W$. Zdefiniujmy $\varphi$ na bazie w następujący sposób: $\varphi(v_i + W) = v_i$ i w sposób naturalny rozszerzmy na całe $V / W$. Niech $u$ to dowolny element $V / W$ i niech $u = \sum_{i=1}^{2n-1}a_i(v_i + W)$. Wtedy
+\[\psi\circ\varphi(u) = \psi\circ\varphi\left(\sum_{i=1}^{2n-1}a_i(v_i + W)\right) = \sum_{i=1}^{2n-1}a_i\psi\circ\varphi(v_i + W) =\]\[ \sum_{i=1}^{2n-1}a_i\psi(v_i) = \sum_{i=1}^{2n-1}a_i(v_i + W) = u\]
+zatem takie $\phi$ jest odpowiednim odwzorowaniem.
 \end{rozwiazanie}
 
 \end{document}
