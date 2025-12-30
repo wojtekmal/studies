@@ -121,7 +121,7 @@ Niech $W\subseteq V$ będzie podprzestrzenią przestrzeni liniowej $V$ nad ciał
 \begin{rozwiazanie}
 \begin{enumerate}[label=(\alph*)]
     \item Wiadomo, że $\pi^*(\phi) = \phi \circ \pi$. Jeśli $\phi, \psi \in (V / W)^*$ są różne, to istnieje taka warstwa $v + W$, na której te funkcjonały się różnią, czyli istnieje przedstawiciel $v$ tej warstwy, na którym $\phi \circ \pi(v) = \phi(v + W) \neq \psi(v + W) = \psi \circ \pi(v)$, czyli $\pi^*(\phi) \neq \pi^*(\psi)$. Zatem $\pi^*$ jest monomorfizmem.\\
-    Jeśli $v \in W$, a $\phi \in (V / W)^*$, to $\phi \circ \pi(v) = \phi(v + W) = \phi(W) = 0$, ponieważ $W$ jest zerem przestrzeni $V / W$, zatem $\text{im}(\pi^{*})\subseteq W^{\perp}$. Niech $\lambda \in W^\perp$ i $w = \iota(W)$ to zanurzenie warstwy zerowej. Definiujemy $\phi \in (V / W)^*$ w następujący sposób:
+    Jeśli $v \in W$, a $\phi \in (V / W)^*$, to $\phi \circ \pi(v) = \phi(v + W) = \phi(W) = 0$, ponieważ $W$ jest zerem przestrzeni $V / W$, zatem $\text{im}(\pi^{*})\subseteq W^{\perp}$. Niech $\lambda \in W^\perp$ i $w = \iota(v + W) - v \in W$. Definiujemy $\phi \in (V / W)^*$ w następujący sposób:
     \[\phi(v + W) = \lambda\circ\iota(v + W) = \lambda(v+w) = \lambda(v) + \lambda(w) = \lambda(v)\]
     Wtedy $\lambda = \pi^*(\phi) \in \im(\pi^*)$, czyli $W^{\perp} \subseteq \text{im}(\pi^{*})$. Zatem $W^{\perp} = \text{im}(\pi^{*})$.
 \end{enumerate}
