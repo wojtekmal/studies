@@ -93,7 +93,7 @@ Z powyższej równości wynika, że choć złożenie funkcji nie jest operacją,
 a(f) \circ p(f) + b(f) \circ q(f) = \text{Id}
 \end{equation}
 $a(f)$ i $b(f)$, jako funkcje liniowe, zerują się w 0, więc jeśli $p(f)$ i $q(f)$ mają wspólny pierwiastek $x$, to:
-\[0 = a(f)(0) + q(f)(0) = (a(f) \circ p(f) + b(f) \circ q(f))(x) = \text{Id}(x) = x\]
+\[0 = a(f)(0) + b(f)(0) = (a(f) \circ p(f) + b(f) \circ q(f))(x) = \text{Id}(x) = x\]
 zatem $x = 0$ jest jedynym wspólnym elementem $\ker(p(f))$ i $\ker(q(f))$. Jeśli $v \in \ker(p(f))$ i $w \in \ker(q(f))$, to 
 \[(p(f) \circ q(f))(v) = (q(f) \circ p(f))(v) = 0\]
 \[(p(f) \circ q(f))(w) = 0\]
@@ -121,7 +121,9 @@ Niech $W\subseteq V$ będzie podprzestrzenią przestrzeni liniowej $V$ nad ciał
 \begin{rozwiazanie}
 \begin{enumerate}[label=(\alph*)]
     \item Wiadomo, że $\pi^*(\phi) = \phi \circ \pi$. Jeśli $\phi, \psi \in (V / W)^*$ są różne, to istnieje taka warstwa $v + W$, na której te funkcjonały się różnią, czyli istnieje przedstawiciel $v$ tej warstwy, na którym $\phi \circ \pi(v) = \phi(v + W) \neq \psi(v + W) = \psi \circ \pi(v)$, czyli $\pi^*(\phi) \neq \pi^*(\psi)$. Zatem $\pi^*$ jest monomorfizmem.\\
-    Jeśli $v \in W$, a $\phi \in (V / W)^*$, to $\phi \circ \pi(v) = \phi(v + W) = \phi(W) = 0$, ponieważ $W$ jest zerem przestrzeni $V / W$, zatem $\text{im}(\pi^{*})\subseteq W^{\perp}$. Niech $(v_1, ..., w_1, ...)$ będzie bazą $V$ z wydzieloną bazą $W$; jeśli $\lambda \in W^\perp$ i $v = k_1v_1 +... + l_1w_1 + ...$, to $\lambda(v) = \lambda(k_1v_1 +... + l_1w_1 + ...) = \lambda(k_1v_1 +...)$ jest wektorem w przestrzeni o bazie $(k_1, ...)$, czyli możemy wybrać takie $\phi \in (V / W)^*$, że $\phi(v + W)$ jest równe $\lambda(v)$ dla każdego $v$, a mianowicie takie, które robi z $k_1v_1 +...$ to samo, co $\lambda$, czyli $\lambda = \pi^*(\phi)$, zatem $W^{\perp} \subseteq \text{im}(\pi^{*})$. Mamy więc, że $\text{im}(\pi^{*})=W^{\perp}$.
+    Jeśli $v \in W$, a $\phi \in (V / W)^*$, to $\phi \circ \pi(v) = \phi(v + W) = \phi(W) = 0$, ponieważ $W$ jest zerem przestrzeni $V / W$, zatem $\text{im}(\pi^{*})\subseteq W^{\perp}$. Niech $\lambda \in W^\perp$ i $w = \iota(W)$ to zanurzenie warstwy zerowej. Definiujemy $\phi \in (V / W)^*$ w następujący sposób:
+    \[\phi(v + W) = \lambda\circ\iota(v + W) = \lambda(v+w) = \lambda(v) + \lambda(w) = \lambda(v)\]
+    Wtedy $\lambda = \pi^*(\phi) \in \im(\pi^*)$, czyli $W^{\perp} \subseteq \text{im}(\pi^{*})$. Zatem $W^{\perp} = \text{im}(\pi^{*})$.
 \end{enumerate}
 \end{rozwiazanie}
 
