@@ -56,8 +56,8 @@ int64_t sq(int64_t a)
 
 bool operator<(Segment a, Segment b)
 {
-    int64_t first_proportion = sq(a.x_r - a.x_l) * (b.r - b.l + 1);
-    int64_t second_proportion = sq(b.x_r - b.x_l) * (a.r - a.l + 1);
+    __int128_t first_proportion = (__int128_t) sq(a.x_r - a.x_l) * (b.r - b.l + 1);
+    __int128_t second_proportion = (__int128_t) sq(b.x_r - b.x_l) * (a.r - a.l + 1);
 
     if (first_proportion == second_proportion)
     {
