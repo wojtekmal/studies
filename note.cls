@@ -60,6 +60,8 @@
 \providecommand{\N}{\mathbb{N}}
 \providecommand{\Z}{\mathbb{Z}}
 \providecommand{\C}{\mathbb{C}}
+\renewcommand{\P}{\mathbb{P}}
+\providecommand{\powerset}{\mathsf{P}}
 
 % Listings for code (CS)
 \lstset{

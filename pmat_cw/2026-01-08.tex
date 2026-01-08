@@ -18,6 +18,20 @@ Które z następujących stwierdzeń są prawdziwe dla dowolnego porządku $(X, 
 \end{enumerate}
 \end{rozwiazanie}
 
+\begin{zadanie}{456}
+Niech $r$ będzie częściowym porządkiem w zbiorze $A$ i niech $f: A \xrightarrow[na]{1-1} A$. Rozpatrzmy funkcję $g: A \times A \to A \times A$, określoną tak: $g(x,y) = \langle f(x), f(y) \rangle$. Udowodnić, że:
+\begin{enumerate}[label=(\alph*)]
+    \item $g(r) \subseteq r$ wtedy i tylko wtedy, gdy $f$ jest monotoniczna ze względu na porządek $r$.
+    \item $r \subseteq g(r)$ wtedy i tylko wtedy, gdy $\forall x,y \, (f(x) \, r \, f(y) \to x \, r \, y)$.
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item $f$ jest monotoniczna w.t.w. gdy dla dowolnych $x, y \in A$, $x r y$ implikuje $f(x) r f(y)$. Każdy element $g(r)$ jest postaci $(f(x), f(y))$, gdzie $xry$, więc to w.t.w. gdy każda taka para $(f(x), f(y)) \in r$, czyli to w.t.w. gdy $g(r) \subseteq r$.
+    \item Skoro $f$ jest bijekcją, to każde $(a, b) \in r$ da się jednoznacznie przedstawić jako $(f(x), f(y))$.
+\end{enumerate}
+\end{rozwiazanie}
+
 \begin{zadanie}{622}
 Jakiej mocy jest zbiór wszystkich łańcuchów
 \begin{itemize}[label=--]
@@ -28,7 +42,13 @@ Jakiej mocy jest zbiór wszystkich łańcuchów
 \end{zadanie}
 \begin{rozwiazanie}
 \begin{itemize}[label=--]
-    \item Łańcuchy są zbiorami liczb naturalnych, a zbiorów liczb naturalnych jest $|\mathsf{P}(\N)| = \mathfrak{c}$, więc jest co najwyżej $\mathfrak{c}$ łańcuchów.
+    \item Łańcuchy są zbiorami liczb naturalnych, a zbiorów liczb naturalnych jest $|\mathsf{P}(\N)| = \mathfrak{c}$, więc jest co najwyżej $\mathfrak{c}$ łańcuchów. Niech $X$ to zbiór łańcuchów. Mamy funkcję $\varphi : \P^\N \to \mathsf{P}(\N)$ zdefiniowaną tak:
+    \[\varphi(f) = \{\prod_{k=1}^{n} f(k): n \in \N\}\]
+    Wynika to wprost z definicji, że elementy $\varphi(f)$ się dzielą, czyli to jest łańcuch. Jeśli $n$ to pierwsza pozycja na której $f(n) \neq g(n)$, to
+    \[\prod_{k=1}^{n} f(k) \neq \prod_{k=1}^{n} g(k)\]
+    To są jedyne elementy $\varphi(f)$ i $\varphi(g)$, które mają $k$ dzielników pierwszych, czyli skoro są różne, to $\varphi(f) \neq \varphi(g)$, zatem $\varphi \in \P^\N \to X$ jest injekcją. Zatem $|X| \geq |\P^\N| = \aleph_0^{\aleph_0} = \mathfrak{c}$. Zatem $|X| = \mathfrak{c}$.
+    \item Niech $\varphi : \{a,b\}^\N \to \powerset(\{a, b\}^*)$ jest takie, że przypisuje każdemu nieskończonemu ciągowi zbiór jego prefiksów. Prefiks do $i$-tej pozycji jest prefiksem prefiksu do $j$-tej pozycji, czyli $\varphi(f)$ jest łańcuchem. Podobnie jak w poprzednim podpunkcie, jeśli dwa nieskończone ciągi liter różnią się na $n$-tej pozycji, to prefiksy długości $n$ będą różne, czyli $\varphi$ jest injekcją. Zatem $\varphi \in \{a,b\}^\N \to^{1-1} X$, gdzie $X$ to zbiór łańcuchów, czyli $|X| \geq |\{a,b\}^\N| = |\{0,1\}^\N| = \mathfrak{c}$. $X \subseteq \powerset(\{a, b\}^*)$, a słów nad $\{a, b\}$ jest tyle, co skończonych ciągów binarnych, czyli tyle, co liczb naturalnych, które są reprezentowane przez te skończone ciągi, czyli $|X| \leq |\powerset(\{a, b\}^*)| = 2^{\aleph_0} = \mathfrak{c}$, czyli $|X| = \mathfrak{c}$.
+    \item Każdy zbiór będący łańcuchem w porządku prefiksowym jest łańcuchem w porządku leksykograficznym, czyli przynajmniej $\mathfrak{c}$. Są to też podzbiory $\powerset(\{a, b\}^*)$, czyli jest ich co najwyżej $\mathfrak{c}$. Zatem odpowiedź to $\mathfrak{c}$.
 \end{itemize}
 \end{rozwiazanie}
 
