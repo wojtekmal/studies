@@ -28,7 +28,7 @@ Niech $r$ będzie częściowym porządkiem w zbiorze $A$ i niech $f: A \xrightar
 \begin{rozwiazanie}
 \begin{enumerate}[label=(\alph*)]
     \item $f$ jest monotoniczna w.t.w. gdy dla dowolnych $x, y \in A$, $x r y$ implikuje $f(x) r f(y)$. Każdy element $g(r)$ jest postaci $(f(x), f(y))$, gdzie $xry$, więc to w.t.w. gdy każda taka para $(f(x), f(y)) \in r$, czyli to w.t.w. gdy $g(r) \subseteq r$.
-    \item Skoro $f$ jest bijekcją, to każde $(a, b) \in r$ da się jednoznacznie przedstawić jako $(f(x), f(y))$.
+    \item Skoro $f$ jest bijekcją, to każde $(a, b) \in r$ da się jednoznacznie przedstawić jako $(f(x_a), f(y_b))$. $r \subseteq g(r)$ w.t.w. gdy $$\forall_{(a, b)\in r} (a, b) \in g(r)$$czyli w.t.w. gdy $$\forall_{(a, b)\in r} (f(x_a), f(y_b)) \in g(r)$$ czyli w.t.w. gdy $$\forall_{(a, b)\in r} (x_a, y_b) \in r$$Każde $x_a$ i $y_b$ mają swoje $a$ i $b$, bo $f$ jest bijekcją, więc poprzedni kwantyfikator jest w.t.w. gdy $\forall x,y \, (f(x) \, r \, f(y) \to x \, r \, y)$.
 \end{enumerate}
 \end{rozwiazanie}
 
