@@ -12,8 +12,24 @@ Które z następujących stwierdzeń są prawdziwe dla dowolnego porządku $(X, 
 \end{zadanie}
 \begin{rozwiazanie}
 \begin{enumerate}[label=(\alph*)]
+    \item Niech $A = [0, 1), B = (2, 3]$ oraz $X = A \cup B$ i $\leq$ to relacja mniejsze lub równe na liczbach rzeczywistych, o której wiemy, że jest liniową relacją częściowego porządku. 3 jest jedynym ograniczeniem górnym, więc $\sup(A\cup B) = 3$ istnieje. Jeśli $x \in X$ jest ograniczeniem górnym, to $x \in B$, ale wtedy $\frac{x+2}{2} < x$ też jest ograniczeniem górnym, czyli $x$ nie jest supremum $A$. Zatem $\sup A$ nie istnieje.
+    \item Bez wymagania na liniowość możemy wziąć taki kontrprzykład: $X = \{a, b\}, A = \{a\}, B = \{b\}$ oraz każdy element jest w relacji tylko z samym sobą. Wtedy $\sup A = a$, $\sup B = b$, ale $\sup(A \cup B) = \sup\{a, b\}$ nie istnieje, bo nie ma ograniczeń górnych. Jeśli relacja jest liniowa, to niech $a = \sup A, b = \sup B$. Skoro relacja jest liniowa, to jedno z $a, b$ jest większe od drugiego; BSO niech to będzie $a$. Wtedy $\forall_{x\in A} a \geq x$ i $\forall_{x\in B} a \geq b \geq x$, czyli $\forall_{x\in A\cup B} a \geq x$. Jeśli jest jakieś inne ograniczenie górne $c$ na $A \cup B$, to jest to ograniczenie górne na $A$, czyli $c \geq a$. Zatem $a = \sup(A\cup B)$.
     \item 
 \end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{622}
+Jakiej mocy jest zbiór wszystkich łańcuchów
+\begin{itemize}[label=--]
+    \item w zbiorze $\mathbb{N} - \{0\}$, uporządkowanym przez relację podzielności?
+    \item w zbiorze słów nad alfabetem $\{a, b\}$, uporządkowanym prefiksowo?
+    \item w zbiorze słów nad alfabetem $\{a, b\}$, uporządkowanym leksykograficznie?
+\end{itemize}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{itemize}[label=--]
+    \item Łańcuchy są zbiorami liczb naturalnych, a zbiorów liczb naturalnych jest $|\mathsf{P}(\N)| = \mathfrak{c}$, więc jest co najwyżej $\mathfrak{c}$ łańcuchów.
+\end{itemize}
 \end{rozwiazanie}
 
 \end{document}
