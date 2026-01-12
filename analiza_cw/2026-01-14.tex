@@ -2,8 +2,20 @@
 
 \begin{document}
 
+\begin{zadanie}
+Niech $f:\mathbb{R}\rightarrow\mathbb{R}$ będzie funkcją ciągłą. Czy funkcja może przyjmować każdą wartość rzeczywistą dokładnie 3 razy? A dokładnie 2 razy?
+\end{zadanie}
 \begin{rozwiazanie}
-
+Niech
+\[f(x) = \begin{cases}
+    \lfloor\frac{x}{3}\rfloor + \{x\} \text{ gdy } \lfloor x\rfloor \equiv 0 \mod 3\\
+    \lfloor\frac{x}{3}\rfloor + 1 + \{x\} \text{ gdy } \lfloor x\rfloor \equiv 1 \mod 3\\
+    \lfloor\frac{x}{3}\rfloor + 2 - \{x\} \text{ gdy } \lfloor x\rfloor \equiv 1 \mod 3\\
+\end{cases}\]
+$f$ składa się z kawałków liniowych, więc żeby sprawdzić ciągłość, wystarczy sprawdzić ciągłość w punktach, w których zmienia się przypadek, czyli dla $x \in \Z$. Gdy $x \equiv 0 \mod 3$, to jest to pierwszy przypadek i wartość wynosi $\frac{x}{3}$, ale to też jest granica trzeciego przypadku:
+\[\lim_{y\to x^-} f(y) = \lim_{y\to x^-} \lfloor\frac{y}{3}\rfloor + 2 - \{y\} = \lim_{y\to x^-} \frac{x}{3} - 1 + 2 - \{y\} = \frac{x}{3} - 1 + 2 - 1 = \frac{x}{3}\]
+Nie będę rozpisywał wszystkich przypadków, ale to jest oczywiste gdy się spojrzy na wykres, bo to taki zygzak który idzie w górę. Zauważmy też, że każdy z przypadków przyjmuje każdą wartość dokładnie raz, w sensie że np. dla każdego $y$ istnieje dokładnie jedno $x$, takie że $\lfloor\frac{x}{3}\rfloor + \{x\} = y$, a mianowicie $x = 3\lfloor y \rfloor + \{y\}$ (bo ten pierwszy przypadek to jakby wziąć funkcję $y = x$, pociąć na kawałki i rozłożyć te kawałki w odstępach, żeby pokrywały dziedzinę tego przypadku i podobnie dla pozostałych dwóch przypadków). Tak więc każda liczba rzeczywista jest wartością $f$ dokładnie 3 razy.\\
+Gdyby jakieś $f$ przyjmowało każdą wartość 2 razy, to istniałyby takie $a$ i $b$, że $f(a) = f(b) = 0$. Jeśli $f$ jest stałe na przedziale $[a, b]$, to $f$ przyjmuje wartość 0 nieskończenie wiele razy, co jest sprzecznością, więc $f$ musi się jakoś wychylać na tym przedziale, czyli musi być albo dodatnie supremum, albo ujemne infimum, to BSO niech to będzie że $s = \sup_{y\in[a, b]} f(y)$ i niech $x \in [a, b]$ będzie takie, że $f(x) = s$ (jest w skrypcie, że ono istnieje). $f$ nie przyjmuje wartości $s + 1$ na $[a, b]$, więc musi przyjmować tę wartość albo w $(-\infty, a)$, albo w $(b, \infty)$.
 \end{rozwiazanie}
 
 \end{document}
