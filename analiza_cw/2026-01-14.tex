@@ -18,11 +18,42 @@ Nie będę rozpisywał wszystkich przypadków, ale to jest oczywiste gdy się sp
 Gdyby jakieś $f$ przyjmowało każdą wartość 2 razy, to istniałyby takie $a$ i $b$, że $f(a) = f(b) = 0$. Jeśli $f$ jest stałe na $[a, b]$, to $f$ przyjmuje wartość 0 nieskończenie wiele razy, co jest sprzecznością, więc $f$ musi się jakoś wychylać na tym przedziale, czyli musi być albo dodatnie supremum, albo ujemne infimum, to BSO niech to będzie że $s = \sup_{x\in[a, b]} f(x)$ i niech $c \in [a, b]$ będzie takie, że $f(c) = s$ (jest w skrypcie, że ono istnieje). $f$ nie przyjmuje wartości $s + 1$ na $[a, b]$, więc musi przyjmować tę wartość albo w $(-\infty, a)$, albo w $(b, \infty)$, to BSO niech to będzie, że $d \in (b, \infty)$ i $f(d) = s + 1$. Z tw. o wartościach pośrednich $f$ musi przyjąć wartość $\frac{s}{2}$ na $[b, d]$ (bo przyjmuje przedział wartości $[0, s + 1]$). Z tego samego twierdzenia $f$ musi też przyjmować wartość $\frac{s}{2}$ na $[a, c]$ i na $[c, a]$ (bo przyjmuje wszystkie wartości w $[0, s]$ na tych przedziałach). Zatem wartość $\frac{s}{2}$ jest przyjęta przez $f$ przynajmniej trzykrotnie, co jest sprzecznością.
 \end{rozwiazanie}
 
+\begin{zadanie}{2}
+Załóżmy, że $f:\mathbb{R}\rightarrow\mathbb{R}$ jest funkcją ciągłą spełniającą $f(3\sqrt{3})=8f(1).$ Wykaż, że istnieje $x>1$, dla którego $f(\sqrt{3}x)=2f(x)$.
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $g(x) = f(\sqrt{3}x)-2f(x)$. Jest to różnica złożeń funkcji ciągłych, więc jest ciągłe. Spełnia ono taką równość:
+\[4g(1) + 2g(\sqrt{3}) + g(3) = f(3\sqrt{3}) - 8f(1) = 0\]
+Skoro ważona suma trzech wartości to 0, to możemy rozpatrzeć 3 przypadki. Pierwszy to że wszystkie trzy wartości są zerowe, to wtedy w szczególności $g(\sqrt{3}) = f(3) - 2f(\sqrt{3})$, czyli $f(3)=2f(\sqrt{3})$ dla $x=\sqrt 3 > 1$. Drugi to że nie wszystkie są zerowe, ale pierwsza jest. Wtedy jedno z $g(\sqrt{3}), g(3)$ jest dodatnie, a drugie ujemne, czyli z tw. o wartościach pośrednich $g$ przyjmuje wartość 0 na przedziale $[g(\sqrt{3}), g(3)]$, czyli istnieje takie $x>1$ że $f(\sqrt{3}x)=2f(x)$. W trzecim przypadku $g(1) \neq 0$ oraz jedno z $g(\sqrt 3), g(3)$ jest przeciwnego znaku niż $g(1)$, więc znowu możemy skorzystać z tw. o wartościach pośrednich i otrzymać że $g$ przyjmuje wartość 0 w przedziale $[1, 3]$, tyle że nie w $x = 1$, bo $g(1) \neq 0$, czyli istnieje $x > 1$ takie, że $f(\sqrt{3}x)=2f(x)$.
+\end{rozwiazanie}
+
 \begin{zadanie}{3}
 Niech $f:[0,1]\rightarrow\mathbb{R}$ będzie funkcją ciągłą spełniającą $f(0)=f(1).$ Wykaż, że istnieje $t\in(0,1)$, dla którego $f(t)=f(t^{2})$.
 \end{zadanie}
 \begin{rozwiazanie}
 Jeśli $f$ jest stałe, to teza jest oczywista, a tak to musi mieć wartości większe od $f(0)$ albo mniejsze, to BSO niech będzie, że większe. Niech $s = \sup_{t\in(0, 1)} f(t)$ i niech $x\in(0, 1)$ jest takie, że $f(x) = s$ (jest w skrypcie, że ono istnieje). Niech $g(t) = f(t) - f(t^2)$. Zauważmy, że $t^2 \in (0,1)$, więc $g$ jest zdefiniowane na $(0, 1)$. Jest też ciągłe na tym przedziale, bo to różnica złożeń funkcji ciągłych. Skoro supremum $f$ jest w $x$, to $g(x) = f(x) - f(x^2) \geq 0$ i $g(\sqrt x) = f(\sqrt x) - f(x) \leq 0$, więc z tw. o wartościach pośrednich $g$ musi przyjąć wartość 0 na przedziale $[x, \sqrt x]$, czyli istnieje takie $t$, że $f(t) = f(t^2)$.
+\end{rozwiazanie}
+
+\begin{zadanie}{4}
+Załóżmy, że dla każdego $p\in\mathbb{R}$ mamy $\lim_{x\rightarrow p}f(x)=0$. Czy musi istnieć liczba niewymierna $x$, dla której $f(x)=0$?
+\end{zadanie}
+\begin{rozwiazanie}
+Załóżmy nie wprost, że dla każdej liczby niewymiernej $x$ zachodzi $f(x) \neq 0$. Podzielmy przedział $[0, 1)$ na $n$ przedziałów postaci $[\frac{k}{n}, \frac{k+1}{n})$ dla każdego $n \in \N$. Załóżmy że jakieś niewymierne $x \in [0, 1)$ nie ma jakiegoś przedziału tej postaci, w którym ma największą wartość bezwzględną. Wtedy możemy wybrać ciąg przedziałów dla kolejnych $n$, w których $x$ jest zawarte. W każdym takim przedziale istnieje takie $y_n \neq x$, że $|f(y_n)| \geq |f(x)|$. $|y_n - x| < \frac1n$, więc $(y_n)$ jest ciągiem zbieżnym do $x$, na którym $f$ nie zbiega do 0, sprzeczność. Zatem każde niewymierne $x$ ma swój przedział, na którym $f(x)$ ma największy moduł, jednak tych przedziałów jest tyle, co par $(n, k)$, czyli przeliczalnie wiele, a liczb niewymiernych na $[0, 1)$ jest nieprzeliczalnie wiele, sprzeczność.
+\end{rozwiazanie}
+
+\begin{zadanie}{5}
+Załóżmy, że $\lim_{x\rightarrow 0}f(x)f(2x)=0.$ Czy z tego wynika, że $\lim_{x\rightarrow 0}f(x)$ istnieje?
+\end{zadanie}
+\begin{rozwiazanie}
+Gdyby istniały takie $n\neq m$, oraz $p, q \in \Z$, że $\frac{p}{n+\sqrt{2}} = \frac{q}{m+\sqrt{2}}$, to zachodziłoby
+\[p(m+\sqrt{2}) = q(n+\sqrt{2})\]
+\[\sqrt 2 = \frac{qn - pm}{p-q} \in \Q\]
+Zatem ciąg $\frac{1}{n+\sqrt{2}}$ zawiera liczby parami niewspółmierne. Możemy określić
+\[f(x) = \begin{cases}
+    1 \text{ gdy $x$ jest postaci $\frac{1}{n+\sqrt{2}}$}
+    0 w przeciwnym przypadku
+\end{cases}\]
+Wtedy $\lim_{x\to0}f(x)$ nie istnieje, ale za to dla każdego $x > 1$ liczby $x$ i $2x$ są współmierne, więc jedno z $f(x)$, $f(2x)$ jest zerowe, więc dla każdego $x$ zachodzi $f(x)f(2x) = 0$, więc $\lim_{x\to0} f(x)f(2x) = 0$. Zatem teza nie zachodzi.
 \end{rozwiazanie}
 
 \end{document}
