@@ -31,7 +31,7 @@ Skoro ważona suma trzech wartości to 0, to możemy rozpatrzeć 3 przypadki. Pi
 Niech $f:[0,1]\rightarrow\mathbb{R}$ będzie funkcją ciągłą spełniającą $f(0)=f(1).$ Wykaż, że istnieje $t\in(0,1)$, dla którego $f(t)=f(t^{2})$.
 \end{zadanie}
 \begin{rozwiazanie}
-Jeśli $f$ jest stałe, to teza jest oczywista, a tak to musi mieć wartości większe od $f(0)$ albo mniejsze, to BSO niech będzie, że większe. Niech $s = \sup_{t\in(0, 1)} f(t)$ i niech $x\in(0, 1)$ jest takie, że $f(x) = s$ (jest w skrypcie, że ono istnieje). Niech $g(t) = f(t) - f(t^2)$. Zauważmy, że $t^2 \in (0,1)$, więc $g$ jest zdefiniowane na $(0, 1)$. Jest też ciągłe na tym przedziale, bo to różnica złożeń funkcji ciągłych. Skoro supremum $f$ jest w $x$, to $g(x) = f(x) - f(x^2) \geq 0$ i $g(\sqrt x) = f(\sqrt x) - f(x) \leq 0$, więc z tw. o wartościach pośrednich $g$ musi przyjąć wartość 0 na przedziale $[x, \sqrt x]$, czyli istnieje takie $t$, że $f(t) = f(t^2)$.
+Jeśli $f$ jest stałe, to teza jest oczywista, a tak to musi mieć wartości większe od $f(0)$ albo mniejsze, to BSO niech będzie, że większe. Niech $s = \sup_{t\in(0, 1)} f(t)$ i niech $x\in(0, 1)$ jest takie, że $f(x) = s$ (jest w skrypcie, że ono istnieje) ($x \notin \{0, 1\}$ bo $f(x) \neq f(0)$). Niech $g(t) = f(t) - f(t^2)$. Zauważmy, że $t^2 \in (0,1)$, więc $g$ jest zdefiniowane na $(0, 1)$. Jest też ciągłe na tym przedziale, bo to różnica złożeń funkcji ciągłych. Skoro supremum $f$ jest w $x$, to $g(x) = f(x) - f(x^2) \geq 0$ i $g(\sqrt x) = f(\sqrt x) - f(x) \leq 0$, więc z tw. o wartościach pośrednich $g$ musi przyjąć wartość 0 na przedziale $[x, \sqrt x]$, czyli istnieje takie $t$, że $f(t) = f(t^2)$.
 \end{rozwiazanie}
 
 \begin{zadanie}{4}
@@ -50,10 +50,21 @@ Gdyby istniały takie $n\neq m$, oraz $p, q \in \Z$, że $\frac{p}{n+\sqrt{2}} =
 \[\sqrt 2 = \frac{qn - pm}{p-q} \in \Q\]
 Zatem ciąg $\frac{1}{n+\sqrt{2}}$ zawiera liczby parami niewspółmierne. Możemy określić
 \[f(x) = \begin{cases}
-    1 \text{ gdy $x$ jest postaci $\frac{1}{n+\sqrt{2}}$}
-    0 w przeciwnym przypadku
+    1 \text{ gdy $x$ jest postaci $\frac{1}{n+\sqrt{2}}$}\\
+    0 \text{ w przeciwnym przypadku}
 \end{cases}\]
-Wtedy $\lim_{x\to0}f(x)$ nie istnieje, ale za to dla każdego $x > 1$ liczby $x$ i $2x$ są współmierne, więc jedno z $f(x)$, $f(2x)$ jest zerowe, więc dla każdego $x$ zachodzi $f(x)f(2x) = 0$, więc $\lim_{x\to0} f(x)f(2x) = 0$. Zatem teza nie zachodzi.
+Wtedy $\lim_{x\to0}f(x)$ nie istnieje, bo istnieją zarówno podciągi zbieżne do 0, na których $f$ jest stale równe 0, jak i takie, na których jest stale równe 1. Za to dla każdego $x > 1$ liczby $x$ i $2x$ są współmierne, więc jedno z $f(x)$, $f(2x)$ jest zerowe, więc dla każdego $x$ zachodzi $f(x)f(2x) = 0$, więc $\lim_{x\to0} f(x)f(2x) = 0$. Zatem teza nie zachodzi.
+\end{rozwiazanie}
+
+\begin{zadanie}{7}
+Znajdź wszystkie liczby $a\in(0,1)$ o następującej własności: dla dowolnej funkcji ciągłej $f:[0,1]\rightarrow\mathbb{R}$, spełniającej warunek $f(0)=f(1)$, istnieje $x\in[0,1-a]$ takie, że $f(x)=f(x+a).$
+\end{zadanie}
+\begin{rozwiazanie}
+Gdy $a = \frac1n$, to niech $g(x) = f(x + a) - f(x)$. $g$ jest różnicą złożeń funkcji ciągłych, więc jest ciągła. Wtedy 
+\[\sum_{k=0}^{n-1} g\left(\frac{k}{n}\right) = \sum_{k=0}^{n-1} f\left(\frac{k+1}{n}\right) - f\left(\frac{k}{n}\right) = f(1) - f(0) = 0\]
+Zatem przynajmniej jedna liczba postaci $g\left(\frac{k}{n}\right)$ jest nieujemna i przynajmniej jedna jest niedodatnia, czyli z tw. o wartościach pośrednich, $g$ przyjmuje warość 0 gdzieś pomiędzy nimi, czyli istnieje takie $x\in [0, 1]$, że $f(x+a) = f(x)$.\\
+Gdy $a$ nie jest postaci $\frac1n$, to możemy określić $f$ w następujący sposób: $f(ak) = k$ i $f(1-ak) = -k$ dla $k \in [0, n]$, gdzie $n = \lfloor\frac1a\rfloor$, a dla pozostałych argumentów $f$ jest interpolowane liniowo pomiędzy kolejnymi punktami, w których jest już określone, tzn. jeśli już określiliśmy $f(b)$ i $f(c)$, gdzie $b$ i $c$ to sąsiednie punkty w posortowanym ciągu punktów typu $ak$ i $1 - ak$, to dla $x \in (0, 1)$ określamy $f(ax + (1-x)b) = xf(a) + (1-x)f(b)$. $ak \neq 1 - al$, bo to byłoby równoważne z $a = \frac{1}{k+l}$, więc to jest dobrze zdefiniowane. Zarówno ciąg $ak$, jak i ciąg $1 - ak$, jest rozłożonych w odstępach $a$, więc te dwa ciągi są przeplatane i jeśli $y = xak + (1-x)(1-al)$, gdzie $ak$ i $1-al$ sąsiadują z sobą, to $y + a = xa(k+1) + (1-x)(1-a(l-1))$, czyli
+\[f(y + a) = xf(a(k+1)) + (1-x)f(1-a(l-1))\]
 \end{rozwiazanie}
 
 \end{document}
