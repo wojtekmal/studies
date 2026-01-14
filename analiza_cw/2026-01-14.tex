@@ -2,7 +2,7 @@
 
 \begin{document}
 
-\begin{zadanie}
+\begin{zadanie}{1}
 Niech $f:\mathbb{R}\rightarrow\mathbb{R}$ będzie funkcją ciągłą. Czy funkcja może przyjmować każdą wartość rzeczywistą dokładnie 3 razy? A dokładnie 2 razy?
 \end{zadanie}
 \begin{rozwiazanie}
@@ -72,15 +72,19 @@ Zauważmy, że powyższy rachunek też działa, gdy $ak$ i $1-al$ nadal sąsiadu
 Czy istnieje funkcja $f:\mathbb{R}\rightarrow\mathbb{R}$ ciągła we wszystkich punktach $x\in\mathbb{Q}$ i nieciągła we wszystkich punktach $x\notin\mathbb{Q}$? %
 \end{zadanie}
 \begin{rozwiazanie}
-Załóżmy nie wprost, że tak. Wtedy możemy skonstruować ciąg przedziałów otwartych $((l_n, r_n))$ indukcyjnie w następujący sposób. $(l_1, r_1) = (0, 1)$. Gdy już mamy $(l_n, r_n)$, to w nim istnieje liczba wymierna o mianowniku większym niż $n$ (bo zbiór takich liczb jest gęsty); niech to będzie $w_n$. Skoro $f$ jest ciągłe w $w_n$, to istnieje takie $\delta_n$, że dla $\varepsilon=\frac{1}{2n}$ i każdych $x, y \in (w_n - \delta_n, w_n + \delta_n)$
+Załóżmy nie wprost, że tak. Wtedy możemy skonstruować ciąg przedziałów otwartych $((l_n, r_n))$ indukcyjnie w następujący sposób. $(l_1, r_1) = (0, 1)$. Gdy już mamy $(l_n, r_n)$, to niech $(a_n, b_n)$ to $(l_n, r_n)$ obcięte tak, żeby nie zawierać liczby wymiernej o mianowniku mniejszym niż $n$ (tych liczb wymiernych jest skończenie wiele w całym $(0, 1)$, więc to możliwe). Istnieje pewne wymierne $w_n \in (a, b)$. Skoro $f$ jest ciągłe w $w_n$, to istnieje takie $2\delta_n$, że dla $\varepsilon=\frac{1}{2n}$ i każdych $x \in (w_n - \delta_n, w_n + \delta_n)$ i $y \in (x - \delta_n, x + \delta_n) \subset (w_n - 2\delta_n, w_n + 2\delta_n)$
 \[|f(x) - f(y)| \leq |f(x) - f(w_n)| + |f(y) - f(w_n)| \leq \frac{1}{2n} + \frac{1}{2n} = \frac1n\]
+Niech $(l_{n+1}, r_{n+1})=(a_n, b_n)\cap (w_n - \delta_n, w_n + \delta_n)$ (te przedziały mają punkt wspólny, więc ich przecięcie jest przedziałem otwartym). Skonstruowaliśmy nieskończony ciąg zawierających się przedziałów, przy czym każda liczba wymierna nie jest zawarta w nich ddd $n$, więc przecięcie tych przedziałów jest pewną liczbą niewymierną $x$. Dla dowolnego $\varepsilon > 0$ istnieje takie $n$, że $\frac1n < \varepsilon$, czyli też takie $\delta_n$, że dla $y \in (x - \delta_n, x + \delta_n)$ zachodzi $|f(x) - f(y)| \leq \frac1n < \varepsilon$, zatem $f$ jest ciągłe w $x$, sprzeczność.
 \end{rozwiazanie}
 
 \begin{zadanie}{9}
 Niech $f:(0,\infty)\rightarrow\mathbb{R}$ będzie funkcją ciągłą. Załóżmy, że dla każdego $a>0$ mamy $\lim_{n\rightarrow\infty}f\left(\frac{a}{n}\right)=0$. Czy z tego wynika, że $\lim_{x\rightarrow 0^{+}}f(x)=0?$
 \end{zadanie}
 \begin{rozwiazanie}
-
+Załóżmy nie wprost, że $\lim_{x\rightarrow 0^{+}}f(x)\neq 0$. Wtedy jest nieskończony malejący ciąg zbieżny do 0 $(x_m)$, na którym $|f(x_m)| \geq 2M$. Skoro $f$ jest ciągłe, to każde $x_m$ ma otoczenie $(x_m - \delta_m, x_m + \delta_m)$, na którym $|f(y)| \geq |f(x)| - |f(x) - f(y)| \geq 2M - M = M$. Możemy skonstruować ciąg przedziałów $((l_k, r_k))$ indukcyjnie. Niech $(l_1, r_1) = (1, 2)$. Załóżmy, że już mamy $(l_k, r_k)$. Gdy $n > \frac{l_k}{r_k-l_k}$, to $\frac{l_k}{n} < \frac{r_k}{n+1}$, czyli ddd $n$ kolejne przedziały postaci $(\frac{l_k}{n}, \frac{r_k}{n})$ się nachodzą, czyli ich suma zawiera cały przedział $(0, H)$ dla pewnego $H>0$, czyli w szczególności zawiera pewne $x_{m_k}$, które jeszcze nie wybraliśmy w poprzednich krokach indukcji. Zatem istnieje przedział postaci $(\frac{l_k}{n_k}, \frac{r_k}{n_k})$ który zawiera $x_{m_k}$, czyli ma niepuste przecięcie z jego otoczeniem (które jest przedziałem otwartym, bo to przecięcie przedziałów otwartych). Wybierzmy $(l_{k+1}, r_{k+1})$ tak, żeby $(\frac{l_{n+1}}{n_k}, \frac{r_{n+1}}{n_k})$ było tym przecięciem.\\
+Wybraliśmy kolejny przedział tak, że dla każdego $a \in (l_{k+1}, r_{k+1})$ istnieje takie $n_k$, że
+\[\frac{a}{n_k} \in (x_{m_k} - \delta_{m_k}, x_{m_k} + \delta_{m_k})\]
+czyli $|\frac{a}{n_k}| \geq M$.
 \end{rozwiazanie}
 
 \end{document}
