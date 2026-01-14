@@ -56,6 +56,15 @@ Zatem ciąg $\frac{1}{n+\sqrt{2}}$ zawiera liczby parami niewspółmierne. Może
 Wtedy $\lim_{x\to0}f(x)$ nie istnieje, bo istnieją zarówno podciągi zbieżne do 0, na których $f$ jest stale równe 0, jak i takie, na których jest stale równe 1. Za to dla każdego $x > 1$ liczby $x$ i $2x$ są współmierne, więc jedno z $f(x)$, $f(2x)$ jest zerowe, więc dla każdego $x$ zachodzi $f(x)f(2x) = 0$, więc $\lim_{x\to0} f(x)f(2x) = 0$. Zatem teza nie zachodzi.
 \end{rozwiazanie}
 
+\begin{zadanie}{6}
+Załóżmy, że funkcje $f,g:\mathbb{R}\rightarrow\mathbb{R}$ są okresowe oraz $\lim_{x\rightarrow \infty}(f(x)-g(x))=0.$ Czy z tego wynika, że $f=g$?
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $a$ i $b$ to okresy odpowiednio $f$ i $g$. Dla dowolnych $k, l \in \Z, x \in \R$ i dowolnego $n \in \Z$ zachodzi
+\[f(x + kb) - f(x + lb) = f(x + kb + na) - g(x + kb + na) + g(x + lb + na) - f(x + lb + na)\]
+Po wzięciu granicy prawej strony dla $n \to \infty$ otrzymujemy, że prawa strona zbiega do 0, czyli lewa musi być równa 0, bo jest niezależna od $n$, czyli $f(x + kb) = f(x + lb)$ dla dowolnych $k, l$. Z okresowości $f$ jest stałe dla wszystkich argumentów postaci $x + kb + na$ i podobnie $g$, więc skoro w granicy $f$ i $g$ są dowolnie bliskie, to muszą być równe na tych argumentach, czyli w szczególności $f(x) = g(x)$ i to dla każdego $x$, więc $f = g$.
+\end{rozwiazanie}
+
 \begin{zadanie}{7}
 Znajdź wszystkie liczby $a\in(0,1)$ o następującej własności: dla dowolnej funkcji ciągłej $f:[0,1]\rightarrow\mathbb{R}$, spełniającej warunek $f(0)=f(1)$, istnieje $x\in[0,1-a]$ takie, że $f(x)=f(x+a).$
 \end{zadanie}
@@ -84,7 +93,7 @@ Niech $f:(0,\infty)\rightarrow\mathbb{R}$ będzie funkcją ciągłą. Załóżmy
 Załóżmy nie wprost, że $\lim_{x\rightarrow 0^{+}}f(x)\neq 0$. Wtedy jest nieskończony malejący ciąg zbieżny do 0 $(x_m)$, na którym $|f(x_m)| \geq 2M$. Skoro $f$ jest ciągłe, to każde $x_m$ ma otoczenie $(x_m - \delta_m, x_m + \delta_m)$, na którym $|f(y)| \geq |f(x)| - |f(x) - f(y)| \geq 2M - M = M$. Możemy skonstruować ciąg przedziałów $((l_k, r_k))$ indukcyjnie. Niech $(l_1, r_1) = (1, 2)$. Załóżmy, że już mamy $(l_k, r_k)$. Gdy $n > \frac{l_k}{r_k-l_k}$, to $\frac{l_k}{n} < \frac{r_k}{n+1}$, czyli ddd $n$ kolejne przedziały postaci $(\frac{l_k}{n}, \frac{r_k}{n})$ się nachodzą, czyli ich suma zawiera cały przedział $(0, H)$ dla pewnego $H>0$, czyli w szczególności zawiera pewne $x_{m_k}$, które jeszcze nie wybraliśmy w poprzednich krokach indukcji. Zatem istnieje przedział postaci $(\frac{l_k}{n_k}, \frac{r_k}{n_k})$ który zawiera $x_{m_k}$, czyli ma niepuste przecięcie z jego otoczeniem (które jest przedziałem otwartym, bo to przecięcie przedziałów otwartych). Wybierzmy $(l_{k+1}, r_{k+1})$ tak, żeby $(\frac{l_{n+1}}{n_k}, \frac{r_{n+1}}{n_k})$ było tym przecięciem.\\
 Wybraliśmy kolejny przedział tak, że dla każdego $a \in (l_{k+1}, r_{k+1})$ istnieje takie $n_k$, że
 \[\frac{a}{n_k} \in (x_{m_k} - \delta_{m_k}, x_{m_k} + \delta_{m_k})\]
-czyli $|\frac{a}{n_k}| \geq M$.
+czyli $\left|f\left(\frac{a}{n_k}\right)\right| \geq M$. Skoro przedziały w ciągu $((l_k, r_k))$ zawierają kolejne przedziały w tym ciągu, to ich przecięcie jest przedziałem lub liczbą rzeczywistą; w każdym przypadku istnieje takie $a$, które należy do każdego $(l_k, r_k)$ i ciąg $\frac{a}{n}$ ma nieskończony podciąg $\frac{a}{n_k}$ na którym $f$ nie zbiega do $0$, bo ma wartości bezwzględne nie mniejsze niż $M$, co jest sprzecznością.
 \end{rozwiazanie}
 
 \end{document}
