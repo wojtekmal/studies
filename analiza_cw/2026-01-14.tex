@@ -63,8 +63,24 @@ Znajdź wszystkie liczby $a\in(0,1)$ o następującej własności: dla dowolnej 
 Gdy $a = \frac1n$, to niech $g(x) = f(x + a) - f(x)$. $g$ jest różnicą złożeń funkcji ciągłych, więc jest ciągła. Wtedy 
 \[\sum_{k=0}^{n-1} g\left(\frac{k}{n}\right) = \sum_{k=0}^{n-1} f\left(\frac{k+1}{n}\right) - f\left(\frac{k}{n}\right) = f(1) - f(0) = 0\]
 Zatem przynajmniej jedna liczba postaci $g\left(\frac{k}{n}\right)$ jest nieujemna i przynajmniej jedna jest niedodatnia, czyli z tw. o wartościach pośrednich, $g$ przyjmuje warość 0 gdzieś pomiędzy nimi, czyli istnieje takie $x\in [0, 1]$, że $f(x+a) = f(x)$.\\
-Gdy $a$ nie jest postaci $\frac1n$, to możemy określić $f$ w następujący sposób: $f(ak) = k$ i $f(1-ak) = -k$ dla $k \in [0, n]$, gdzie $n = \lfloor\frac1a\rfloor$, a dla pozostałych argumentów $f$ jest interpolowane liniowo pomiędzy kolejnymi punktami, w których jest już określone, tzn. jeśli już określiliśmy $f(b)$ i $f(c)$, gdzie $b$ i $c$ to sąsiednie punkty w posortowanym ciągu punktów typu $ak$ i $1 - ak$, to dla $x \in (0, 1)$ określamy $f(ax + (1-x)b) = xf(a) + (1-x)f(b)$. $ak \neq 1 - al$, bo to byłoby równoważne z $a = \frac{1}{k+l}$, więc to jest dobrze zdefiniowane. Zarówno ciąg $ak$, jak i ciąg $1 - ak$, jest rozłożonych w odstępach $a$, więc te dwa ciągi są przeplatane i jeśli $y = xak + (1-x)(1-al)$, gdzie $ak$ i $1-al$ sąsiadują z sobą, to $y + a = xa(k+1) + (1-x)(1-a(l-1))$, czyli
-\[f(y + a) = xf(a(k+1)) + (1-x)f(1-a(l-1))\]
+Gdy $a$ nie jest postaci $\frac1n$, to możemy określić $f$ w następujący sposób: $f(ak) = k$ i $f(1-ak) = -k$ dla $k \in [0, n]$, gdzie $n = \lfloor\frac1a\rfloor$, a dla pozostałych argumentów $f$ jest interpolowane liniowo pomiędzy kolejnymi punktami, w których jest już określone, tzn. jeśli już określiliśmy $f(b)$ i $f(c)$, gdzie $b$ i $c$ to sąsiednie punkty w posortowanym ciągu punktów typu $ak$ i $1 - ak$, to dla $x \in (0, 1)$ określamy $f(ax + (1-x)b) = xf(a) + (1-x)f(b)$. $ak \neq 1 - al$, bo to byłoby równoważne z $a = \frac{1}{k+l}$, więc to jest dobrze zdefiniowane. Zarówno ciąg $ak$, jak i ciąg $1 - ak$, jest rozłożonych w odstępach $a$, więc te dwa ciągi są przeplatane. Jeśli $y = xak + (1-x)(1-al)$, gdzie $ak$ i $1-al$ sąsiadują z sobą, to $y + a = xa(k+1) + (1-x)(1-a(l-1))$, czyli
+\[f(y + a) = xf(a(k+1)) + (1-x)f(1-a(l-1)) = x(k+1) + (1-x)(1-l) =\]\[ xk + (1-x)(-l) + 1 = xf(ak) + (1-x)f(1-al) + 1 = f(y) + 1\]
+Zauważmy, że powyższy rachunek też działa, gdy $ak$ i $1-al$ nadal sąsiadują, ale są w odwrotnej kolejności, tyle że trzeba zamienić podstawić $1-x$ za $x$. Zatem $f(y + a) = f(y) + 1$ dla każdego $y \in [0, 1]$, czyli nie ma takiego $y \in [0, 1]$, że $f(y+a) = f(y)$.
+\end{rozwiazanie}
+
+\begin{zadanie}{8}
+Czy istnieje funkcja $f:\mathbb{R}\rightarrow\mathbb{R}$ ciągła we wszystkich punktach $x\in\mathbb{Q}$ i nieciągła we wszystkich punktach $x\notin\mathbb{Q}$? %
+\end{zadanie}
+\begin{rozwiazanie}
+Załóżmy nie wprost, że tak. Wtedy możemy skonstruować ciąg przedziałów otwartych $((l_n, r_n))$ indukcyjnie w następujący sposób. $(l_1, r_1) = (0, 1)$. Gdy już mamy $(l_n, r_n)$, to w nim istnieje liczba wymierna o mianowniku większym niż $n$ (bo zbiór takich liczb jest gęsty); niech to będzie $w_n$. Skoro $f$ jest ciągłe w $w_n$, to istnieje takie $\delta_n$, że dla $\varepsilon=\frac{1}{2n}$ i każdych $x, y \in (w_n - \delta_n, w_n + \delta_n)$
+\[|f(x) - f(y)| \leq |f(x) - f(w_n)| + |f(y) - f(w_n)| \leq \frac{1}{2n} + \frac{1}{2n} = \frac1n\]
+\end{rozwiazanie}
+
+\begin{zadanie}{9}
+Niech $f:(0,\infty)\rightarrow\mathbb{R}$ będzie funkcją ciągłą. Załóżmy, że dla każdego $a>0$ mamy $\lim_{n\rightarrow\infty}f\left(\frac{a}{n}\right)=0$. Czy z tego wynika, że $\lim_{x\rightarrow 0^{+}}f(x)=0?$
+\end{zadanie}
+\begin{rozwiazanie}
+
 \end{rozwiazanie}
 
 \end{document}
