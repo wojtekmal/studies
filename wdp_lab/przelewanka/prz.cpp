@@ -41,6 +41,7 @@ struct Solve
     {
         vector<ull> volumes = states.front().volumes;
         int cost = states.front().cost;
+        states.pop();
 
         for (int i = 0; i < n; i++)
         {
@@ -56,13 +57,16 @@ struct Solve
             consider_state({new_volumes, cost + 1});
         }
 
-        for (int i = 0; i < n; i++) for(int j = 0; j < n; j++)
+        for (int i = 0; i < n; i++) 
         {
-            ull to_pour = min(volumes[i], cups[j] - volumes[j]);
-            vector<ull> new_volumes = volumes;
-            volumes[i] -= to_pour;
-            volumes[j] += to_pour;
-            consider_state({new_volumes, cost + 1});
+            for(int j = 0; j < n; j++)
+            {
+                ull to_pour = min(volumes[i], cups[j] - volumes[j]);
+                vector<ull> new_volumes = volumes;
+                new_volumes[i] -= to_pour;
+                new_volumes[j] += to_pour;
+                consider_state({new_volumes, cost + 1});
+            }
         }
     }
 
