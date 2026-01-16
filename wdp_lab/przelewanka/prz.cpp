@@ -28,7 +28,7 @@ struct Solve
         for (int i = 0; i < n; i++)
         {
             if (targets[i] != 0 && targets[i] != cups[i]) return -1;
-            if (targets[i] == cups[i]) full_count++;
+            if (targets[i] == cups[i] && cups[i] > 0) full_count++;
         }
 
         return full_count;
@@ -38,6 +38,9 @@ struct Solve
     {
         ull unit = cups[0];
         for (int i = 1; i < n; i++) unit = gcd(unit, cups[i]);
+        if (unit == 0) return false;
+        for (int i = 0; i < n; i++) if (targets[i] % unit != 0) return true;
+        return false;
     }
 
     ull hash_vector(const vector<ull>& nums)
@@ -101,6 +104,12 @@ struct Solve
         if (check_easy())
         {
             cout << check_easy() << "\n";
+            return;
+        }
+
+        if (check_easy_2())
+        {
+            cout << "-1\n";
             return;
         }
 
