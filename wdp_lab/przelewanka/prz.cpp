@@ -2,8 +2,9 @@
 #include <iostream>
 #include <unordered_set>
 #include <queue>
+#include <numeric>
 using namespace std;
-#define ull unsigned long long
+typedef unsigned long long ull;
 
 struct Solve
 {
@@ -18,6 +19,26 @@ struct Solve
     vector<ull> targets;
     unordered_set<ull> hashes;
     queue<State> states;
+
+    int check_easy()
+    {
+        for (int i = 1; i < n; i++) if (cups[i] != cups[0]) return 0;
+        int full_count = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (targets[i] != 0 && targets[i] != cups[i]) return -1;
+            if (targets[i] == cups[i]) full_count++;
+        }
+
+        return full_count;
+    }
+
+    bool check_easy_2()
+    {
+        ull unit = cups[0];
+        for (int i = 1; i < n; i++) unit = gcd(unit, cups[i]);
+    }
 
     ull hash_vector(const vector<ull>& nums)
     {
@@ -76,6 +97,12 @@ struct Solve
         cups = vector<ull>(n);
         targets = vector<ull>(n);
         for (int i = 0; i < n; i++) cin >> cups[i] >> targets[i];
+
+        if (check_easy())
+        {
+            cout << check_easy() << "\n";
+            return;
+        }
 
         State start_state{vector<ull>(n), 0};
         hashes.insert(hash_vector(start_state.volumes));
