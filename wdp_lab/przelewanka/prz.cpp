@@ -3,8 +3,6 @@
 #include <unordered_set>
 #include <queue>
 #include <numeric>
-#include <limits.h>
-#include <algorithm>
 using namespace std;
 typedef unsigned long long ull;
 
@@ -22,24 +20,24 @@ struct Solve
     unordered_set<ull> hashes;
     queue<State> states;
 
-    int check_easy()
+    int check_easy_1()
     {
-        for (int i = 1; i < n; i++) if (cups[i] != cups[0]) return 0;
-        int full_count = 0;
-
+        int result = 0;
+        
         for (int i = 0; i < n; i++)
         {
             if (targets[i] != 0 && targets[i] != cups[i]) return -1;
-            if (targets[i] == cups[i] && cups[i] > 0) full_count++;
+            if (targets[i] == cups[i] && cups[i] > 0) result++;
         }
 
-        return full_count;
+        return result;
     }
 
     bool check_easy_2()
     {
-        ull unit = *max_element(cups.begin(), cups.end());
-        for (int i = 0; i < n; i++) unit = gcd(unit, cups[i]);
+        if (n == 0) return false;
+        ull unit = cups[0];
+        for (int i = 1; i < n; i++) unit = gcd(unit, cups[i]);
         if (unit == 0) return false;
         for (int i = 0; i < n; i++) if (targets[i] % unit != 0) return true;
         return false;
@@ -103,9 +101,9 @@ struct Solve
         targets = vector<ull>(n);
         for (int i = 0; i < n; i++) cin >> cups[i] >> targets[i];
 
-        if (check_easy())
+        if (check_easy_1() != -1)
         {
-            cout << check_easy() << "\n";
+            cout << check_easy_1() << "\n";
             return;
         }
 
