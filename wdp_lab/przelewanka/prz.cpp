@@ -3,6 +3,8 @@
 #include <unordered_set>
 #include <queue>
 #include <numeric>
+#include <limits.h>
+#include <algorithm>
 using namespace std;
 typedef unsigned long long ull;
 
@@ -36,8 +38,8 @@ struct Solve
 
     bool check_easy_2()
     {
-        ull unit = cups[0];
-        for (int i = 1; i < n; i++) unit = gcd(unit, cups[i]);
+        ull unit = *max_element(cups.begin(), cups.end());
+        for (int i = 0; i < n; i++) unit = gcd(unit, cups[i]);
         if (unit == 0) return false;
         for (int i = 0; i < n; i++) if (targets[i] % unit != 0) return true;
         return false;
