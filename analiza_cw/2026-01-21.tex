@@ -18,7 +18,29 @@ Zbadaj jednostajną ciągłość i lipschitzowskość funkcji zadanych wzorami:
     \item Gdyby to było jednostajnie ciągłe, to dla każdego $\varepsilon$ istniałoby takie $\delta$, że dla $|x-y| < \delta$ zachodziłoby $|\log x - \log y| < \varepsilon$. Weźmy dowolne $\varepsilon < 1$ i $\delta < 1$, $x = \delta$, $y = \delta^{\frac{1}{-\log\delta} + 1}$. Wtedy $|x-y| < x = \delta$, ale
     \[|\log x - \log y| = |\log \delta^{\frac{1}{-\log\delta} + 1} - \log\delta| = 1 > \varepsilon \]
     Tak więc to nie jest jednostajnie ciągłe ani lipschitzowskie.
+    \item ,
+    \item Chcemy wykazać lipschitzowskość, czyli chcemy 
+    \[|\arctan x - \arctan y| \leq L|x - y|\]
+    Każda liczba rzeczywista jest wartością tangensa, więc możemy podstawić $\tan x$ za $x$ i $\tan y$ za $y$ i wykazać, że dla $x, y \in (-\pi, \pi)$ zachodzi
+    \[|x - y| \leq L|\tan x - \tan y|\]
+    Tangens jest rosnący, więc powyższą nierówność możemy rozbić na sumę $n$ takich samych nierówności, ale na mniejszych przedziałach, więc wystarczy wykazać dla $|x-y| < \delta$. Powyższa nierówność jest równoważna
+    \[\left|\frac{\sin x \cos y - \sin y \cos x}{\cos x \cos y}\right| \geq \frac1L |x - y|\]
+    albo
+    \[\left|\frac{\sin (x - y)}{\cos x \cos y}\right| \geq \frac1L |x - y|\]
+    Możemy równie dobrze wykazać mocniejszą nierówność
+    \[|\sin (x - y)| \geq \frac1L |x - y|\]
+    dla $|x-y|<\delta$. Niech $z = x - y$. $\frac{\sin z}{z}$ można dopełnić do ciągłej funkcji dobierając wartość $1$ w $z=0$, więc $\frac{\sin z}{z} > \varepsilon$ dla dostatecznie małych $z$, czyli możemy wybrać $L = \frac{1}{\varepsilon}$.
+
 \end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{3}
+Niech $f:(0,\infty)\setminus\{(k\pi)^{2}:k\in\mathbb{Z}\}\rightarrow\mathbb{R}$ będzie zadana wzorem
+$$ f(x)=\arctan\left(\frac{1}{\sin^{2}(\sqrt{x})}\right) $$
+Udowodnij, że $f$ jest jednostajnie ciągła.
+\end{zadanie}
+\begin{rozwiazanie}
+
 \end{rozwiazanie}
 
 \begin{zadanie}{4}
