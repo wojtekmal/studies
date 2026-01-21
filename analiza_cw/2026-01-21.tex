@@ -1,0 +1,36 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Zbadaj jednostajną ciągłość i lipschitzowskość funkcji zadanych wzorami:
+\begin{enumerate}
+    \item[(a)] $f(x)=2^{\sqrt{x}}, \quad f:[0,\infty)\rightarrow\mathbb{R}$
+    \item[(b)] $f(x)=\log x, \quad f:(0,\infty)\rightarrow\mathbb{R}$
+    \item[(c)] $f(x)=e^{-\frac{1}{x}}, \quad f:(0,\infty)\rightarrow\mathbb{R}$
+    \item[(d)] $f(x)=\text{arctg}(x), \quad f:\mathbb{R}\rightarrow\mathbb{R}$
+    \item[(e)] $f(x)=\exp(\cos(x)), \quad f:\mathbb{R}\rightarrow\mathbb{R}$
+\end{enumerate}
+\end{zadanie}
+\begin{rozwiazanie}
+\begin{enumerate}[label=(\alph*)]
+    \item Gdyby to było jednostajnie ciągłe, to istniałoby takie $M$, że dla $x \geq 1$ zachodziłoby $2^{\sqrt{x}} \leq Mx$, czyli podstawiając $\sqrt{x}$ za $x$ dostajemy $2^{x} \leq Mx^2$, czyli $2^n \leq Mn^2$ dla $n \geq 1$, co przeczy hierarchii ciągów. Tak więc to też nie jest lipschitzowskie.
+    \item Gdyby to było jednostajnie ciągłe, to dla każdego $\varepsilon$ istniałoby takie $\delta$, że dla $|x-y| < \delta$ zachodziłoby $|\log x - \log y| < \varepsilon$. Weźmy dowolne $\varepsilon < 1$ i $\delta < 1$, $x = \delta$, $y = \delta^{\frac{1}{-\log\delta} + 1}$. Wtedy $|x-y| < x = \delta$, ale
+    \[|\log x - \log y| = |\log \delta^{\frac{1}{-\log\delta} + 1} - \log\delta| = 1 > \varepsilon \]
+    Tak więc to nie jest jednostajnie ciągłe ani lipschitzowskie.
+\end{enumerate}
+\end{rozwiazanie}
+
+\begin{zadanie}{4}
+Załóżmy, że $f:[0,\infty)\rightarrow\mathbb{R}$ jest jednostajnie ciągła. Wykaż zbieżność szeregu
+$$ \sum_{n=1}^{\infty}\frac{1}{n}(f(n)-2f(n+1)+f(n+2)). $$
+\end{zadanie}
+\begin{rozwiazanie}
+Skoro $f$ jest jednostajnie ciągłe, to istnieje takie $M$, że $|f(n)| \leq Mn$. Niech $A_N = \sum_{n=1}^{N}(f(n)-2f(n+1)+f(n+2)) = f(n+2) - f(n+1)$. $f$ jest lipschitzowskie, więc $|A_N| \leq L((n+2) - (n+1)) = L$ dla pewnego $L$. Obliczmy sumy częściowe szeregu za pomocą przekształcenia Abela:
+\[S_N = \sum_{n=1}^{N}\frac{1}{n}(f(n)-2f(n+1)+f(n+2)) = \sum_{n=1}^{N-1}\frac{A_n}{n(n+1)} + \frac{A_N}{N}\]
+Widzimy, że ciąg $(S_N)$ jest sumą dwóch ciągów. Drugi jest zbieżny do 0, bo $|\frac{A_N}{N}| \leq \frac{L}{N} \to 0$, a pierwszy ciąg jest zbieżny, bo to sumy częściowe szeregu, który jest bezwględnie zbieżny:
+\[\sum_{n=1}^{\infty}\left|\frac{A_n}{n(n+1)}\right| \leq L\sum_{n=1}^{\infty}\frac{1}{n^2} < \infty\]
+Zatem ciąg $(S_n)$ jest zbieżny, czyli badany szereg jest zbieżny.
+\end{rozwiazanie}
+
+\end{document}
