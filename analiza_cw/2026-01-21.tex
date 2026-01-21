@@ -40,7 +40,9 @@ $$ f(x)=\arctan\left(\frac{1}{\sin^{2}(\sqrt{x})}\right) $$
 Udowodnij, że $f$ jest jednostajnie ciągła.
 \end{zadanie}
 \begin{rozwiazanie}
-
+Widać, że $f$ ma takie same wartości dla $x$ o tym samym $\lfloor\frac{\sqrt{x}}{\pi}\rfloor$, czyli $f$ jest taka sama w przedziale $((k\pi)^2, ((k+1)\pi)^2)$ jak przedziale $(0, \pi)$, ale niejednolicie rozciągnięta, w sensie przedziałowi $(x - \delta, x + \delta)$ odpowiada mniejszy przedział z takimi samymi wartościami, więc żeby wykazać, że odchylenie $f$ w $(x - \delta, x + \delta)$ jest mniejsze od $\varepsilon$, wystarczy wykazać, że jest ono mniejsze niż $\varepsilon$ dla pewnego $x \in (0, \pi)$. Problem się sprowadza do wykazania jednostajnej ciągłości na $(0, \pi)$. Zauważmy, że $\lim_{x\to\infty} \arctan x = 1$, a $\frac{1}{\sin^{2}(\sqrt{x})}$ jest rosnące i nieograniczone dla $x \to 0$ (bo $\sin^{2}(\sqrt{x})$ monotonicznie zbiega do 0), więc
+\[\lim_{x\to0} \arctan\left(\frac{1}{\sin^{2}(\sqrt{x})}\right) = 1\]
+Podobnie granica w $\pi$ wynosi $1$. Zatem granice lewostronne i prawostronne $f$ są równe dla $x$ postaci $(k\pi)^2$, czyli możemy rozszerzyć $f$ do funkcji ciągłej na przedziale $[0, \pi]$, czyli $f$ jest jednostajnie ciągłe na tym przedziale, czyli jest jednostajnie ciągłe na $(0, \infty)$.
 \end{rozwiazanie}
 
 \begin{zadanie}{4}
