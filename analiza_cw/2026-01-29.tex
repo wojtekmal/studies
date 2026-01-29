@@ -24,8 +24,22 @@ BSO załóżmy, że $x \leq y \leq z$ oraz $y - x > z - y$. Wtedy
 \[x \leq \frac{x+y}{2} \leq \frac{x + z}{2} \leq \frac{x + y + z}{3} \leq y \leq \frac{y+z}{2} \leq z\]
 Pierwsza nierówność wynika z pierwszego założenia BSO, druga też, $\frac{x + z}{2} \leq y$ z drugiego założenia BSO oraz $\frac{x + y + z}{3}$ jest ich średnią ważoną, więc jest pomiędzy nimi, a piąta i szósta wynikają z pierwszego założenia BSO. Z definicji funkcji wypukłej:
 \begin{equation}
-\frac{f(y)}{3} + \frac{f(z)}{3} = \frac23\left(\frac12f(y) + \frac12f(z)\right) \geq \frac23f(\frac{y+z}{2})
+\frac{f(y)}{3} + \frac{f(z)}{3} = \frac23\left(\frac12f(y) + \frac12f(z)\right) \geq \frac23f\left(\frac{y+z}{2}\right)
 \end{equation}
+Określmy $g$ jako maksimum z $f$ i siecznej wykresu przechodzącej przez $f\left(\frac{x+y}{2}\right)$ i $f\left(\frac{x+z}{2}\right)$. Wtedy $g$ jest funkcją wypukłą różniącej się od $f$ tylko na odcinku $\left(\frac{x+y}{2}, \frac{x+z}{2}\right)$. Zachodzi
+\[\frac{f(x)}{3} + f\left(\frac{x + y + z}{3}\right) = \frac{4}{3}\left(\frac14g(x) +  \frac34g\left(\frac{x + y + z}{3}\right)\right) \geq \frac{4}{3}g\left(\frac{2x+y+z}{4}\right) = \]
+\[\frac{4}{3}g\left(\frac12 \frac{x+y}{2} + \frac12\frac{y+z}{2}\right) = \frac43\left(\frac12 g\left(\frac{x+y}{2}\right) + \frac12 g\left(\frac{y+z}{2}\right)\right) =\]\[ \frac23\left(f\left(\frac{x+y}{2}\right) + f\left(\frac{y+z}{2}\right)\right)\]
+Dodając powyższą nierówność do (1) otrzymujemy tezę.
 \end{rozwiazanie}
+
+\begin{zadanie}{4}
+Niech $a_1, a_2, b_1, b_2 \in \R_+$. Z nierówności Höldera mamy, że
+\[a_1b_1 + a_2b_2 \leq \left(a_1^{\frac{1}{\lambda}} + a_2^{\frac{1}{\lambda}}\right)^\lambda + \left(b_1^{\frac{1}{1-\lambda}} + b_2^{\frac{1}{1-\lambda}}\right)^{1-\lambda}\]
+Podstawmy $a_1 = f(x)^\lambda, a_2 = g(x)^\lambda, b_1 = f(y)^{1-\lambda}, b_2 = g(y)^{1-\lambda}$:
+\[f(x)^\lambda f(y)^{1-\lambda} + g(x)^\lambda g(y)^{1-\lambda} \leq \left(f(x) + g(x)\right)^\lambda + \left(f(y) + g(y)\right)^{1-\lambda}\]
+Wkładając definicję wypukłości $\log \circ f$ do $\exp$ stronami dostajemy $f(\lambda x + (1-\lambda)y) \leq f(x)^\lambda f(y)^{1-\lambda}$ i podobnie dla $\log \circ g$, więc z powyższej nierówności wynika że
+\[f(\lambda x + (1-\lambda)y) + g(\lambda x + (1-\lambda)y) \leq \left(f(x) + g(x)\right)^\lambda + \left(f(y) + g(y)\right)^{1-\lambda}\]
+a to jest definicja wypukłości $\log \circ (f+g)$ włożona do $\exp$ stronami.
+\end{zadanie}
 
 \end{document}
