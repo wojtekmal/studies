@@ -1,0 +1,26 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Dla jakich $p, q \in \mathbb{R}$ wykres funkcji $y = x^3 + px + q$ jest styczny do osi OX?
+\end{zadanie}
+\begin{rozwiazanie}
+Żeby wykres był styczny do OX w jakimś $x$, to zarówno funckja, jak i jej pochodna, muszą się zerować w tym miejscu. Mamy więc układ równań, który musi być spełniony dla danych $p$ i $q$ oraz dowolnego $x$:
+\[\begin{cases}
+    x^3 + px + q = 0\\
+    3x^2 + p = 0
+\end{cases}\]
+$3x^2 \geq 0$, więc z drugiego równania wynika, że $p \leq 0$. Drugie równanie implikuje, że $x = \sqrt{\frac{-p}{3}}$ lub $x = -\sqrt{\frac{-p}{3}}$. Podstawiając do pierwszego równania dostajemy, że $q = (-p)^\frac32 \left(\frac{1}{\sqrt{27}} + \frac{1}{\sqrt3} \right)$ lub $q = -(-p)^\frac32 \left(\frac{1}{\sqrt{27}} + \frac{1}{\sqrt3} \right)$. Wszystkie przekształcenia są równoznaczne, więc odpowiedź brzmi wszystkie nieujemne $p$ oraz $q$ będące jednej z dwóch opisanych powyżej postaci.
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+Rozważamy lustro w kształcie paraboli $x = y^2$. Niech $c \in \mathbb{R}$. Promień świetlny biegnie od punktu $(+\infty, c)$ do punktu $(c^2, c)$, a następnie ulega odbiciu zgodnie z zasadą: „kąt padania jest równy kątowi odbicia".
+
+Uzasadnij, że po odbiciu promień świetlny przejdzie przez punkt $\left(\frac{1}{4}, 0\right)$. (Jest to ognisko paraboli $x = y^2$.)
+\end{zadanie}
+\begin{rozwiazanie}
+Na początek zamieńmy współrzędne, ponieważ tak łatwiej mi się o tym myśli. Niech $A = (c, c^2)$ oraz $B = (0, \frac14)$ . Styczna do wykresu w $A$ ma pochylenie $2c$, czyli przecina OY w $C = (0, c^2 - 2c \cdot c) = (0, -c^2)$, zatem $BC = c^2 + \frac14$. Z tw. Pitagorasa $AB = \sqrt{(c - 0)^2 + (c^2 - \frac14)^2} = c^2 + \frac14$. Zatem trójkąt $ABC$ jest równoramienny, czyli kąty $BAC$ i $BCA$ są równe. Kąt padania jest równy kątowi $ACB$, ponieważ początkowa trasa promienia jest równoległa do OY. Zatem kąt $BAC$ jest równy kątowi odbicia, czyli późniejsza trasa promienia przechodzi przez ognisko.
+\end{rozwiazanie}
+
+\end{document}
