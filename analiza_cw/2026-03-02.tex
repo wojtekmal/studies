@@ -1,0 +1,26 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+    Zbadaj różniczkowalność funkcji
+
+$$f(x) = \begin{cases} \operatorname{arctg} \frac{1}{|x|} & \text{dla } x \neq 0, \\ \frac{\pi}{2} & \text{dla } x = 0. \end{cases}$$
+\end{zadanie}
+\begin{rozwiazanie}
+$f(x)$ jest funkcją odwrotną do funkcji $g(x) = \frac{1}{tan(x)}$, a $g$ jest ciągłą bijekcją z $(0, \frac{\pi}{2})$ na $(0, \infty)$, więc z tw. o pochodnej funkcji odwrotnej, $f$ jest różniczkowalne na $(0, \infty)$. Podobnie jest różniczkowalne na $(-\infty, 0)$. Niech $x = g(y)$ i niech $y = z + \frac{\pi}{2}$.
+\[\lim_{x\to0^+} \frac{f(x) - f(0)}{x} = \lim_{y\to {\frac{\pi}{2}}^-} \left(y - \frac{\pi}{2}\right) \frac{\sin y}{\cos y} = \lim_{z\to0^-} -\frac{z\cos z}{\sin z} = -1\]
+Podobnym rachunkiem można otrzymać, że pochodna lewostronna w 0 to 1, czyli że $f$ nie jest różniczkowalne w 0.
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+Podaj przykład funkcji $f$, punktu $p$ i ciągów $(x_n), (z_n)$ takich, że $\lim_{n\to\infty} x_n = p = \lim_{n\to\infty} z_n$, $x_n \neq p, z_n \neq p, x_n \neq z_n, f$ jest różniczkowalna w punkcie $p$, ale
+
+$$\lim_{n\to\infty} \frac{f(z_n) - f(x_n)}{z_n - x_n} \neq f'(p).$$
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $f = x^2\sin\frac1x$, $x_n = \frac{1}{2n\pi + \frac\pi2}$, $z_n = \frac{1}{2n\pi - \frac\pi2}$. Na ćwiczeniach było, że $f'(0) = 0$. Pozostaje zauważyć, że
+\[\frac{f(x_n) - f(z_n)}{x_n - z_n} = \frac{\frac{1}{\left(2n\pi + \frac\pi2\right)^2} + \frac{1}{\left(2n\pi - \frac\pi2\right)^2}}{\frac{1}{2n\pi + \frac\pi2} - \frac{1}{2n\pi - \frac\pi2}} = \frac{\frac{1}{\left(\pi + \frac{\pi}{4n}\right)^2} + \frac{1}{\left(\pi - \frac{\pi}{4n}\right)^2}}{-\frac{\pi}{\left(\pi + \frac{\pi}{4n}\right)\left(\pi - \frac{\pi}{4n}\right)}} \xrightarrow{n\to\infty} \]
+\end{rozwiazanie}
+
+\end{document}
