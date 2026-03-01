@@ -19,8 +19,8 @@ Podaj przykład funkcji $f$, punktu $p$ i ciągów $(x_n), (z_n)$ takich, że $\
 $$\lim_{n\to\infty} \frac{f(z_n) - f(x_n)}{z_n - x_n} \neq f'(p).$$
 \end{zadanie}
 \begin{rozwiazanie}
-Niech $f = x^2\sin\frac1x$, $x_n = \frac{1}{2n\pi + \frac\pi2}$, $z_n = \frac{1}{2n\pi - \frac\pi2}$. Na ćwiczeniach było, że $f'(0) = 0$. Pozostaje zauważyć, że
-\[\frac{f(x_n) - f(z_n)}{x_n - z_n} = \frac{\frac{1}{\left(2n\pi + \frac\pi2\right)^2} + \frac{1}{\left(2n\pi - \frac\pi2\right)^2}}{\frac{1}{2n\pi + \frac\pi2} - \frac{1}{2n\pi - \frac\pi2}} = \frac{\frac{1}{\left(\pi + \frac{\pi}{4n}\right)^2} + \frac{1}{\left(\pi - \frac{\pi}{4n}\right)^2}}{-\frac{\pi}{\left(\pi + \frac{\pi}{4n}\right)\left(\pi - \frac{\pi}{4n}\right)}} \xrightarrow{n\to\infty} \]
+Niech $f(x) = x^2\sin\frac1x$, $x_n = \frac{1}{2n\pi + \frac\pi2}$, $z_n = \frac{1}{2n\pi - \frac\pi2}$. Na ćwiczeniach było, że $f'(0) = 0$. Pozostaje zauważyć, że
+\[\frac{f(x_n) - f(z_n)}{x_n - z_n} = \frac{\frac{1}{\left(2n\pi + \frac\pi2\right)^2} + \frac{1}{\left(2n\pi - \frac\pi2\right)^2}}{\frac{1}{2n\pi + \frac\pi2} - \frac{1}{2n\pi - \frac\pi2}} = \frac{\frac{1}{\left(\pi + \frac{\pi}{4n}\right)^2} + \frac{1}{\left(\pi - \frac{\pi}{4n}\right)^2}}{-\frac{\pi}{\left(\pi + \frac{\pi}{4n}\right)\left(\pi - \frac{\pi}{4n}\right)}} \xrightarrow{n\to\infty} \frac{\frac{1}{2\pi^2}}{-\frac{\pi}{\pi^2}} = -\frac{1}{2\pi}\]
 \end{rozwiazanie}
 
 \end{document}
