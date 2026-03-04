@@ -1,9 +1,11 @@
+Uwaga: wiele metod ma niezdefiniowane zachowanie w szczególnych przypadkach, np. pop() gdy stos jest pusty.
+
 Stos
 void init(); // Tworzy pusty stos.
 void push(T elem); // Dodaje element na górę stosu.
-T pop(); // Wyrzuca z stosu element, który obecnie znajduje się na górze.
-bool empty(); // Zwraca false jeśli stos jest 
-size_t size();
+T pop(); // Zdejmuje z stosu element, który obecnie znajduje się na górze oraz go zwraca.
+bool empty(); // Zwraca true jeśli stos jest pusty, false w przeciwnym przypadku.
+size_t size(); // Zwraca liczbę elementów znajdujących się obecnie na stosie.
 
 Użycie:
 Stos<int> s;
@@ -14,11 +16,11 @@ int x = s.pop();
 
 
 Kolejka
-void init();
-void push(T elem);
-T pop();
-bool empty();
-size_t size();
+void init(); // Tworzy pustą kolejkę.
+void push(T elem); // Dodaje element na koniec kolejki.
+T pop(); // Wyciąga z kolejki element, który obecnie znajduje się na przodzie oraz go zwraca.
+bool empty(); // Zwraca true jeśli kolejka jest pusta, false w przeciwnym przypadku.
+size_t size(); // Zwraca liczbę elementów znajdujących się obecnie w kolejce.
 
 Użycie:
 Kolejka<double> s;
@@ -28,3 +30,36 @@ s.push(12.2);
 double x = s.pop();
 
 
+Tablica (dostęp swobodny)
+void init(size_t pojemnosc); // Tworzy nową tablicę i alokuje na nią pamięć.
+T get(size_t pozycja); // Zwraca element znajdujący się na pozycji pozycja w tablicy.
+void set(size_t pozycja, T wartosc); // Ustawia element w pozycji pozycja na wartosc.
+size_t size(); // Zwraca rozmiar tablicy.
+
+Użycie:
+Tablica<int> s;
+s.init(3);
+s.set(0, 1);
+s.set(1, 2);
+s.set(2, 4);
+int dwa_do_drugiej = s.get(2);
+int rozmiar = s.size();
+
+
+Lista (lista 1-kierunkowa)
+void init(); // Tworzy nową listę.
+void push_front(T wartosc); // Dodaje element na początek listy.
+void push_back(T wartosc); // Dodaje element na koniec listy.
+T pop_front(); // Zdejmuje pierszy element z listy i zwraca jego wartość.
+T pop_front(); // Zdejmuje ostatni element z listy i zwraca jego wartość.
+T front(); // Zwraca wartość pierwszego elementu z listy.
+T back(); // Zwraca wartość ostatniego elementu z listy.
+void insert(iterator it, T wartosc); // Dodaje element po pozycji wskazywanej przez it. Uwaga: tą metodą nie da się wstawić element na początek listy. Do tego służy metoda push_front.
+iterator next(iterator it); // Zwraca iterator wskazujący na następny element.
+bool hasNext(iterator it); Zwraca true jeśli it nie wskazuje na koniec listy, a false w przeciwnym przypadku.
+iterator pozycja(T wartosc); // Zwraca iterator wskazujący na pierszą pozycję w której znajduje się dana wartość; jeśli nie ma takiej wartości, zwraca past-the-end iterator.
+
+Użycie:
+Lista<int> s;
+s.init();
+s.push_front()
