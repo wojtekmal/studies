@@ -1,0 +1,30 @@
+Stos
+void init(); // Tworzy pusty stos.
+void push(T elem); // Dodaje element na górę stosu.
+T pop(); // Wyrzuca z stosu element, który obecnie znajduje się na górze.
+bool empty(); // Zwraca false jeśli stos jest 
+size_t size();
+
+Użycie:
+Stos<int> s;
+s.init();
+s.push(10);
+s.push(12);
+int x = s.pop();
+
+
+Kolejka
+void init();
+void push(T elem);
+T pop();
+bool empty();
+size_t size();
+
+Użycie:
+Kolejka<double> s;
+s.init();
+s.push(10.5);
+s.push(12.2);
+double x = s.pop();
+
+
