@@ -70,7 +70,7 @@ s.push_front(1);
 int x = s.front(); // x = 1
 int y = s.back(); // y = 3
 int z = s.pop_front(); // z = 1
-iterator it = s.pozycja(1);
+iterator it = s.pozycja(3);
 s.insert(it, 2); // Teraz lista wygląda tak: {3, 2}.
 
 
@@ -117,7 +117,7 @@ void DFS(Graf* graf, int poczatek)
     Stos<int> do_odwiedzenia;
     do_odwiedzenia.init();
     do_odwiedzenia.push(poczatek);
-    graf->visit_node(poczatek); // Odwiedzamy gdy wrzucamy na stos żeby nie dublować odwiedzeń.
+    graf->visit_node(poczatek);
 
     while (!do_odwiedzenia.empty())
     {
