@@ -54,12 +54,34 @@ T pop_front(); // Zdejmuje pierszy element z listy i zwraca jego wartość.
 T pop_front(); // Zdejmuje ostatni element z listy i zwraca jego wartość.
 T front(); // Zwraca wartość pierwszego elementu z listy.
 T back(); // Zwraca wartość ostatniego elementu z listy.
+size_t size(); // Zwraca rozmiar listy.
 void insert(iterator it, T wartosc); // Dodaje element po pozycji wskazywanej przez it. Uwaga: tą metodą nie da się wstawić element na początek listy. Do tego służy metoda push_front.
 iterator next(iterator it); // Zwraca iterator wskazujący na następny element.
 bool hasNext(iterator it); Zwraca true jeśli it nie wskazuje na koniec listy, a false w przeciwnym przypadku.
 iterator pozycja(T wartosc); // Zwraca iterator wskazujący na pierszą pozycję w której znajduje się dana wartość; jeśli nie ma takiej wartości, zwraca past-the-end iterator.
+iterator begin(); // Zwraca iterator wskazujący na pierwszy element.
 
 Użycie:
 Lista<int> s;
 s.init();
-s.push_front()
+s.push_front(3);
+s.push_front(1);
+int x = s.front(); // x = 1
+int y = s.back(); // y = 3
+int z = s.pop_front(); // z = 3
+iterator it = s.pozycja(1);
+s.insert(it, 2); // Teraz lista wygląda tak: {1, 2, 3}.
+
+
+Graf
+int add_node(); // Tworzy wierchołek i zwraca jego indeks.
+void add_edge(int wiercholek_a, int wiercholek_b); // Dodaje krawędź pomiędzy wiercholek_a i wiercholek_b.
+void remove_node(int wierzcholek); // Usuwa wierzchołek o danym indeksie oraz wszystkie krawędzie powiązane z nim.
+void remove_edge(int wiercholek_a, int wiercholek_b); // Dodaje jedną krawędź pomiędzy wiercholek_a i wiercholek_b.
+bool edge_exists(int wiercholek_a, int wiercholek_b); // Zwraca true jeśli istnieje krawędź pomiędzy wiercholek_a i wiercholek_b.
+Lista<int> neighbor_list(int wiercholek); // Zwraca listę wszystkich sąsiadów (niektórzy mogą być wielokrotnie).
+Tablica<int> neighbor_array(int wiercholek); // Zwraca tablica wszystkich sąsiadów (niektórzy mogą być wielokrotnie).
+node_degree
+count_nodes, count_edges,
+visit_node, unvisit_node, is_visited_node
+
