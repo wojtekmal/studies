@@ -51,15 +51,16 @@ void init(); // Tworzy nową listę.
 void push_front(T wartosc); // Dodaje element na początek listy.
 void push_back(T wartosc); // Dodaje element na koniec listy.
 T pop_front(); // Zdejmuje pierszy element z listy i zwraca jego wartość.
-T pop_front(); // Zdejmuje ostatni element z listy i zwraca jego wartość.
+T pop_back(); // Zdejmuje ostatni element z listy i zwraca jego wartość.
 T front(); // Zwraca wartość pierwszego elementu z listy.
 T back(); // Zwraca wartość ostatniego elementu z listy.
 size_t size(); // Zwraca rozmiar listy.
 void insert(iterator it, T wartosc); // Dodaje element po pozycji wskazywanej przez it. Uwaga: tą metodą nie da się wstawić element na początek listy. Do tego służy metoda push_front.
 iterator next(iterator it); // Zwraca iterator wskazujący na następny element.
-bool hasNext(iterator it); Zwraca true jeśli it nie wskazuje na koniec listy, a false w przeciwnym przypadku.
+bool hasNext(iterator it); Zwraca true jeśli it nie jest past-the-end, a false w przeciwnym przypadku.
 iterator pozycja(T wartosc); // Zwraca iterator wskazujący na pierszą pozycję w której znajduje się dana wartość; jeśli nie ma takiej wartości, zwraca past-the-end iterator.
 iterator begin(); // Zwraca iterator wskazujący na pierwszy element.
+T dereference(iterator it); // Zwraca wartość, na którą wskazuje iterator.
 
 Użycie:
 Lista<int> s;
@@ -68,20 +69,97 @@ s.push_front(3);
 s.push_front(1);
 int x = s.front(); // x = 1
 int y = s.back(); // y = 3
-int z = s.pop_front(); // z = 3
+int z = s.pop_front(); // z = 1
 iterator it = s.pozycja(1);
-s.insert(it, 2); // Teraz lista wygląda tak: {1, 2, 3}.
+s.insert(it, 2); // Teraz lista wygląda tak: {3, 2}.
 
 
 Graf
 int add_node(); // Tworzy wierchołek i zwraca jego indeks.
 void add_edge(int wiercholek_a, int wiercholek_b); // Dodaje krawędź pomiędzy wiercholek_a i wiercholek_b.
 void remove_node(int wierzcholek); // Usuwa wierzchołek o danym indeksie oraz wszystkie krawędzie powiązane z nim.
-void remove_edge(int wiercholek_a, int wiercholek_b); // Dodaje jedną krawędź pomiędzy wiercholek_a i wiercholek_b.
+void remove_edge(int wiercholek_a, int wiercholek_b); // Usuwa jedną krawędź pomiędzy wiercholek_a i wiercholek_b.
 bool edge_exists(int wiercholek_a, int wiercholek_b); // Zwraca true jeśli istnieje krawędź pomiędzy wiercholek_a i wiercholek_b.
 Lista<int> neighbor_list(int wiercholek); // Zwraca listę wszystkich sąsiadów (niektórzy mogą być wielokrotnie).
 Tablica<int> neighbor_array(int wiercholek); // Zwraca tablica wszystkich sąsiadów (niektórzy mogą być wielokrotnie).
-node_degree
-count_nodes, count_edges,
-visit_node, unvisit_node, is_visited_node
+size_t node_degree(int wiercholek); // Zwraca liczbę sąsiadów wierzchołka.
+size_t count_nodes(); // Zwraca liczbę wierchołków w grafie.
+size_t count_edges(); // Zwraca liczbę krawędzi w grafie.
+void visit_node(int wierzcholek); // Oznacza wiercholek jako odwiedzony.
+void unvisit_node(int wiercholek); // Oznacza wiercholek jako nieodwiedzony.
+bool is_visited_node(int wiercholek); // Zwraca true jeśli wierchołek jest oznaczony jako odwiedzony, false w przeciwnym przypadku.
+Lista<int> node_list(); // Zwraca listę wszystkich wierzchołków.
 
+void BFS(Graf* graf, int poczatek)
+{
+    Kolejka<int> do_odwiedzenia;
+    do_odwiedzenia.init();
+    do_odwiedzenia.push(poczatek);
+    graf->visit_node(poczatek); // Odwiedzamy gdy wrzucamy do kolejki żeby nie dublować odwiedzeń.
+
+    while (!do_odwiedzenia.empty())
+    {
+        int wiercholek = do_odwiedzenia.pop();
+        Lista<int> sasiedzi = graf->neighbor_list(wiercholek);
+
+        for (iterator it = sasiedzi.begin(); sasiedzi.hasNext(it); it = sasiedzi.next(it))
+        {
+            int sasiad = sasiedzi.dereference(it);
+            if (graf->is_visited_node(sasiad)) continue;
+            graf->visit_node(sasiad);
+            do_odwiedzenia.push(sasiad);
+        }
+    }
+}
+
+void DFS(Graf* graf, int poczatek)
+{
+    Stos<int> do_odwiedzenia;
+    do_odwiedzenia.init();
+    do_odwiedzenia.push(poczatek);
+    graf->visit_node(poczatek); // Odwiedzamy gdy wrzucamy na stos żeby nie dublować odwiedzeń.
+
+    while (!do_odwiedzenia.empty())
+    {
+        int wiercholek = do_odwiedzenia.pop();
+        Lista<int> sasiedzi = graf->neighbor_list(wiercholek);
+
+        for (iterator it = sasiedzi.begin(); sasiedzi.hasNext(it); it = sasiedzi.next(it))
+        {
+            int sasiad = sasiedzi.dereference(it);
+            if (graf->is_visited_node(sasiad)) continue;
+            graf->visit_node(sasiad);
+            do_odwiedzenia.push(sasiad);
+        }
+    }
+}
+
+
+Przykład użycia:
+
+Graf graf;
+int v0 = graf.add_node();
+int v1 = graf.add_node();
+int v2 = graf.add_node();
+int v3 = graf.add_node();
+
+// Budowa krawędzi - kwadrat z przekątną.
+graf.add_edge(v0, v1);
+graf.add_edge(v1, v2);
+graf.add_edge(v2, v3);
+graf.add_edge(v3, v0);
+graf.add_edge(v0, v2);
+
+// Trawersowanie za pomocą BFS.
+BFS(&graf, v0);
+
+// Czyszczenie wartości visited.
+Lista<int> wszystkie_wezly = graf.node_list();
+for (iterator it = wszystkie_wezly.begin(); wszystkie_wezly.hasNext(it); it = wszystkie_wezly.next(it)) 
+{
+    int wierzcholek = wszystkie_wezly.dereference(it);
+    graf.unvisit_node(wierzcholek);
+}
+
+// Trawersowanie za pomocą DFS.
+DFS(&graf, v0);
