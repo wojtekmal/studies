@@ -1,0 +1,24 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Wyznacz wszystkie funkcje różniczkowalne $f : \mathbb{R} \to \mathbb{R}$ takie, że $f'(x) = f'(x - 1)$ oraz $f(x) + f(x - 1) = x$ dla każdej liczby rzeczywistej $x$.
+\end{zadanie}
+\begin{rozwiazanie}
+Różniczkując drugą równość otrzymujemy $f'(x) + f'(x - 1) = 1$. Wraz z pierwszym równaniem tworzy to liniowy układ równań, którego rozwiązaniem jest $f'(x) = f'(x-1) = \frac12$. Z tego wynika, że $f(x) = \frac12x + C$. Podstawiając do $f(x) + f(x - 1) = x$ otrzymujemy że $\frac12x + C + \frac12(x-1) + C = x$, czyli $C = \frac14$. Zatem $f(x) = \frac12x + \frac14$ i łatwo sprawdzić, że to spełnia początkowe założenia.
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+Uzasadnij, że dla dowolnych liczb $x_1, x_2, \dots, x_n \in (0, 1)$ oraz takich liczb dodatnich $p_1, p_2, \dots, p_n$, że $\sum_{k=1}^n p_k = 1$ zachodzi nierówność
+$$ \frac{1 + \sum_{k=1}^n p_k x_k}{1 - \sum_{k=1}^n p_k x_k} \le \prod_{k=1}^n \left( \frac{1 + x_k}{1 - x_k} \right)^{p_k} . $$
+
+Wyjaśnij, kiedy zachodzi równość.
+\end{zadanie}
+\begin{rozwiazanie}
+Logarytmując nierówność stronami dostajemy nierówność będącą wnioskiem z tw. Jensena dla $f(x) = \log\left(\frac{1 + x}{1 - x}\right)$. Pozostaje sprawdzić, że $f$ jest (ściśle) wypukła. Policzmy pochodną:
+\[f'(x) = \left(\log\left(\frac{1 + x}{1 - x}\right)\right)' = \frac{1}{\frac{1 + x}{1 - x}} \frac{1(1-x) - (-1)(1+x)}{(1-x)^2} = \frac{2}{1-x^2}\]
+W mianowniku jest funkcja ściśle malejąca, czyli całość jest ściśle rosnąca. Zatem $f$ jest ściśle wypukła, czyli otrzymujemy tezę. Gdy funkcja jest ściśle wypukła, a wagi są niezerowe, to nierówność definiująca funkcję wypukłą jest równością w.t.w. gdy argumenty są równe, czyli śledząc dowód tw. Jensena otrzymujemy, że nierówność jest równością w.t.w. gdy wszystkie argumenty są równe. Zatem nasza nierówność jest równością w.t.w. gdy wszystkie $x_i$ są równe.
+\end{rozwiazanie}
+
+\end{document}
