@@ -3,7 +3,20 @@
 \begin{document}
 
 \begin{zadanie}{1}
-    
+Załóżmy, że funkcja $f : [a, b) \to \mathbb{R}$ ma (skończoną) prawostronną pochodną w punktach przedziału otwartego $(a, b)$ i załóżmy, że istnieje granica
+\[ A = \lim_{x \to a^+} f'_+(x). \]
+Udowodnij, że $f$ ma prawostronną pochodną również w punkcie $a$ i $f'_+(a) = A$.
 \end{zadanie}
+\begin{rozwiazanie}
+Niech $F(x, y) = \frac{f(x) - f(y)}{x - y}$.\\
+Lemat: Jeśli $x < b < c$ i $|F(x, y) - p|, |F(y, z) - p| \leq \varepsilon$, to $|F(x, z) - p| < \varepsilon$. Dowód: mnożymy dane nierówności stronami odpowiednio przez $y - x$ i $z - y$:
+\[|f(y) - f(x) - pb + pa| \leq y\varepsilon - x\varepsilon\]
+\[|f(z) - f(y) - pc + pb| \leq z\varepsilon - y\varepsilon\]
+Sumujemy stronami i korzystamy z nierówności trójkąta:
+\[|f(z) - f(x) - pc + pa| \leq z\varepsilon - x\varepsilon\]
+Po podzieleniu stronami przez $z - x$ otrzymujemy tezę lematu.\\
+W tym rozwiązaniu zakładamy ciągłość $f$ na $(a, b]$. Wybierzmy $\varepsilon > 0$. Niech
+\[B_x = \left\{y : y \in (x, b] \land F(x, y) - A\right\}\]
+\end{rozwiazanie}
 
 \end{document}
