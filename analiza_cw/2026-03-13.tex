@@ -6,7 +6,19 @@
 Znajdź $\mathcal{L}(\mathcal{L}f)$ dla $f(x) = ||x| - 1|$, gdzie $\mathcal{L}$ oznacza transformatę Legendre'a.
 \end{zadanie}
 \begin{rozwiazanie}
+Na wykładzie w poprzednim semestrze było, że $\mathcal{L}f$ jest wypukłe dla dowolnego $f$ oraz że jeśli $g \leq f$ jest wypukła, to $g \leq \mathcal{L}^2f \leq f$. Weźmy $g(x) = \max(0, |x| - 1)$. $g$ to maximum funkcji liniowych, więc jest wypukła. Jeśli jakaś funkcja $h$ spełnia $h \leq f$ i jest wypukła, to $h \leq f = g$ na $\R / [-1, 1]$ oraz $h$ musi być poniżej siecznej pomiędzy punktami $(-1, 0)$ i $(1, 0)$, czyli na tym przedziale również zachodzi $h \leq 0 = g$. Niech $h = \mathcal{L}^2f$. Wiemy, że $h$ jest wypukła z pierwszego faktu z wykładu, czyli że $h \leq g$, ale z drugiego fakty z wykładu mamy $g \leq h$, zatem $\mathcal{L}^2f = h = g$.
+\end{rozwiazanie}
 
+\begin{zadanie}{2}
+Niech $p > -1$. Zbadaj przebieg zmienności funkcji $f(x) = x^p e^{-x}$ dla $x \ge 0$. (przedziały monotoniczności, wypukłości, ekstrema lokalne i globalne, wykres.)
+\end{zadanie}
+\begin{rozwiazanie}
+$f$ ma biegun w $x = 0$ dla $p < 0$, bo $\lim_{x\to0^+} x^pe^{-x} = \infty \cdot 1 = \infty$. Dla $p > 0$ jest dobrze zdefiniowana, a dla $p = 0$ zachodzi $\lim_{x\to0^+} x^0e^{-x} = 1 \cdot 1 = 1$, więc możemy przyjąć $f(0) = 1$ dla $p = 0$.
+\[f'(x) = px^{p-1}e^{-x} - x^pe^{-x} = (p-x)x^{p-1}e^{-x}\]
+Warto wspomnieć, że powyższy rachunek działa również dla $p = 0$, bo $0 = (x^0)' = 0 \cdot x^{-1}$, aczkolwiek psuje się dla $x = 0$ bo wtedy $0 \cdot x^{-1}$ nie jest zdefiniowane i nie daje nam to wiele informacji o $f_+'(0)$. W każdym razie widzimy, że $f'(x) \geq 0$ w.t.w. gdy $x \leq p$. Gdy $p > 0$, to $f$ jest rosnąca aż do $x = p$, a potem malejąca, czyli jest jedno (globalne) maksimum w $x = p$ oraz jedno minimum w $x = 0$, które jest również globalne, bo $f > 0$ na $\R_+$. Gdy $p \leq 0$, to $f$ jest malejąca, czyli jest jedno (globalne) maksimum w $x 0$ gdy $p = 0$ i biegun w $x = 0$ gdy $p < 0$ i wtedy nie ma ekstremów.
+\[f''(x) = -x^{p-1}e^{-x} + (p-1)x^{p-2}(p-x)e^{-x} - (p - x)x^{p-1}e^{-x} =\]
+\[x^{p-2}e^{-x}\left((p - x)^2 - p\right) = x^{p-2}e^{-x}(x^2-2px+p^2-p)\]
+Z powyższych obliczeń i z wzoru na pierwiastki funkcji kwadratowej możemy wywnioskować, że $f''$ zmienia znak w $p \pm \sqrt{p}$ (czyli nigdzie dla $p < 0$) i że $f''(x) < 0$ tylko dla $x \in [p - \sqrt{p}, p + \sqrt{p}]$. Zatem gdy $p \leq 0$, to $f$ jest wszędzie wypukła, a gdy $p > 0$, to jest wklęsła na $[p - \sqrt{p}, p + \sqrt{p}]$ i wypukła wszędzie indziej. Jeśli chodzi o wykres, to nie będę pisał obrazków w tikz, ale mogę opisać to tak. Dla $p < 0$ $f$ ma biegun w 0, a potem zbiega monotonicznie do 0, czyli wygląda trochę jak $\frac1x$. Gdy $p = 0$, to jest to $e^-x$, czyli $f(0) = 0$, a potem monotonicznie zbiega do 0. Gdy $p > 0$, to $f(0) = 0$, potem rośnie aż do $x = p$, a potem maleje i zbiega do 0, co wynika z hierarchii ciągów.
 \end{rozwiazanie}
 
 \end{document}
