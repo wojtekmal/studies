@@ -15,8 +15,18 @@ Lemat: Jeśli $x < b < c$ i $|F(x, y) - p|, |F(y, z) - p| \leq \varepsilon$, to 
 Sumujemy stronami i korzystamy z nierówności trójkąta:
 \[|f(z) - f(x) - pc + pa| \leq z\varepsilon - x\varepsilon\]
 Po podzieleniu stronami przez $z - x$ otrzymujemy tezę lematu.\\
-W tym rozwiązaniu zakładamy ciągłość $f$ na $(a, b]$. Wybierzmy $\varepsilon > 0$. Niech
-\[B_x = \left\{y : y \in (x, b] \land F(x, y) - A\right\}\]
+W tym rozwiązaniu zakładamy ciągłość $f$ na $[a, b)$. Wybierzmy $\varepsilon > 0$. Niech
+\[B_x = \left\{y : y \in (x, b] \land |F(x, y) - A| \leq \varepsilon\right\}\]
+Skoro pochodna prawostronna zbiega do $A$, to istnieje $c \in (a, b)$ takie że $|f'_+(x) - A| < \varepsilon$ dla $x < c$. Wtedy dla danego $x < c$, $B_x$ jest niepuste z definicji $f'_+(x)$. Niech $s = \sup B_x \cup [x, c]$. Istnieje ciąg $y_n \in B_x$, $y_n \to s$ i dla każdego $n$ jest spełnione $|F(x, y_n) - A| \leq \varepsilon$, więc z ciągłości $f$, którą założyliśmy, wynika że $s \in B_x$. Jeśli $s < c$, to podobnie $B_s$ jest niepuste, czyli istnieje $t \in B_s \cup [x, c]$. Wtedy $|F(x, s) - A| \leq \varepsilon, |F(s, t) - A| \leq \varepsilon$, czyli z lematu $|F(x, t) - A| \leq \varepsilon$, czyli $t \in B_x$, co jest sprzeczne z definicją $s$. Zatem $c \in B_x$. To zachodzi dla każdego $x < c$, czyli dla dowolnego ciągu $x_n \to 0^+$ zachodzi $|F(x_n, c) - A| \leq \varepsilon$, czyli z ciągłości $f$ wynika, że $|F(0, c) - A| \leq \varepsilon$. Zauważmy, że zdefiniowaliśmy $c$ tak, że coś zachodzi dla $x < c$, a to jest prawda dla $d \leq c$, tzn. to coś zachodzi dla $x < d$. Korzystaliśmy wyłącznie z tej właściwości $c$, czyli również zachodzi $|F(0, d) - A| \leq \varepsilon$ dla $d < c$. Możemy zbiec $\varepsilon \to 0$ i otrzymujemy kryterium na pochodną prawostronną w 0, tzn. $f'_+(0) = A$.
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+Udowodnij, że
+\[ \frac{\sin^3 x}{x^3} > \cos x \]
+dla $0 < x < \pi/2$.
+\end{zadanie}
+\begin{rozwiazanie}
+\[\left(\frac{\sin x}{x}\right)^3 = \left(\frac1x\sum_{n=0}^{\infty} \frac{(-1)^nx^{2n+1}}{(2n+1)!}\right)^3 = \left(\sum_{n=0}^{\infty} \frac{(-1)^nx^{2n}}{(2n+1)!}\right)^3 = \sum_{n=0}^{\infty}(-1)^nx^{2n}\sum_{k+l+m=n} \]
 \end{rozwiazanie}
 
 \end{document}
