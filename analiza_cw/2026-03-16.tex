@@ -32,10 +32,12 @@ Zauważmy, że
 \[\sum_{k+l+m=2n+3}\binom{2n+3}{k, l, m} \left(1 - (-1)^k - (-1)^l - (-1)^m\right) =\]\[ 4\sum_{k+l+m=n} \binom{2n+3}{2k + 1, 2l + 1, 2m + 1} = 4(2n+3)!\sum_{k+l+m=n} \frac{1}{(2k + 1)!(2l + 1)!(2m + 1)!}\]
 ponieważ albo wszystkie spośród $k, l, m$ są nieparzyste, albo dokładnie jedno jest nieparzyste, przy czym w drugim przypadku potęgi $-1$ się skracają. Zatem
 \[\left(\frac{\sin x}{x}\right)^3 = \sum_{n=0}^{\infty}(-1)^n\frac{3^{2n+3} - 3}{4(2n+3)!} x^{2n}\]
-\[\left(\frac{\sin x}{x}\right)^3 - \cos x = \sum_{n=0}^{\infty}(-1)^n\left(\frac{3^{2n+3} - 3}{4(2n+3)!} - \frac{1}{(2n)!}\right) x^{2n} = \sum_{n=0}^{\infty}(-1)^n\frac{3^{2n+3} - 3 - 4(2n+3)^{\underline{3}}}{4(2n+3)!} x^{2n}\]
+\[\left(\frac{\sin x}{x}\right)^3 - \cos x = \sum_{n=0}^{\infty}(-1)^n\left(\frac{3^{2n+3} - 3}{4(2n+3)!} - \frac{1}{(2n)!}\right) x^{2n} =\]\[ \sum_{n=0}^{\infty}(-1)^n\frac{3^{2n+3} - 3 - 4(2n+3)^{\underline{3}}}{4(2n+3)!} x^{2n}\]
 Okazuje się, że powyższy szereg ma 0 dla $n=0$ i $n = 1$ i że wyraz wiodący to $\frac{x^4}{10}$ (co jest dodatnie). Ten szereg jest naprzemienny, więc żeby wykazać, że jego suma jest dodatnia, wystarczy wykazać, że jego wyrazy mają coraz mniejsze moduły, zgodnie z rozumowaniem z dowodu kryterium Leibniza. Iloraz modułów dwóch kolejnych wyrazów to
 \[\frac{3^{2n+5} - 3 - 4(2n+5)^{\underline{3}}}{\left(3^{2n+3} - 3 - 4(2n+3)^{\underline{3}}\right)(2n+4)(2n+5)} x^2\]
-Skorzystajmy z następujących oszacowań: $x \leq \frac{\pi}{2}$, $\pi^2 < 10$ (co wynika z $\pi < \frac{22}{7}$) oraz $3^{2n+3} \geq 2\left(3 + 4(2n+3)^{\underline{3}}\right)$, co można potwierdzyć wyliczając dla $n = 2$ i zauważając, że lewa strona rośnie 9-krotnie, a prawa 
+Skorzystajmy z następujących oszacowań: $x < \frac{\pi}{2}$, $\pi^2 < 10$ (co wynika z $\pi < \frac{22}{7}$) oraz $3^{2n+3} \geq 2\left(3 + 4(2n+3)^{\underline{3}}\right)$, co można potwierdzyć wyliczając dla $n = 2$ i zauważając, że lewa strona rośnie 9-krotnie, a prawa mniej niż $\frac{(2n+5)(2n+4)}{(2n+2)(2n+1)} = 1 + \frac{12 + \frac{18}{n}}{4n + 6 + \frac2n} < 3$-krotnie. Z tych oszacowań wynika, że
+\[\frac{3^{2n+5} - 3 - 4(2n+5)^{\underline{3}}}{\left(3^{2n+3} - 3 - 4(2n+3)^{\underline{3}}\right)(2n+4)(2n+5)} x^2 < \frac{5\cdot 3^9}{3^7\cdot 8\cdot9} < 1\]
+Zatem $\left(\frac{\sin x}{x}\right)^3 > \cos x$ dla $x \in (0, \frac{\pi}{2})$.
 \end{rozwiazanie}
 
 \end{document}
