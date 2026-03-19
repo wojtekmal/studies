@@ -21,7 +21,9 @@ Wyznacz wymiary trójkąta prostokątnego o obwodzie
 dla którego objętość $V$ jest maksymalna.
 \end{zadanie}
 \begin{rozwiazanie}
-Niech $h$ to wysokość opuszczona na $c$ oraz niech $p$ to odcinek, który tworzy trójkąt z $h$ i $a$. Z podobieństwa trójkątów $\frac{p}{a} = \frac{a}{c}$, czyli $a = \sqrt{pc}$. Z tw. Pitagorasa $h = \sqrt{a^2-p^2 = \sqrt{pc-p^2}}$. Objętość bryły
+Niech $h$ to wysokość opuszczona na $c$ oraz niech $p$ to odcinek, który tworzy trójkąt z $h$ i $a$. Skoro $1 - a - c = b = \sqrt{c^2 - a^2}$. Podnosząc tę równość do kwadratu i porządkując wyrazy dostajemy $c = \frac{2a - 2a^2 - 1}{2a - 2} = \frac{1}{2-2a} - a$. Objętość bryły to suma objętości dwóch stożków:
+\[\frac{\pi}{3} ph^2 + \frac{\pi}{3} (c-p)h^2 = \frac{\pi}{3} ch^2\]
+ Z podobieństwa trójkątów $\frac{h}{a} = \frac{b}{c}$, czyli $h = \frac{ab}{c}$. Do tego $b = 1 - a - c = 1 - \frac{1}{2-2a} = \frac{1-2a}{2-2a}$
 \end{rozwiazanie}
 
 \end{document}
