@@ -23,7 +23,13 @@ dla którego objętość $V$ jest maksymalna.
 \begin{rozwiazanie}
 Niech $h$ to wysokość opuszczona na $c$ oraz niech $p$ to odcinek, który tworzy trójkąt z $h$ i $a$. Skoro $1 - a - c = b = \sqrt{c^2 - a^2}$. Podnosząc tę równość do kwadratu i porządkując wyrazy dostajemy $c = \frac{2a - 2a^2 - 1}{2a - 2} = \frac{1}{2-2a} - a$. Objętość bryły to suma objętości dwóch stożków:
 \[\frac{\pi}{3} ph^2 + \frac{\pi}{3} (c-p)h^2 = \frac{\pi}{3} ch^2\]
- Z podobieństwa trójkątów $\frac{h}{a} = \frac{b}{c}$, czyli $h = \frac{ab}{c}$. Do tego $b = 1 - a - c = 1 - \frac{1}{2-2a} = \frac{1-2a}{2-2a}$
+Z podobieństwa trójkątów $\frac{h}{a} = \frac{b}{c}$, czyli $h = \frac{ab}{c}$. Do tego $b = 1 - a - c = 1 - \frac{1}{2-2a} = \frac{1-2a}{2-2a}$. Możemy więc zparetryzować objętość za pomocą $a$:
+\[\frac{\pi}{3} ch^2 = \frac{\pi}{3} \frac{a^2b^2}{c} = \frac{a^2(1-2a)^2(2-2a)}{(2-2a)^2(1+2a^2-2a)} = \frac{a^2-4a^3+4a^4}{2-6a+8a^2-4a^3}\]
+Z zasady Fermata wynika, że maksymalna objętość może być tylko wtedy gdy powyższa funkcja ma pochodną zerową albo na końcach przedziału możliwych wartości $a$, czyli 0 i $\frac12$, ale wtedy objętość to 0. Skoro chcemy zbadać miejsca zerowe, to mianownik w pochodnej nie ma znaczenia. Chcemy więc takie $a$, dla których
+\[(2a-12a^2+16a^3)(2-6a+8a^2-4a^3)-(a^2-4a^3+4a^4)(-6+16a-12a^2)\]
+Po wymnożeniu i poskracaniu zostaje taki wielomian:
+\[8a^5-32a^4+50a^3-40a^2+15a-2=(2a^2-4a+1)(2a^2-3a+2)(2a-1)\]
+Stosując wzór na pierwiastki wielomianu kwadratowego otrzymujemy, że jedyny pierwiastek w przedziale $(0, \frac12)$ to $a=1-\frac{\sqrt2}{2}$, czyli takie $a$, dla którego trójkąt jest równoramienny.
 \end{rozwiazanie}
 
 \end{document}
