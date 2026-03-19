@@ -1,0 +1,27 @@
+\documentclass{../note}
+
+\begin{document}
+
+\begin{zadanie}{1}
+Funkcja $f : \mathbb{R} \to \mathbb{R}$ jest różniczkowalna oraz spełnia $\lim_{x\to 0} \frac{f'(x)}{x^3} = 1$. Oblicz granicę
+\[ \lim_{x\to 0} \frac{f(x) - f(\sin x)}{x^3}. \]
+\end{zadanie}
+\begin{rozwiazanie}
+Z założenia wynika, że $f'(x) = x^3 + o(x^3)$. Z definicji pochodnej $f$:
+\[\frac{f(x+h) - f(x)}{h} \xrightarrow{h\to0} f'(x)\]
+możemy wywnioskować, że $f(x + h) - f(x) = f'(x)h + o(h)$. $\sin x = x - \frac{x^3}{6} + o(x^3)$, więc
+\[f(\sin x) - f(x) = f\left(x - \frac{x^3}{6} + o(x^3)\right) - f(x) = f'(x)\left(- \frac{x^3}{6} + o(x^3)\right) + o\left(- \frac{x^3}{6} + o(x^3)\right) =\]\[ \left(x^3 + o(x^3)\right)\left(- \frac{x^3}{6} + o(x^3)\right) + o(x^3) = o(x^3)\]
+Zatem $\lim_{x\to 0} \frac{f(x) - f(\sin x)}{x^3} = 0$.
+\end{rozwiazanie}
+
+\begin{zadanie}{2}
+W wyniku obrotu trójkąta prostokątnego o bokach $a, b, c$, spełniających warunek $a^2 + b^2 = c^2$, wokół jego przeciwprostokątnej powstaje bryła o objętości $V$.
+Wyznacz wymiary trójkąta prostokątnego o obwodzie
+\[ a + b + c = 1, \]
+dla którego objętość $V$ jest maksymalna.
+\end{zadanie}
+\begin{rozwiazanie}
+Niech $h$ to wysokość opuszczona na $c$ oraz niech $p$ to odcinek, który tworzy trójkąt z $h$ i $a$. Z podobieństwa trójkątów $\frac{p}{a} = \frac{a}{c}$, czyli $a = \sqrt{pc}$. Z tw. Pitagorasa $h = \sqrt{a^2-p^2 = \sqrt{pc-p^2}}$. Objętość bryły
+\end{rozwiazanie}
+
+\end{document}
