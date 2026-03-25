@@ -1,4 +1,4 @@
-public class Macierz
+public class Matrix
 {
     public static void main(String[] args)
     {
