@@ -11,8 +11,21 @@ int main()
     mt19937 rng{};
     int n;
     cin >> n;
+    vector<Edge> edges;
 
-    set<Edge> edges;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            if (rng() % 2) continue;
+            edges.push_back({i, j});
+        }
+    }
 
-    for (int i = 0; i )
+    cout << n << " " << edges.size() << "\n";
+
+    for (const Edge& e : edges)
+    {
+        cout << e.u << " " << e.v << "\n";
+    }
 }
