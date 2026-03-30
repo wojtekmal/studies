@@ -14,3 +14,9 @@ typedef struct Vector
     Node* data;
 } Vector;
 
+typedef struct rstack_t
+{
+    Vector elements;
+    uint64_t reference_count;
+} rstack_t;
+
