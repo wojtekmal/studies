@@ -1,17 +1,22 @@
 #include "rstack.h"
 
-typedef struct Node
+typedef union IntOrStack
 {
     rstack_t* stack;
     uint64_t num;
-    bool type;
-} Node;
+} IntOrStack;
+
+typedef struct Element
+{
+    IntOrStack contents;
+    bool type; // 0 if int, 1 if stack.
+} Element;
 
 typedef struct Vector
 {
     uint64_t allocated;
     uint64_t size;
-    Node* data;
+    Element* data;
 } Vector;
 
 typedef struct rstack_t
@@ -20,3 +25,12 @@ typedef struct rstack_t
     uint64_t reference_count;
 } rstack_t;
 
+void push_node(Vector* vector, IntOrStack value, bool type)
+{
+    if (vector->size == vector->allocated)
+    {
+        int new_allocated = vector->size * 2 + 1;
+        vector->data = realloc(vector->data, new_allocated * sizeof(Element));
+        vector->allocated = new_allocated;
+    }
+}
