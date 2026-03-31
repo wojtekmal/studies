@@ -33,4 +33,20 @@ void push_node(Vector* vector, IntOrStack value, bool type)
         vector->data = realloc(vector->data, new_allocated * sizeof(Element));
         vector->allocated = new_allocated;
     }
+
+    vector->data[vector->size].contents = value;
+    vector->data[vector->size].type = type;
+    vector->size++;
+}
+
+Vector new_vector()
+{
+    Vector result;
+    result.
+}
+
+Vector rstack_get_all_ints(rstack_t* rs)
+{
+    Vector result;
+    Vector traversed_stacks;
 }
