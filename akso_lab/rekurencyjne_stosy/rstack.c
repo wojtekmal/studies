@@ -42,11 +42,18 @@ void push_node(Vector* vector, IntOrStack value, bool type)
 Vector new_vector()
 {
     Vector result;
-    result.
+    result.allocated = 0;
+    result.size = 0;
+    result.data = nullptr;
+    return result;
 }
+
+void stack_dfs(Vector* result, Vector* traversed_stacks)
 
 Vector rstack_get_all_ints(rstack_t* rs)
 {
-    Vector result;
-    Vector traversed_stacks;
+    Vector result = new_vector();
+    Vector traversed_stacks = new_vector();
+    stack_dfs(&result, &traversed_stacks);
+    return result;
 }
