@@ -26,18 +26,26 @@ typedef struct rstack_t
     uint64_t reference_count;
 } rstack_t;
 
-void push_node(Vector* vector, IntOrStack value, bool is_stack)
+int push_node(Vector* vector, IntOrStack value, bool is_stack)
 {
     if (vector->size == vector->allocated)
     {
         uint64_t new_allocated = vector->size * 2 + 1;
-        vector->data = realloc(vector->data, new_allocated * sizeof(Element));
         vector->allocated = new_allocated;
+        vector->data = realloc(vector->data, new_allocated * sizeof(Element));
+
+        if (vector->data == nullptr)
+        {
+            errno = ENOMEM;
+            return -1;
+        }
     }
 
     vector->data[vector->size].contents = value;
     vector->data[vector->size].is_stack = is_stack;
     vector->size++;
+
+    return 0;
 }
 
 Vector new_vector()
@@ -104,5 +112,19 @@ rstack_t* rstack_new()
         result->reference_count = 1;
     }
 
+    return result;
+}
+
+void rstack_delete(rstack_t *rs)
+{
+    if (rs == nullptr) return;
+
+    rs->reference_count--;
+    if (rs->reference_count == 0) free_vector(&(rs->elements));
+}
+
+int rstack_push_value(rstack_t *rs, uint64_t value)
+{
+    int result = push_node(&(rs->elements), (IntOrStack) value, false);
     return result;
 }
