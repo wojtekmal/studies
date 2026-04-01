@@ -7,7 +7,7 @@ public class Ułamek
     private int licznik;
     private int mianownik;
 
-    private static int gcd(int a, int b)
+    private static int nwd(int a, int b)
     {
         a = Math.abs(a);
         b = Math.abs(b);
@@ -44,12 +44,18 @@ public class Ułamek
             mianownik *= -1;
         }
 
-        int gcd = gcd(licznik, mianownik);
-        licznik /= gcd;
-        mianownik /= gcd;
+        int nwd = nwd(licznik, mianownik);
+        licznik /= nwd;
+        mianownik /= nwd;
 
         this.licznik = licznik;
         this.mianownik = mianownik;
+    }
+
+    public Ułamek(Ułamek inny)
+    {
+        this.licznik = inny.licznik();
+        this.mianownik = inny.mianownik();
     }
 
     public String toString()
@@ -72,16 +78,50 @@ public class Ułamek
         return mianownik;
     }
 
-    public Ułamek dodaj(Ułamek inny)
+    public void dodaj(Ułamek inny)
     {
-        int gcd = gcd(mianownik, inny.mianownik);
+        int nwd = nwd(mianownik, inny.mianownik);
 
-        assert mianownik / gcd <= Integer.MAX_VALUE / inny.mianownik:
+        assert mianownik / nwd <= Integer.MAX_VALUE / inny.mianownik:
             "Overflow.";
-        int nww = mianownik / gcd * inny.mianownik;
+        int nww = mianownik / nwd * inny.mianownik;
 
-        assert inny.mianownik / gcd <= Integer.MAX_VALUE / licznik:
+        assert inny.mianownik / nwd <= Integer.MAX_VALUE / Math.abs(licznik):
             "Overflow.";
-        int składnik_1 = inny.mianownik / gcd * licznik;
+        int składnik_1 = inny.mianownik / nwd * licznik;
+
+        assert mianownik / nwd <= Integer.MAX_VALUE / Math.abs(inny.licznik):
+            "Overflow.";
+        int składnik_2 = mianownik / nwd * inny.licznik;
+
+        if (Integer.signum(składnik_1) == Integer.signum(składnik_2))
+        {
+            assert Math.abs(składnik_1) <= 
+                Integer.MAX_VALUE - Math.abs(składnik_2): "Overflow.";
+        }
+
+        licznik = składnik_1 + składnik_2;
+        mianownik = nww;
+    }
+
+    public static Ułamek dodaj(Ułamek a, Ułamek b)
+    {
+        Ułamek wynik = new Ułamek(a);
+        wynik.dodaj(b);
+        return wynik;
+    }
+
+    public void odejmij(Ułamek inny)
+    {
+        licznik *= -1;
+        dodaj(inny);
+        licznik *= -1;
+    }
+
+    public static Ułamek odejmij(Ułamek a, Ułamek b)
+    {
+        Ułamek wynik = new Ułamek(a);
+        wynik.odejmij(b);
+        return wynik;
     }
 }
