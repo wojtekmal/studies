@@ -24,6 +24,7 @@ typedef struct rstack_t
 {
     Vector elements;
     uint64_t reference_count;
+    uint64_t last_dfs_id;
 } rstack_t;
 
 int push_node(Vector* vector, IntOrStack value, bool is_stack)
@@ -59,43 +60,9 @@ Vector new_vector()
     return result;
 }
 
-void get_ints_dfs(rstack_t* rs, Vector* result, Vector* traversed_stacks)
-{
-    for (uint64_t i = 0; i < traversed_stacks->size; i++)
-    {
-        if (traversed_stacks->data[i].contents.stack == rs) return;
-    }
-
-    push_node(traversed_stacks, (IntOrStack) rs, true);
-
-    for (uint64_t i = 0; i < rs->elements.size; i++)
-    {
-        Element element = rs->elements.data[i];
-
-        if (element.is_stack == false)
-        {
-            push_node(result, (IntOrStack) element.contents, false);
-        }
-        else
-        {
-            get_ints_dfs(element.contents.stack, result, traversed_stacks);
-        }
-    }
-}
-
 void free_vector(Vector* vector)
 {
     free(vector->data);
-}
-
-Vector rstack_get_all_ints(rstack_t* rs)
-{
-    Vector result = new_vector();
-    Vector traversed_stacks = new_vector();
-
-    get_ints_dfs(rs, &result, &traversed_stacks);
-    free_vector(&traversed_stacks);
-    return result;
 }
 
 rstack_t* rstack_new()
@@ -125,6 +92,46 @@ void rstack_delete(rstack_t *rs)
 
 int rstack_push_value(rstack_t *rs, uint64_t value)
 {
-    int result = push_node(&(rs->elements), (IntOrStack) value, false);
-    return result;
+    if (rs == nullptr)
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+    return push_node(&(rs->elements), (IntOrStack){.num = value}, false);
+}
+
+int rstack_push_rstack(rstack_t *rs1, rstack_t *rs2)
+{
+    if (rs1 == nullptr || rs2 == nullptr)
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+    rs2->reference_count++;
+    return push_node(&(rs1->elements), (IntOrStack){.stack = rs2}, true);
+}
+
+void rstack_pop(rstack_t *rs)
+{
+    if (rs == nullptr || rs->elements.size == 0) return;
+
+    Element* element = rs->elements.data + rs->elements.size - 1;
+
+    if (element->is_stack) element->contents.stack->reference_count--;
+    rs->elements.size--;
+}
+
+result_t rstack_front(rstack_t *rs)
+{
+    if (rs == nullptr) return (result_t){.flag = false};
+
+    for ()
+}
+
+bool rstack_empty(rstack_t *rs)
+{
+    Vector all_ints = rstack_get_all_ints(rs);
+    return ()
 }
