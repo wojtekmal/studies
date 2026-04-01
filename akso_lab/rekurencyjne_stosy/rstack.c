@@ -92,5 +92,17 @@ Vector rstack_get_all_ints(rstack_t* rs)
 
 rstack_t* rstack_new()
 {
+    rstack_t* result = malloc(sizeof(rstack_t));
 
+    if (result == nullptr)
+    {
+        errno = ENOMEM;
+    }
+    else
+    {
+        result->elements = new_vector();
+        result->reference_count = 1;
+    }
+
+    return result;
 }
