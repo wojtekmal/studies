@@ -19,7 +19,12 @@ typedef struct rstack_t
     Element* top;
     uint64_t reference_count;
     uint64_t last_dfs_id;
+
+    // Auxiliary variable that's initialized when it's used.
+    uint64_t scc_reference_count;
 } rstack_t;
+
+uint64_t next_dfs_id = 1;
 
 rstack_t* rstack_new()
 {
@@ -88,12 +93,16 @@ int rstack_push_rstack(rstack_t *rs1, rstack_t *rs2)
     return 0;
 }
 
+void prune_dfs(rstack_t* rs)
+{
+    rs->scc_reference_count++;
+}
+
 void rstack_delete(rstack_t *rs)
 {
     if (rs == nullptr) return;
 
-    rs->reference_count--;
-    if (rs->reference_count == 0) free_vector(&(rs->elements));
+    prune_dfs;
 }
 
 void rstack_pop(rstack_t *rs)
