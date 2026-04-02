@@ -79,8 +79,13 @@ int rstack_push_rstack(rstack_t *rs1, rstack_t *rs2)
         return -1;
     }
 
-    rs2->reference_count++;
+    element->contents.stack = rs2;
+    element->is_stack = true;
+    element->prev_element = rs1->top;
     
+    rs2->reference_count++;
+    rs1->top = element;
+    return 0;
 }
 
 void rstack_delete(rstack_t *rs)
