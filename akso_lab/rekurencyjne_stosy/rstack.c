@@ -20,7 +20,7 @@ typedef struct rstack_t
     uint64_t reference_count;
     uint64_t last_dfs_id;
 
-    // Auxiliary variable that's initialized when it's used.
+    uint64_t dfs_where_was_part_of_scc;
     uint64_t scc_reference_count;
 } rstack_t;
 
@@ -39,6 +39,7 @@ rstack_t* rstack_new()
         result->top = nullptr;
         result->reference_count = 1;
         result->last_dfs_id = 0;
+        result->dfs_where_was_part_of_scc = 0;
     }
 
     return result;
@@ -93,9 +94,29 @@ int rstack_push_rstack(rstack_t *rs1, rstack_t *rs2)
     return 0;
 }
 
-void prune_dfs(rstack_t* rs)
+bool measure_and_flag_scc_dfs(rstack_t* rs, uint64_t* scc_size, uint64_t dfs_id)
 {
-    rs->scc_reference_count++;
+    if (rs->last_dfs_id == dfs_id)
+    {
+        return (rs->dfs_where_was_part_of_scc == dfs_id);
+    }
+    else
+    {
+        rs->last_dfs_id = dfs_id;
+        bool is_in_scc = false;
+
+        for (Element* element = rs->top; element != nullptr;
+            element = element->prev_element)
+        {
+            if (element->is_stack == false) continue;
+
+            if (measure_and_flag_scc_dfs(
+                element->contents.stack, scc_size, dfs_id))
+            {
+
+            }
+        }
+    }
 }
 
 void rstack_delete(rstack_t *rs)
