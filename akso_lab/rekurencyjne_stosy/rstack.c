@@ -269,7 +269,7 @@ result_t rstack_front(rstack_t *rs)
 
 bool rstack_empty(rstack_t *rs)
 {
-    return rstack_front(rs).flag;
+    return !rstack_front(rs).flag;
 }
 
 rstack_t* rstack_read(char const *path)

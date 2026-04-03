@@ -272,7 +272,7 @@ static const test_list_t test_list[] = {
 
 static int do_test(int (*function)(void)) {
   int result = function();
-  puts("quite long magic string");
+  printf("test result: %d\n", result);
   return result;
 }
 
