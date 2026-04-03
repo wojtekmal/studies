@@ -341,8 +341,11 @@ int write_elements(Element* element, FILE* file, uintmax_t dfs_id)
     }
     else
     {
-        fprintf(file, "%d ")
+        int fprintf_result = fprintf(file, "%llu\n", element->num);
+        if (fprintf_result < 0) result = -1; // errno set by fprintf.
     }
+
+    return result;
 }
 
 int write_dfs(rstack_t* rs, FILE* file, uintmax_t dfs_id)
@@ -354,6 +357,7 @@ int write_dfs(rstack_t* rs, FILE* file, uintmax_t dfs_id)
     }
 
     rs->last_dfs_id = dfs_id;
+    return write_elements(rs->top, file, dfs_id);
 }
 
 int rstack_write(char const *path, rstack_t *rs)
@@ -367,5 +371,5 @@ int rstack_write(char const *path, rstack_t *rs)
     FILE* file = fopen(path, "a");
     if (file == nullptr) return -1; // fopen sets errno.
 
-    int result = write_dfs(rs, file, next_dfs_id++);
+    return write_dfs(rs, file, next_dfs_id++);
 }
