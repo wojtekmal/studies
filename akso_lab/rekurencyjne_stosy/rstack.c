@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef struct Element
 {
@@ -12,10 +13,10 @@ typedef struct Element
         uint64_t num;
     };
     bool is_stack; // false if int, true if stack.
-    Element* prev_element;
+    struct Element* prev_element;
 } Element;
 
-typedef struct rstack_t
+struct rstack
 {
     Element* top;
     uintmax_t reference_count;
@@ -23,7 +24,7 @@ typedef struct rstack_t
 
     uintmax_t dfs_where_was_part_of_scc;
     uintmax_t scc_reference_count;
-} rstack_t;
+};
 
 uintmax_t next_dfs_id = 1;
 
@@ -118,7 +119,7 @@ bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
 
         if (is_in_scc)
         {
-            *scc_size++;
+            ++*scc_size;
             rs->dfs_where_was_part_of_scc = dfs_id;
         }
 
@@ -141,7 +142,7 @@ void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
         {
             if (element->is_stack == false) continue;
 
-            count_ready_dfs(element->stack, ready_count, dfs_id);
+            count_ready_in_scc_dfs(element->stack, ready_count, dfs_id);
         }
     }
     else
@@ -149,7 +150,7 @@ void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
         rs->reference_count++;
     }
 
-    if (rs->scc_reference_count == rs->reference_count) *ready_count++;
+    if (rs->scc_reference_count == rs->reference_count) ++*ready_count;
 }
 
 void gather_for_pruning_dfs(rstack_t* rs, rstack_t** next_to_prune,
@@ -165,7 +166,7 @@ void gather_for_pruning_dfs(rstack_t* rs, rstack_t** next_to_prune,
     {
         if (element->is_stack == false) continue;
 
-        count_ready_dfs(element->stack, dfs_id, next_to_prune);
+        gather_for_pruning_dfs(element->stack, next_to_prune, dfs_id);
     }
 
     rs->top->stack = *next_to_prune;
@@ -206,7 +207,7 @@ void rstack_delete(rstack_t *rs)
     uintmax_t scc_size = 0;
     rs->last_dfs_id = next_dfs_id;
     rs->dfs_where_was_part_of_scc = next_dfs_id;
-    bool _ = measure_and_flag_scc_dfs(rs, &scc_size, next_dfs_id++);
+    measure_and_flag_scc_dfs(rs, &scc_size, next_dfs_id++);
 
     uintmax_t ready_count = 0;
     count_ready_in_scc_dfs(rs, &ready_count, next_dfs_id++);
@@ -341,7 +342,7 @@ int write_elements(Element* element, FILE* file, uintmax_t dfs_id)
     }
     else
     {
-        int fprintf_result = fprintf(file, "%llu\n", element->num);
+        int fprintf_result = fprintf(file, "%ju\n", element->num);
         if (fprintf_result < 0) result = -1; // errno set by fprintf.
     }
 
