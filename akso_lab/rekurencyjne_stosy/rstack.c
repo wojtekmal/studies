@@ -1,5 +1,7 @@
+#define _FILE_OFFSET_BITS 64
 #include "rstack.h"
 #include "errno.h"
+#include <stdio.h>
 
 typedef union IntOrStack
 {
@@ -17,14 +19,14 @@ typedef struct Element
 typedef struct rstack_t
 {
     Element* top;
-    uint64_t reference_count;
-    uint64_t last_dfs_id;
+    uintmax_t reference_count;
+    uintmax_t last_dfs_id;
 
-    uint64_t dfs_where_was_part_of_scc;
-    uint64_t scc_reference_count;
+    uintmax_t dfs_where_was_part_of_scc;
+    uintmax_t scc_reference_count;
 } rstack_t;
 
-uint64_t next_dfs_id = 1;
+uintmax_t next_dfs_id = 1;
 
 rstack_t* rstack_new()
 {
@@ -94,7 +96,8 @@ int rstack_push_rstack(rstack_t *rs1, rstack_t *rs2)
     return 0;
 }
 
-bool measure_and_flag_scc_dfs(rstack_t* rs, uint64_t* scc_size, uint64_t dfs_id)
+bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
+    uintmax_t dfs_id)
 {
     if (rs->last_dfs_id == dfs_id)
     {
@@ -124,8 +127,8 @@ bool measure_and_flag_scc_dfs(rstack_t* rs, uint64_t* scc_size, uint64_t dfs_id)
     }
 }
 
-void count_ready_in_scc_dfs(rstack_t* rs, uint64_t* ready_count,
-    uint64_t dfs_id)
+void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
+    uintmax_t dfs_id)
 {
     if (rs->dfs_where_was_part_of_scc != dfs_id - 1) return;
 
@@ -151,7 +154,7 @@ void count_ready_in_scc_dfs(rstack_t* rs, uint64_t* ready_count,
 }
 
 void gather_for_pruning_dfs(rstack_t* rs, rstack_t** next_to_prune,
-    uint64_t dfs_id)
+    uintmax_t dfs_id)
 {
     if (rs->dfs_where_was_part_of_scc != dfs_id - 2) return;
     if (rs->last_dfs_id == dfs_id) return;
@@ -194,12 +197,12 @@ void rstack_delete(rstack_t *rs)
 {
     if (rs == nullptr) return;
 
-    uint64_t scc_size = 0;
+    uintmax_t scc_size = 0;
     rs->last_dfs_id = next_dfs_id;
     rs->dfs_where_was_part_of_scc = next_dfs_id;
     bool _ = measure_and_flag_scc_dfs(rs, &scc_size, next_dfs_id++);
 
-    uint64_t ready_count = 0;
+    uintmax_t ready_count = 0;
     count_ready_in_scc_dfs(rs, &ready_count, next_dfs_id++);
 
     if (ready_count != scc_size) return;
@@ -226,7 +229,7 @@ void rstack_pop(rstack_t *rs)
     free(element);
 }
 
-result_t get_front_dfs(rstack_t* rs, uint64_t dfs_id)
+result_t get_front_dfs(rstack_t* rs, uintmax_t dfs_id)
 {
     if (rs->last_dfs_id == dfs_id) return (result_t){.flag = false};
 
@@ -258,6 +261,11 @@ result_t rstack_front(rstack_t *rs)
 }
 
 bool rstack_empty(rstack_t *rs)
+{
+    return rstack_front(rs).flag;
+}
+
+rstack_t* rstack_read(char const *path)
 {
     
 }
