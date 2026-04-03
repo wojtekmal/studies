@@ -1,7 +1,7 @@
-#define _FILE_OFFSET_BITS 64
 #include "rstack.h"
-#include "errno.h"
+#include <errno.h>
 #include <stdio.h>
+#include <sys/types.h>
 
 typedef union IntOrStack
 {
@@ -179,6 +179,11 @@ void prune_elements_recursively(Element* to_prune)
 
     prune_elements_recursively(to_prune->prev_element);
 
+    if (to_prune->is_stack)
+    {
+        to_prune->contents.stack->reference_count--;
+    }
+
     free(to_prune);
 }
 
@@ -196,6 +201,8 @@ void prune_stacks_recursively(rstack_t* to_prune)
 void rstack_delete(rstack_t *rs)
 {
     if (rs == nullptr) return;
+
+    rs->reference_count--;
 
     uintmax_t scc_size = 0;
     rs->last_dfs_id = next_dfs_id;
@@ -267,5 +274,17 @@ bool rstack_empty(rstack_t *rs)
 
 rstack_t* rstack_read(char const *path)
 {
-    
+    if (path == nullptr) return nullptr;
+
+    FILE* file = fopen(path, "r");
+    if (file == nullptr) return nullptr; // fopen sets errno.
+
+    int fseeko_result = fseeko(file, 0, SEEK_END);
+    if (fseeko_result == -1) return nullptr; // fseeko sets errno.
+
+    off_t ftello_result = ftello(file);
+    if (ftello_result == -1) return nullptr; // ftello sets errno.
+
+    fseeko_result = fseeko(file, 0, SEEK_SET);
+    if (fseeko_result == -1) return nullptr;
 }
