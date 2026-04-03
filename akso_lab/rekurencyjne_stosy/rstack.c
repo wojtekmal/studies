@@ -327,18 +327,20 @@ rstack_t* rstack_read(char const *path)
     return result;
 }
 
-int write_dfs(rstack_t* rs, FILE* file, uintmax_t dfs_id);
+int write_dfs(rstack_t* rs, FILE* file, bool* loop_found, uintmax_t dfs_id);
 
-int write_elements(Element* element, FILE* file, uintmax_t dfs_id)
+int write_elements_recursively(Element* element, FILE* file, bool* loop_found,
+    uintmax_t dfs_id)
 {
     if (element == nullptr) return 0;
 
-    int result = write_elements(element->prev_element, file, dfs_id);
-    if (result == -1) return -1;
+    int result = write_elements_recursively(
+        element->prev_element, file, loop_found, dfs_id);
+    if (result == -1 || *loop_found) return result;
 
     if (element->is_stack)
     {
-        result = write_dfs(element->stack, file, dfs_id);
+        result = write_dfs(element->stack, file, loop_found, dfs_id);
     }
     else
     {
@@ -349,16 +351,16 @@ int write_elements(Element* element, FILE* file, uintmax_t dfs_id)
     return result;
 }
 
-int write_dfs(rstack_t* rs, FILE* file, uintmax_t dfs_id)
+int write_dfs(rstack_t* rs, FILE* file, bool* loop_found, uintmax_t dfs_id)
 {
     if (rs->last_dfs_id == dfs_id)
     {
-        errno = ENOTSUP;
-        return -1;
+        *loop_found = true;
+        return 0;
     }
 
     rs->last_dfs_id = dfs_id;
-    return write_elements(rs->top, file, dfs_id);
+    return write_elements_recursively(rs->top, file, loop_found, dfs_id);
 }
 
 int rstack_write(char const *path, rstack_t *rs)
@@ -369,8 +371,9 @@ int rstack_write(char const *path, rstack_t *rs)
         return -1;
     }
 
-    FILE* file = fopen(path, "a");
+    FILE* file = fopen(path, "w");
     if (file == nullptr) return -1; // fopen sets errno.
 
-    return write_dfs(rs, file, next_dfs_id++);
+    bool loop_found = false;
+    return write_dfs(rs, file, &loop_found, next_dfs_id++);
 }
