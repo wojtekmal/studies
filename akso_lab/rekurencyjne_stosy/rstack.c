@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <stdlib.h>
 
 typedef union IntOrStack
 {
@@ -282,9 +283,37 @@ rstack_t* rstack_read(char const *path)
     int fseeko_result = fseeko(file, 0, SEEK_END);
     if (fseeko_result == -1) return nullptr; // fseeko sets errno.
 
-    off_t ftello_result = ftello(file);
-    if (ftello_result == -1) return nullptr; // ftello sets errno.
+    off_t file_size = ftello(file);
+    if (file_size == -1) return nullptr; // ftello sets errno.
 
-    fseeko_result = fseeko(file, 0, SEEK_SET);
+    fseeko_result = fseeko(file, 0, SEEK_SET); // Rewind to start of file.
     if (fseeko_result == -1) return nullptr;
+
+    char* buffer = malloc(file_size);
+    if (buffer == nullptr)
+    {
+        errno = ENOMEM;
+        return nullptr;
+    }
+
+    int file_descriptor = fileno(file);
+    if (file_descriptor == -1) return nullptr; // fileno sets errno.
+
+    int read_result = read(file_descriptor, buffer, file_size);
+    if (read_result == -1) return nullptr; // read sets errno.
+
+    rstack_t* rs = rstack_new();
+    if (rs == nullptr) return nullptr;
+
+    char *scan_pos = buffer;
+
+    while (true)
+    {
+        char *end_of_scan;
+        uint64_t value = strtoull(scan_pos, &end_of_scan, 10);
+
+        if (scan_pos == end_of_scan) break;
+
+        if (errno == ERANGE) return nullptr;
+    }
 }
