@@ -4,15 +4,13 @@
 #include <sys/types.h>
 #include <stdlib.h>
 
-typedef union IntOrStack
-{
-    rstack_t* stack;
-    uint64_t num;
-} IntOrStack;
-
 typedef struct Element
 {
-    IntOrStack contents;
+    union
+    {
+        rstack_t* stack;
+        uint64_t num;
+    };
     bool is_stack; // false if int, true if stack.
     Element* prev_element;
 } Element;
@@ -64,7 +62,7 @@ int rstack_push_value(rstack_t *rs, uint64_t value)
         return -1;
     }
 
-    element->contents.num = value;
+    element->num = value;
     element->is_stack = false;
     element->prev_element = rs->top;
 
@@ -88,7 +86,7 @@ int rstack_push_rstack(rstack_t *rs1, rstack_t *rs2)
         return -1;
     }
 
-    element->contents.stack = rs2;
+    element->stack = rs2;
     element->is_stack = true;
     element->prev_element = rs1->top;
     
@@ -114,7 +112,7 @@ bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
         {
             if (element->is_stack == false) continue;
 
-            if (measure_and_flag_scc_dfs(element->contents.stack, scc_size,
+            if (measure_and_flag_scc_dfs(element->stack, scc_size,
                 dfs_id)) is_in_scc = true;
         }
 
@@ -143,7 +141,7 @@ void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
         {
             if (element->is_stack == false) continue;
 
-            count_ready_dfs(element->contents.stack, ready_count, dfs_id);
+            count_ready_dfs(element->stack, ready_count, dfs_id);
         }
     }
     else
@@ -167,10 +165,10 @@ void gather_for_pruning_dfs(rstack_t* rs, rstack_t** next_to_prune,
     {
         if (element->is_stack == false) continue;
 
-        count_ready_dfs(element->contents.stack, dfs_id, next_to_prune);
+        count_ready_dfs(element->stack, dfs_id, next_to_prune);
     }
 
-    rs->top->contents.stack = *next_to_prune;
+    rs->top->stack = *next_to_prune;
     *next_to_prune = rs;
 }
 
@@ -182,7 +180,7 @@ void prune_elements_recursively(Element* to_prune)
 
     if (to_prune->is_stack)
     {
-        to_prune->contents.stack->reference_count--;
+        to_prune->stack->reference_count--;
     }
 
     free(to_prune);
@@ -192,7 +190,7 @@ void prune_stacks_recursively(rstack_t* to_prune)
 {
     if (to_prune == nullptr) return;
 
-    prune_stacks_recursively(to_prune->top->contents.stack);
+    prune_stacks_recursively(to_prune->top->stack);
 
     prune_elements_recursively(to_prune->top);
 
@@ -232,7 +230,7 @@ void rstack_pop(rstack_t *rs)
     if (rs == nullptr || rs->top == nullptr) return;
 
     Element* element = rs->top;
-    if (element->is_stack) rstack_delete(element->contents.stack);
+    if (element->is_stack) rstack_delete(element->stack);
     rs->top = element->prev_element;
     free(element);
 }
@@ -248,11 +246,11 @@ result_t get_front_dfs(rstack_t* rs, uintmax_t dfs_id)
     {
         if (element->is_stack == false)
         {
-            return (result_t){.flag = true, .value = element->contents.num};
+            return (result_t){.flag = true, .value = element->num};
         }
         else
         {
-            result_t result = get_front_dfs(element->contents.stack, dfs_id);
+            result_t result = get_front_dfs(element->stack, dfs_id);
 
             if (result.flag == true) return result;
         }
@@ -275,7 +273,11 @@ bool rstack_empty(rstack_t *rs)
 
 rstack_t* rstack_read(char const *path)
 {
-    if (path == nullptr) return nullptr;
+    if (path == nullptr)
+    {
+        errno = EINVAL;
+        return nullptr;
+    }
 
     FILE* file = fopen(path, "r");
     if (file == nullptr) return nullptr; // fopen sets errno.
@@ -302,8 +304,8 @@ rstack_t* rstack_read(char const *path)
     int read_result = read(file_descriptor, buffer, file_size);
     if (read_result == -1) return nullptr; // read sets errno.
 
-    rstack_t* rs = rstack_new();
-    if (rs == nullptr) return nullptr;
+    rstack_t* result = rstack_new();
+    if (result == nullptr) return nullptr;
 
     char *scan_pos = buffer;
 
@@ -313,7 +315,57 @@ rstack_t* rstack_read(char const *path)
         uint64_t value = strtoull(scan_pos, &end_of_scan, 10);
 
         if (scan_pos == end_of_scan) break;
+        scan_pos = end_of_scan;
 
         if (errno == ERANGE) return nullptr;
+
+        int push_result = rstack_push_value(result, value);
+        if (push_result == -1) return nullptr;
     }
+
+    return result;
+}
+
+int write_dfs(rstack_t* rs, FILE* file, uintmax_t dfs_id);
+
+int write_elements(Element* element, FILE* file, uintmax_t dfs_id)
+{
+    if (element == nullptr) return 0;
+
+    int result = write_elements(element->prev_element, file, dfs_id);
+    if (result == -1) return -1;
+
+    if (element->is_stack)
+    {
+        result = write_dfs(element->stack, file, dfs_id);
+    }
+    else
+    {
+        fprintf(file, "%d ")
+    }
+}
+
+int write_dfs(rstack_t* rs, FILE* file, uintmax_t dfs_id)
+{
+    if (rs->last_dfs_id == dfs_id)
+    {
+        errno = ENOTSUP;
+        return -1;
+    }
+
+    rs->last_dfs_id = dfs_id;
+}
+
+int rstack_write(char const *path, rstack_t *rs)
+{
+    if (path == nullptr || rs == nullptr)
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+    FILE* file = fopen(path, "a");
+    if (file == nullptr) return -1; // fopen sets errno.
+
+    int result = write_dfs(rs, file, next_dfs_id++);
 }
