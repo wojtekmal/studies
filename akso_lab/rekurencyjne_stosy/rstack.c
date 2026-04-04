@@ -384,5 +384,8 @@ int rstack_write(char const *path, rstack_t *rs)
     int write_dfs_result = write_dfs(rs, rs->top, file, &loop_found, nullptr);
     if (write_dfs_result == -1) return -1;
 
-    
+    int fclose_output = fclose(file);
+    if (fclose_output != 0) return -1; // fclose sets errno.
+
+    return 0;
 }
