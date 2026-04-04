@@ -147,7 +147,7 @@ void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
     }
     else
     {
-        rs->reference_count++;
+        rs->scc_reference_count++;
     }
 
     if (rs->scc_reference_count == rs->reference_count) ++*ready_count;
@@ -202,15 +202,26 @@ void rstack_delete(rstack_t *rs)
 {
     if (rs == nullptr) return;
 
-    rs->reference_count--;
-
-    uintmax_t scc_size = 0;
-    rs->last_dfs_id = next_dfs_id;
+    uintmax_t scc_size = 1;
     rs->dfs_where_was_part_of_scc = next_dfs_id;
-    measure_and_flag_scc_dfs(rs, &scc_size, next_dfs_id++);
+    rs->last_dfs_id = next_dfs_id;
+
+    for (Element* element = rs->top; element != nullptr;
+        element = element->prev_element)
+    {
+        if (element->is_stack == false) continue;
+
+        measure_and_flag_scc_dfs(element->stack, &scc_size, next_dfs_id);
+    }
+
+    next_dfs_id++;
 
     uintmax_t ready_count = 0;
     count_ready_in_scc_dfs(rs, &ready_count, next_dfs_id++);
+
+    // Has to be after count_ready_in_scc_dfs because that function increases
+    // the scc incoming edge counter when it enters.
+    rs->reference_count--;
 
     if (ready_count != scc_size) return;
 
