@@ -24,6 +24,8 @@ struct rstack
 
     uintmax_t dfs_where_was_part_of_scc;
     uintmax_t scc_reference_count;
+
+    struct rstack* prev_in_write_dfs;
 };
 
 uintmax_t next_dfs_id = 1;
@@ -99,11 +101,7 @@ int rstack_push_rstack(rstack_t *rs1, rstack_t *rs2)
 bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
     uintmax_t dfs_id)
 {
-    if (rs->last_dfs_id == dfs_id)
-    {
-        return (rs->dfs_where_was_part_of_scc == dfs_id);
-    }
-    else
+    if (rs->last_dfs_id != dfs_id)
     {
         rs->last_dfs_id = dfs_id;
         bool found_path_to_start = false;
@@ -117,14 +115,15 @@ bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
                 dfs_id)) found_path_to_start = true;
         }
 
-        if (found_path_to_start)
+        // Second condition is a check for the start, to not double-count.
+        if (found_path_to_start && rs->dfs_where_was_part_of_scc != dfs_id)
         {
             ++*scc_size;
             rs->dfs_where_was_part_of_scc = dfs_id;
         }
-
-        return found_path_to_start;
     }
+
+    return (rs->dfs_where_was_part_of_scc == dfs_id);
 }
 
 void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
@@ -135,7 +134,7 @@ void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
     if (rs->last_dfs_id != dfs_id)
     {
         rs->last_dfs_id = dfs_id;
-        rs->scc_reference_count = 1;
+        rs->scc_reference_count = 0;
 
         for (Element* element = rs->top; element != nullptr;
             element = element->prev_element)
@@ -145,19 +144,16 @@ void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
             count_ready_in_scc_dfs(element->stack, ready_count, dfs_id);
         }
     }
-    else
-    {
-        rs->scc_reference_count++;
-    }
 
+    rs->scc_reference_count++;
     if (rs->scc_reference_count == rs->reference_count) ++*ready_count;
 }
 
 void gather_for_pruning_dfs(rstack_t* rs, rstack_t** next_to_prune,
     uintmax_t dfs_id)
 {
-    if (rs->dfs_where_was_part_of_scc != dfs_id - 2) return;
-    if (rs->last_dfs_id == dfs_id) return;
+    if (rs->dfs_where_was_part_of_scc != dfs_id - 2 ||
+        rs->last_dfs_id == dfs_id) return;
 
     rs->last_dfs_id = dfs_id;
 
@@ -169,6 +165,8 @@ void gather_for_pruning_dfs(rstack_t* rs, rstack_t** next_to_prune,
         gather_for_pruning_dfs(element->stack, next_to_prune, dfs_id);
     }
 
+    // Top of the stack is used to point to the next stack for removal.
+    if (rs->top->is_stack) rs->top->stack->reference_count--;
     rs->top->stack = *next_to_prune;
     *next_to_prune = rs;
 }
@@ -193,8 +191,9 @@ void prune_stacks_recursively(rstack_t* to_prune)
 
     prune_stacks_recursively(to_prune->top->stack);
 
-    prune_elements_recursively(to_prune->top);
+    prune_elements_recursively(to_prune->top->prev_element);
 
+    free(to_prune->top);
     free(to_prune);
 }
 
@@ -204,16 +203,7 @@ void rstack_delete(rstack_t *rs)
 
     uintmax_t scc_size = 1;
     rs->dfs_where_was_part_of_scc = next_dfs_id;
-    rs->last_dfs_id = next_dfs_id;
-
-    for (Element* element = rs->top; element != nullptr;
-        element = element->prev_element)
-    {
-        if (element->is_stack == false) continue;
-
-        measure_and_flag_scc_dfs(element->stack, &scc_size, next_dfs_id);
-    }
-
+    measure_and_flag_scc_dfs(rs, &scc_size, next_dfs_id);
     next_dfs_id++;
 
     uintmax_t ready_count = 0;
@@ -338,40 +328,39 @@ rstack_t* rstack_read(char const *path)
     return result;
 }
 
-int write_dfs(rstack_t* rs, FILE* file, bool* loop_found, uintmax_t dfs_id);
-
-int write_elements_recursively(Element* element, FILE* file, bool* loop_found,
-    uintmax_t dfs_id)
+int write_dfs(rstack_t* rs, Element* element, FILE* file, bool* loop_found,
+    rstack_t* prev_in_write_dfs)
 {
     if (element == nullptr) return 0;
 
-    int result = write_elements_recursively(
-        element->prev_element, file, loop_found, dfs_id);
-    if (result == -1 || *loop_found) return result;
+    if (element == rs->top)
+    {
+        rs->prev_in_write_dfs = prev_in_write_dfs;
+
+        for (rstack_t* on_path = prev_in_write_dfs; on_path != nullptr;
+            on_path = on_path->prev_in_write_dfs)
+        {
+            if (on_path != rs) continue;
+
+            *loop_found = true;
+            return 0;
+        }
+    }
+
+    int prev_result =
+        write_dfs(rs, element->prev_element, file, loop_found, nullptr);
+    if (prev_result == -1 || *loop_found) return prev_result;
 
     if (element->is_stack)
     {
-        result = write_dfs(element->stack, file, loop_found, dfs_id);
+        return write_dfs(
+            element->stack, element->stack->top, file, loop_found, rs);
     }
     else
     {
         int fprintf_result = fprintf(file, "%ju\n", element->num);
-        if (fprintf_result < 0) result = -1; // errno set by fprintf.
+        return (fprintf_result < 0) ? -1 : 0; // errno set by fprintf.
     }
-
-    return result;
-}
-
-int write_dfs(rstack_t* rs, FILE* file, bool* loop_found, uintmax_t dfs_id)
-{
-    if (rs->last_dfs_id == dfs_id)
-    {
-        *loop_found = true;
-        return 0;
-    }
-
-    rs->last_dfs_id = dfs_id;
-    return write_elements_recursively(rs->top, file, loop_found, dfs_id);
 }
 
 int rstack_write(char const *path, rstack_t *rs)
@@ -386,5 +375,5 @@ int rstack_write(char const *path, rstack_t *rs)
     if (file == nullptr) return -1; // fopen sets errno.
 
     bool loop_found = false;
-    return write_dfs(rs, file, &loop_found, next_dfs_id++);
+    return write_dfs(rs, rs->top, file, &loop_found, nullptr);
 }
