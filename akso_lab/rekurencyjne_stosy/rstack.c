@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -281,8 +282,11 @@ rstack_t* rstack_read(char const *path)
         return nullptr;
     }
 
-    FILE* file = fopen(path, "r");
-    if (file == nullptr) return nullptr; // fopen sets errno.
+    int file_descriptor = open(path, O_RDONLY);
+    if (file_descriptor == -1) return nullptr; // open sets errno.
+
+    FILE* file = fdopen(file_descriptor, "r");
+    if (file == nullptr) return nullptr; // fdopen sets errno.
 
     int fseeko_result = fseeko(file, 0, SEEK_END);
     if (fseeko_result == -1) return nullptr; // fseeko sets errno.
@@ -290,18 +294,12 @@ rstack_t* rstack_read(char const *path)
     off_t file_size = ftello(file);
     if (file_size == -1) return nullptr; // ftello sets errno.
 
-    fseeko_result = fseeko(file, 0, SEEK_SET); // Rewind to start of file.
-    if (fseeko_result == -1) return nullptr;
-
     char* buffer = malloc(file_size);
     if (buffer == nullptr)
     {
         errno = ENOMEM;
         return nullptr;
     }
-
-    int file_descriptor = fileno(file);
-    if (file_descriptor == -1) return nullptr; // fileno sets errno.
 
     int read_result = read(file_descriptor, buffer, file_size);
     if (read_result == -1) return nullptr; // read sets errno.
