@@ -282,11 +282,8 @@ rstack_t* rstack_read(char const *path)
         return nullptr;
     }
 
-    int file_descriptor = open(path, O_RDONLY);
-    if (file_descriptor == -1) return nullptr; // open sets errno.
-
-    FILE* file = fdopen(file_descriptor, "r");
-    if (file == nullptr) return nullptr; // fdopen sets errno.
+    FILE* file = fopen(path, "r");
+    if (file == nullptr) return nullptr; // fopen sets errno.
 
     int fseeko_result = fseeko(file, 0, SEEK_END);
     if (fseeko_result == -1) return nullptr; // fseeko sets errno.
@@ -294,12 +291,20 @@ rstack_t* rstack_read(char const *path)
     off_t file_size = ftello(file);
     if (file_size == -1) return nullptr; // ftello sets errno.
 
+    // fseek ruins later reading, so I close and open the file again.
+    int fclose_output = fclose(file);
+    if (fclose_output != 0) return nullptr; // fclose sets errno.
+
+
     char* buffer = malloc(file_size);
     if (buffer == nullptr)
     {
         errno = ENOMEM;
         return nullptr;
     }
+
+    int file_descriptor = open(path, O_RDONLY);
+    if (file_descriptor == -1) return nullptr; // open sets errno.
 
     int read_result = read(file_descriptor, buffer, file_size);
     if (read_result == -1) return nullptr; // read sets errno.
@@ -322,6 +327,9 @@ rstack_t* rstack_read(char const *path)
         int push_result = rstack_push_value(result, value);
         if (push_result == -1) return nullptr;
     }
+
+    int close_result = close(file_descriptor);
+    if (close_result == -1) return nullptr; // errno is set by close.
 
     return result;
 }
@@ -373,5 +381,8 @@ int rstack_write(char const *path, rstack_t *rs)
     if (file == nullptr) return -1; // fopen sets errno.
 
     bool loop_found = false;
-    return write_dfs(rs, rs->top, file, &loop_found, nullptr);
+    int write_dfs_result = write_dfs(rs, rs->top, file, &loop_found, nullptr);
+    if (write_dfs_result == -1) return -1;
+
+    
 }
