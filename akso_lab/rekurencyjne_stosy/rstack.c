@@ -106,7 +106,7 @@ bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
     else
     {
         rs->last_dfs_id = dfs_id;
-        bool is_in_scc = false;
+        bool found_path_to_start = false;
 
         for (Element* element = rs->top; element != nullptr;
             element = element->prev_element)
@@ -114,16 +114,16 @@ bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
             if (element->is_stack == false) continue;
 
             if (measure_and_flag_scc_dfs(element->stack, scc_size,
-                dfs_id)) is_in_scc = true;
+                dfs_id)) found_path_to_start = true;
         }
 
-        if (is_in_scc)
+        if (found_path_to_start)
         {
             ++*scc_size;
             rs->dfs_where_was_part_of_scc = dfs_id;
         }
 
-        return is_in_scc;
+        return found_path_to_start;
     }
 }
 
