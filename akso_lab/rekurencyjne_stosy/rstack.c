@@ -307,7 +307,7 @@ rstack_t* rstack_read(char const *path)
     {
         if (!isspace(buffer[i]) && !isdigit(buffer[i]))
         {
-            errno = EINVAL;
+            errno = EILSEQ;
             return nullptr;
         }
     }
