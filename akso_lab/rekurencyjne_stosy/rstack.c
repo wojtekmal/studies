@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <ctype.h>
 
 typedef struct Element
 {
@@ -282,32 +284,39 @@ rstack_t* rstack_read(char const *path)
         return nullptr;
     }
 
-    FILE* file = fopen(path, "r");
-    if (file == nullptr) return nullptr; // fopen sets errno.
+    int file_descriptor = open(path, O_RDONLY);
+    if (file_descriptor == -1) return nullptr; // open sets errno.
 
-    int fseeko_result = fseeko(file, 0, SEEK_END);
-    if (fseeko_result == -1) return nullptr; // fseeko sets errno.
+    struct stat file_statistics;
+    int fstat_result = fstat(file_descriptor, &file_statistics);
+    if (fstat_result == -1) return nullptr; // fstat sets errno.
+    uintmax_t file_size = file_statistics.st_size;
 
-    off_t file_size = ftello(file);
-    if (file_size == -1) return nullptr; // ftello sets errno.
-
-    // fseek ruins later reading, so I close and open the file again.
-    int fclose_output = fclose(file);
-    if (fclose_output != 0) return nullptr; // fclose sets errno.
-
-
-    char* buffer = malloc(file_size);
+    char* buffer = malloc(file_size + 1);
     if (buffer == nullptr)
     {
         errno = ENOMEM;
         return nullptr;
     }
-
-    int file_descriptor = open(path, O_RDONLY);
-    if (file_descriptor == -1) return nullptr; // open sets errno.
+    buffer[file_size] = 0x0;
 
     int read_result = read(file_descriptor, buffer, file_size);
     if (read_result == -1) return nullptr; // read sets errno.
+
+    for (uintmax_t i = 0; i < file_size; i++)
+    {
+        if (!isspace(buffer[i]) && !isdigit(buffer[i]))
+        {
+            errno = EINVAL;
+            return nullptr;
+        }
+    }
+
+    // Discard all following whitespace.
+    for (uintmax_t i = file_size - 1; i + 1 != 0 && isspace(buffer[i]); i--)
+    {
+        buffer[i] = 0x0;
+    }
 
     rstack_t* result = rstack_new();
     if (result == nullptr) return nullptr;
@@ -317,11 +326,14 @@ rstack_t* rstack_read(char const *path)
     while (true)
     {
         char *end_of_scan;
-        uint64_t value = strtoull(scan_pos, &end_of_scan, 10);
+        unsigned long long value = strtoull(scan_pos, &end_of_scan, 10);
 
         if (scan_pos == end_of_scan) break;
         scan_pos = end_of_scan;
 
+        // strtoull sets errno. Also take care of case where unsigned long long
+        // holds more than 64 bits.
+        if (value > UINT64_MAX) errno = ERANGE;
         if (errno == ERANGE) return nullptr;
 
         int push_result = rstack_push_value(result, value);
@@ -329,7 +341,7 @@ rstack_t* rstack_read(char const *path)
     }
 
     int close_result = close(file_descriptor);
-    if (close_result == -1) return nullptr; // errno is set by close.
+    if (close_result == -1) return nullptr; // close sets errno.
 
     return result;
 }
