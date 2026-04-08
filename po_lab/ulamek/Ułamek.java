@@ -124,4 +124,55 @@ public class Ułamek
         wynik.odejmij(b);
         return wynik;
     }
+
+    public void pomnóż(Ułamek inny)
+    {
+        int nwd_licznik = nwd(licznik, inny.mianownik);
+        int nwd_mianownik = nwd(inny.licznik, mianownik);
+
+        assert licznik / nwd_licznik <= Integer.MAX_VALUE / inny.licznik:
+            "Overflow";
+        licznik = licznik / nwd_licznik * inny.licznik;
+
+        assert mianownik / nwd_mianownik <= Integer.MAX_VALUE / inny.mianownik:
+            "Overflow";
+        mianownik = mianownik / nwd_mianownik * inny.mianownik;
+    }
+
+    public static Ułamek pomnóż(Ułamek a, Ułamek b)
+    {
+        Ułamek wynik = new Ułamek(a);
+        wynik.pomnóż(b);
+        return wynik;
+    }
+
+    public void odwróć()
+    {
+        assert licznik != 0: "Nie można dzielić przez 0.";
+        int tmp = mianownik;
+        mianownik = licznik;
+        licznik = tmp;
+
+        if (mianownik < 0)
+        {
+            licznik *= -1;
+            mianownik *= -1;
+        }
+    }
+
+    public void podziel(Ułamek inny)
+    {
+        inny.odwróć();
+        pomnóż(inny);
+        inny.odwróć();
+    }
+
+    public static Ułamek podziel(Ułamek a, Ułamek b)
+    {
+        Ułamek wynik = new Ułamek(a);
+        wynik.podziel(b);
+        return wynik;
+    }
+
+    
 }
