@@ -1,6 +1,4 @@
-public class Student {
-    private String imię;
-    private String nazwisko;
+public class Student extends Osoba {
     private int indeks;
     private int rok;
     static final int MAKS_PRZEDMIOTY = 50;
@@ -9,6 +7,17 @@ public class Student {
 
     public Student(String imie, String nazwisko)
     {
+        super(imie, nazwisko);
+        this.przedmioty = new String[MAKS_PRZEDMIOTY];
+    }
+
+    @Override
+    public String toString() {
+        String wynik = imieNazwisko() + " nr. indeksu: " + indeks + " rok: " + rok + " chodzi na:\n";
+        for (String przedmiot : przedmioty)
+        {
+            wynik += przedmiot + "\n";
+        }
         
     }
 }
