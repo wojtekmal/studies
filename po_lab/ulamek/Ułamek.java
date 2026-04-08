@@ -60,6 +60,8 @@ public class Ułamek
 
     public String toString()
     {
+        if (mianownik == 1) return Integer.toString(licznik);
+        
         return Integer.toString(licznik) + "/" + Integer.toString(mianownik);
     }
 
@@ -80,19 +82,19 @@ public class Ułamek
 
     public void dodaj(Ułamek inny)
     {
-        int nwd = nwd(mianownik, inny.mianownik);
+        int nwd = nwd(mianownik, inny.mianownik());
 
-        assert mianownik / nwd <= Integer.MAX_VALUE / inny.mianownik:
+        assert mianownik / nwd <= Integer.MAX_VALUE / inny.mianownik():
             "Overflow.";
-        int nww = mianownik / nwd * inny.mianownik;
+        int nww = mianownik / nwd * inny.mianownik();
 
-        assert inny.mianownik / nwd <= Integer.MAX_VALUE / Math.abs(licznik):
+        assert inny.mianownik() / nwd <= Integer.MAX_VALUE / Math.abs(licznik):
             "Overflow.";
-        int składnik_1 = inny.mianownik / nwd * licznik;
+        int składnik_1 = inny.mianownik() / nwd * licznik;
 
-        assert mianownik / nwd <= Integer.MAX_VALUE / Math.abs(inny.licznik):
+        assert mianownik / nwd <= Integer.MAX_VALUE / Math.abs(inny.licznik()):
             "Overflow.";
-        int składnik_2 = mianownik / nwd * inny.licznik;
+        int składnik_2 = mianownik / nwd * inny.licznik();
 
         if (Integer.signum(składnik_1) == Integer.signum(składnik_2))
         {
@@ -126,17 +128,22 @@ public class Ułamek
     }
 
     public void pomnóż(Ułamek inny)
-    {
-        int nwd_licznik = nwd(licznik, inny.mianownik);
-        int nwd_mianownik = nwd(inny.licznik, mianownik);
+    {// Trzeba podzielić przez oba nwd.
+        int nwd_licznik = nwd(licznik, inny.mianownik());
+        int nwd_mianownik = nwd(inny.licznik(), mianownik);
 
-        assert licznik / nwd_licznik <= Integer.MAX_VALUE / inny.licznik:
-            "Overflow";
-        licznik = licznik / nwd_licznik * inny.licznik;
+        licznik /= nwd_licznik;
+        mianownik /= nwd_mianownik;
+        int inny_licznik_skrócony = inny.licznik() / nwd_mianownik;
+        int inny_mianownik_skrócony = inny.mianownik() / nwd_licznik;
 
-        assert mianownik / nwd_mianownik <= Integer.MAX_VALUE / inny.mianownik:
-            "Overflow";
-        mianownik = mianownik / nwd_mianownik * inny.mianownik;
+        assert Math.abs(licznik) <= Integer.MAX_VALUE / inny_licznik_skrócony:
+            "Overflow.";
+        licznik *= inny_licznik_skrócony;
+
+        assert mianownik <= Integer.MAX_VALUE / inny_mianownik_skrócony:
+            "Overflow.";
+        mianownik *= inny_mianownik_skrócony;
     }
 
     public static Ułamek pomnóż(Ułamek a, Ułamek b)
@@ -174,5 +181,34 @@ public class Ułamek
         return wynik;
     }
 
-    
+    public boolean czyMniejszeNiż(Ułamek inny)
+    {
+        int nwd_licznik = nwd(licznik, inny.licznik());
+        int nwd_mianownik = nwd(mianownik, inny.mianownik());
+        
+        assert Math.abs(licznik) / nwd_licznik <= Integer.MAX_VALUE / inny.mianownik():
+            "Overflow.";
+        int iloczyn_licznik = licznik / nwd_licznik * inny.mianownik();
+
+        assert mianownik / nwd_mianownik <= Integer.MAX_VALUE / Math.abs(inny.licznik()):
+            "Overflow.";
+        int iloczyn_mianownik = mianownik / nwd_mianownik * inny.licznik();
+
+        return (iloczyn_licznik < iloczyn_mianownik);
+    }
+
+    public static boolean czyMniejszeNiż(Ułamek a, Ułamek b)
+    {
+        return a.czyMniejszeNiż(b);
+    }
+
+    public boolean czyRówne(Ułamek inny)
+    {
+        return (licznik == inny.licznik() && mianownik == inny.mianownik());
+    }
+
+    public static boolean czyRówne(Ułamek a, Ułamek b)
+    {
+        return (a.czyRówne(b));
+    }
 }
