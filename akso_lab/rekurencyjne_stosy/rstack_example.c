@@ -251,6 +251,32 @@ static int memory(void) {
   return memory_test(alloc_fail_test);
 }
 
+static int wojtekmal_0(void) {
+  rstack_t *rs0 = rstack_new();
+  rstack_t *rs1 = rstack_new();
+  rstack_t *rs2 = rstack_new();
+
+  rstack_push_value(rs0, 3);
+  rstack_push_value(rs0, 2);
+  rstack_push_value(rs0, 1);
+  rstack_push_rstack(rs0, rs1);
+
+  rstack_push_value(rs1, 5);
+  rstack_push_rstack(rs1, rs2);
+  rstack_push_value(rs1, 4);
+
+  rstack_push_rstack(rs2, rs1);
+  rstack_push_value(rs2, 6);
+
+  rstack_write("wojtekmal_0.out", rs0);
+
+  rstack_delete(rs0);
+  rstack_delete(rs1);
+  rstack_delete(rs2);
+
+  return PASS;
+}
+
 /** URUCHAMIANIE TESTÓW **/
 
 typedef struct {
@@ -268,6 +294,7 @@ static const test_list_t test_list[] = {
   TEST(four),
   TEST(five),
   TEST(memory),
+  TEST(wojtekmal_0),
 };
 
 static int do_test(int (*function)(void)) {
