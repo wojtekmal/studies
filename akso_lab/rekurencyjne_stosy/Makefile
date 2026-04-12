@@ -25,10 +25,10 @@ memory_tests_g.o: memory_tests.c memory_tests.h
 	memory_tests.c -g -o memory_tests_g.o
 
 librstack_g.so: rstack_g.o memory_tests_g.o
-	gcc -o librstack.so -shared -Wl,--wrap=malloc -Wl,--wrap=calloc \
+	gcc -o librstack_g.so -shared -Wl,--wrap=malloc -Wl,--wrap=calloc \
 	-Wl,--wrap=realloc -Wl,--wrap=reallocarray -Wl,--wrap=free \
 	-Wl,--wrap=strdup -Wl,--wrap=strndup memory_tests_g.o rstack_g.o -g
 
 rstack_example_g: librstack_g.so rstack_example.c
-	gcc -o rstack_example_g rstack_example.c -std=gnu23 -L. -lrstack \
+	gcc -o rstack_example_g rstack_example.c -std=gnu23 -L. -lrstack_g \
 	-Wl,-rpath='$$ORIGIN' -g
