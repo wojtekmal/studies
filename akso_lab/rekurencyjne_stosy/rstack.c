@@ -280,6 +280,26 @@ bool rstack_empty(rstack_t *rs)
     return !rstack_front(rs).flag;
 }
 
+int read_into_buffer(char const *path, char** buffer, uintmax_t buffer_size)
+{
+    int file_descriptor = open(path, O_RDONLY);
+    if (file_descriptor == -1) return -1; // open sets errno.
+
+    struct stat file_statistics;
+    int fstat_result = fstat(file_descriptor, &file_statistics);
+    if (fstat_result == -1) return -1; // fstat sets errno.
+    uintmax_t file_size = file_statistics.st_size;
+
+    char* buffer = malloc(file_size + 1);
+    if (buffer == nullptr)
+    {
+        errno = ENOMEM;
+        return -1;
+    }
+    
+    buffer[file_size] = 0x0;
+}
+
 rstack_t* rstack_read(char const *path)
 {
     if (path == nullptr)
@@ -287,22 +307,6 @@ rstack_t* rstack_read(char const *path)
         errno = EINVAL;
         return nullptr;
     }
-
-    int file_descriptor = open(path, O_RDONLY);
-    if (file_descriptor == -1) return nullptr; // open sets errno.
-
-    struct stat file_statistics;
-    int fstat_result = fstat(file_descriptor, &file_statistics);
-    if (fstat_result == -1) return nullptr; // fstat sets errno.
-    uintmax_t file_size = file_statistics.st_size;
-
-    char* buffer = malloc(file_size + 1);
-    if (buffer == nullptr)
-    {
-        errno = ENOMEM;
-        return nullptr;
-    }
-    buffer[file_size] = 0x0;
 
     int read_result = read(file_descriptor, buffer, file_size);
     if (read_result == -1) return nullptr; // read sets errno.
@@ -350,39 +354,46 @@ rstack_t* rstack_read(char const *path)
     return result;
 }
 
-int write_dfs(rstack_t* rs, Element* element, FILE* file, bool* loop_found,
+int write_dfs_stack(rstack_t* rs, FILE* file, bool* loop_found,
+    rstack_t* prev_in_write_dfs);
+
+int write_dfs_element(Element* element, FILE* file, bool* loop_found,
     rstack_t* prev_in_write_dfs)
 {
     if (element == nullptr) return 0;
 
-    if (element == rs->top)
-    {
-        rs->prev_in_write_dfs = prev_in_write_dfs;
-
-        for (rstack_t* on_path = prev_in_write_dfs; on_path != nullptr;
-            on_path = on_path->prev_in_write_dfs)
-        {
-            if (on_path != rs) continue;
-
-            *loop_found = true;
-            return 0;
-        }
-    }
-
-    int prev_result =
-        write_dfs(rs, element->prev_element, file, loop_found, nullptr);
+    int prev_result = write_dfs_element(
+        element->prev_element, file, loop_found, prev_in_write_dfs);
     if (prev_result == -1 || *loop_found) return prev_result;
 
     if (element->is_stack)
     {
-        return write_dfs(
-            element->stack, element->stack->top, file, loop_found, rs);
+        return write_dfs_stack(
+            element->stack, file, loop_found, prev_in_write_dfs);
     }
     else
     {
         int fprintf_result = fprintf(file, "%ju\n", element->num);
         return (fprintf_result < 0) ? -1 : 0; // errno set by fprintf.
     }
+}
+
+int write_dfs_stack(rstack_t* rs, FILE* file, bool* loop_found,
+    rstack_t* prev_in_write_dfs)
+{
+    rs->prev_in_write_dfs = prev_in_write_dfs;
+
+    for (rstack_t* on_path = prev_in_write_dfs; on_path != nullptr;
+        on_path = on_path->prev_in_write_dfs)
+    {
+        if (on_path != rs) continue;
+
+        *loop_found = true;
+        return 0;
+    }
+
+    int write_element_result = write_dfs_element(rs->top, file, loop_found, rs);
+    return write_element_result;
 }
 
 int rstack_write(char const *path, rstack_t *rs)
@@ -397,7 +408,7 @@ int rstack_write(char const *path, rstack_t *rs)
     if (file == nullptr) return -1; // fopen sets errno.
 
     bool loop_found = false;
-    int write_dfs_result = write_dfs(rs, rs->top, file, &loop_found, nullptr);
+    int write_dfs_result = write_dfs_stack(rs, file, &loop_found, nullptr);
     if (write_dfs_result == -1) return -1;
 
     int fclose_output = fclose(file);
