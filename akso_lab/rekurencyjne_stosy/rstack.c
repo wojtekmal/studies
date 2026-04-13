@@ -178,12 +178,12 @@ void prune_elements_recursively(Element* to_prune)
 {
     if (to_prune == nullptr) return;
 
-    prune_elements_recursively(to_prune->prev_element);
+    // Order is important. The reference count is decreased no matter if the
+    // other stack is about to be deleted or not, so we want to decrease before
+    // deleting.
+    if (to_prune->is_stack) to_prune->stack->reference_count--;
 
-    if (to_prune->is_stack)
-    {
-        to_prune->stack->reference_count--;
-    }
+    prune_elements_recursively(to_prune->prev_element);
 
     free(to_prune);
 }
@@ -192,9 +192,10 @@ void prune_stacks_recursively(rstack_t* to_prune)
 {
     if (to_prune == nullptr) return;
 
-    prune_stacks_recursively(to_prune->top->stack);
-
+    // Order is important. See the comment in prune_elements_recursively.
     prune_elements_recursively(to_prune->top->prev_element);
+
+    prune_stacks_recursively(to_prune->top->stack);
 
     free(to_prune->top);
     free(to_prune);
