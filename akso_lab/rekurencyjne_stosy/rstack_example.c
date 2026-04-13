@@ -277,6 +277,58 @@ static int wojtekmal_0(void) {
   return PASS;
 }
 
+static int wojtekmal_1(void) {
+  rstack_t *rs0 = rstack_new();
+  rstack_t *rs1 = rstack_new();
+  rstack_t *rs2 = rstack_new();
+
+  rstack_push_rstack(rs0, rs1);
+  rstack_push_rstack(rs0, rs2);
+  rstack_push_rstack(rs1, rs2);
+
+  rstack_delete(rs2);
+  rstack_delete(rs1);
+  rstack_delete(rs0);
+
+  return PASS;
+}
+
+static int wojtekmal_2(void) {
+  rstack_t *rs0 = rstack_new();
+
+  rstack_push_value(rs0, 0);
+  rstack_pop(rs0);
+  rstack_pop(rs0);
+  rstack_delete(rs0);
+
+  return PASS;
+}
+
+static int wojtekmal_3(void) {
+  rstack_t *rs2 = rstack_new();
+  rstack_t *rs14 = rstack_new();
+
+  rstack_pop(rs2);//121
+  ASSERT_RESULT(rstack_front(rs2), 0);//165
+  CHECK_IF_NO_ERROR(rstack_push_value(rs14, 12154698299591318UL));//159
+  ASSERT(rstack_empty(rs2) == 1);//191
+  rstack_pop(rs14);//206
+  rstack_pop(rs2);//210
+  ASSERT_RESULT(rstack_front(rs2), 0);//252
+  rstack_pop(rs2);//293
+  rstack_pop(rs2);//296
+  CHECK_IF_NO_ERROR(rstack_push_value(rs2, 10144464412890713680UL));//300
+  CHECK_IF_NO_ERROR(rstack_push_rstack(rs14, rs2));//323
+  CHECK_IF_NO_ERROR(rstack_push_value(rs2, 17935414318778789457UL));//349
+  ASSERT(rstack_empty(rs2) == 0);//366
+
+
+  rstack_delete(rs2);
+  rstack_delete(rs14);
+
+  return PASS;
+}
+
 /** URUCHAMIANIE TESTÓW **/
 
 typedef struct {
@@ -295,6 +347,8 @@ static const test_list_t test_list[] = {
   TEST(five),
   TEST(memory),
   TEST(wojtekmal_0),
+  TEST(wojtekmal_1),
+  TEST(wojtekmal_2),
 };
 
 static int do_test(int (*function)(void)) {
