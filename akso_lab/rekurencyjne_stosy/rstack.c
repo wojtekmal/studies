@@ -280,7 +280,29 @@ bool rstack_empty(rstack_t *rs)
     return !rstack_front(rs).flag;
 }
 
-int read_into_buffer(char const *path, char** buffer, uintmax_t buffer_size)
+int check_and_trim_buffer(char* buffer, uintmax_t *buffer_size)
+{
+    for (uintmax_t i = 0; i < *buffer_size - 1; i++)
+    {
+        if (!isspace(buffer[i]) && !isdigit(buffer[i]))
+        {
+            errno = EINVAL;
+            return -1;
+        }
+    }
+
+    // Discard all following whitespace.
+    while (*buffer_size != 0 && isspace(buffer[*buffer_size - 1]))
+    {
+        buffer[*buffer_size - 1] = 0x0;
+        *buffer_size--;
+    }
+
+    buffer = realloc(buffer, *buffer_size);
+    return 0;
+}
+
+int read_into_buffer(char const *path, char **buffer, uintmax_t *buffer_size)
 {
     int file_descriptor = open(path, O_RDONLY);
     if (file_descriptor == -1) return -1; // open sets errno.
@@ -288,16 +310,22 @@ int read_into_buffer(char const *path, char** buffer, uintmax_t buffer_size)
     struct stat file_statistics;
     int fstat_result = fstat(file_descriptor, &file_statistics);
     if (fstat_result == -1) return -1; // fstat sets errno.
-    uintmax_t file_size = file_statistics.st_size;
+    *buffer_size = file_statistics.st_size + 1;
 
-    char* buffer = malloc(file_size + 1);
-    if (buffer == nullptr)
+    *buffer = malloc(*buffer_size);
+    if (*buffer == nullptr)
     {
         errno = ENOMEM;
         return -1;
     }
-    
-    buffer[file_size] = 0x0;
+
+    buffer[*buffer_size - 1] = 0x0;
+
+    int read_result = read(file_descriptor, *buffer, *buffer_size - 1);
+    if (read_result == -1) return -1; // read sets errno.
+
+    int clean_result = clean_and_trim_buffer();
+    return clean_result;
 }
 
 rstack_t* rstack_read(char const *path)
@@ -306,24 +334,6 @@ rstack_t* rstack_read(char const *path)
     {
         errno = EINVAL;
         return nullptr;
-    }
-
-    int read_result = read(file_descriptor, buffer, file_size);
-    if (read_result == -1) return nullptr; // read sets errno.
-
-    for (uintmax_t i = 0; i < file_size; i++)
-    {
-        if (!isspace(buffer[i]) && !isdigit(buffer[i]))
-        {
-            errno = EINVAL;
-            return nullptr;
-        }
-    }
-
-    // Discard all following whitespace.
-    for (uintmax_t i = file_size - 1; i + 1 != 0 && isspace(buffer[i]); i--)
-    {
-        buffer[i] = 0x0;
     }
 
     rstack_t* result = rstack_new();
