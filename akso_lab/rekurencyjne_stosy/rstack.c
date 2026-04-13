@@ -235,8 +235,11 @@ void rstack_pop(rstack_t *rs)
     if (rs == nullptr || rs->top == nullptr) return;
 
     Element* element = rs->top;
-    if (element->is_stack) rstack_delete(element->stack);
+
+    // Order is important - we don't want the stack to see the popped element
+    // in the rstack_delete dfs.
     rs->top = element->prev_element;
+    if (element->is_stack) rstack_delete(element->stack);
     free(element);
 }
 

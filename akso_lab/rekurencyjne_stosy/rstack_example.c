@@ -314,17 +314,34 @@ static int wojtekmal_3(void) {
   ASSERT(rstack_empty(rs2) == 1);//191
   rstack_pop(rs14);//206
   rstack_pop(rs2);//210
+  rstack_pop(rs14);//225
+  CHECK_IF_NO_ERROR(rstack_push_value(rs14, 6925593375294614994UL));//243
   ASSERT_RESULT(rstack_front(rs2), 0);//252
+  ASSERT(rstack_empty(rs14) == 0);//268
+  CHECK_IF_NO_ERROR(rstack_push_value(rs14, 4210891146716143759UL));//273
   rstack_pop(rs2);//293
   rstack_pop(rs2);//296
   CHECK_IF_NO_ERROR(rstack_push_value(rs2, 10144464412890713680UL));//300
+  CHECK_IF_NO_ERROR(rstack_push_value(rs14, 10217978855293311293UL));//319
   CHECK_IF_NO_ERROR(rstack_push_rstack(rs14, rs2));//323
   CHECK_IF_NO_ERROR(rstack_push_value(rs2, 17935414318778789457UL));//349
+  CHECK_IF_NO_ERROR(rstack_push_rstack(rs14, rs14));//352
   ASSERT(rstack_empty(rs2) == 0);//366
-
+  rstack_pop(rs14);//376
 
   rstack_delete(rs2);
   rstack_delete(rs14);
+
+  return PASS;
+}
+
+static int wojtekmal_4(void) {
+  rstack_t *rs1 = rstack_new();
+
+  CHECK_IF_NO_ERROR(rstack_push_rstack(rs1, rs1));
+  rstack_pop(rs1);
+
+  rstack_delete(rs1);
 
   return PASS;
 }
@@ -349,6 +366,8 @@ static const test_list_t test_list[] = {
   TEST(wojtekmal_0),
   TEST(wojtekmal_1),
   TEST(wojtekmal_2),
+  TEST(wojtekmal_3),
+  TEST(wojtekmal_4),
 };
 
 static int do_test(int (*function)(void)) {
