@@ -282,6 +282,7 @@ bool rstack_empty(rstack_t *rs)
 
 int check_and_trim_buffer(char* buffer, uintmax_t *buffer_size)
 {
+    // Last byte of buffer is a null byte.
     for (uintmax_t i = 0; i < *buffer_size - 1; i++)
     {
         if (!isspace(buffer[i]) && !isdigit(buffer[i]))
@@ -292,13 +293,12 @@ int check_and_trim_buffer(char* buffer, uintmax_t *buffer_size)
     }
 
     // Discard all following whitespace.
-    while (*buffer_size != 0 && isspace(buffer[*buffer_size - 1]))
+    while (*buffer_size != 1 && isspace(buffer[*buffer_size - 2]))
     {
-        buffer[*buffer_size - 1] = 0x0;
-        *buffer_size--;
+        --*buffer_size;
     }
 
-    buffer = realloc(buffer, *buffer_size);
+    buffer[*buffer_size - 1] = 0x0;
     return 0;
 }
 
@@ -319,23 +319,18 @@ int read_into_buffer(char const *path, char **buffer, uintmax_t *buffer_size)
         return -1;
     }
 
-    buffer[*buffer_size - 1] = 0x0;
-
     int read_result = read(file_descriptor, *buffer, *buffer_size - 1);
     if (read_result == -1) return -1; // read sets errno.
 
-    int clean_result = clean_and_trim_buffer();
-    return clean_result;
+    int close_result = close(file_descriptor);
+    if (close_result == -1) return -1; // close sets errno.
+
+    int check_and_trim_result = check_and_trim_buffer(*buffer, buffer_size);
+    return check_and_trim_result;
 }
 
-rstack_t* rstack_read(char const *path)
+rstack_t* extract_stack_from_buffer(char* buffer)
 {
-    if (path == nullptr)
-    {
-        errno = EINVAL;
-        return nullptr;
-    }
-
     rstack_t* result = rstack_new();
     if (result == nullptr) return nullptr;
 
@@ -358,10 +353,23 @@ rstack_t* rstack_read(char const *path)
         if (push_result == -1) return nullptr;
     }
 
-    int close_result = close(file_descriptor);
-    if (close_result == -1) return nullptr; // close sets errno.
-
+    free(buffer);
     return result;
+}
+
+rstack_t* rstack_read(char const *path)
+{
+    if (path == nullptr)
+    {
+        errno = EINVAL;
+        return nullptr;
+    }
+
+    char* buffer;
+    uintmax_t buffer_size;
+    read_into_buffer(path, &buffer, &buffer_size);
+
+    return extract_stack_from_buffer(buffer);
 }
 
 int write_dfs_stack(rstack_t* rs, FILE* file, bool* loop_found,
