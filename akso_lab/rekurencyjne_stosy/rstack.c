@@ -114,8 +114,8 @@ bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
         {
             if (element->is_stack == false) continue;
 
-            if (measure_and_flag_scc_dfs(element->stack, scc_size,
-                dfs_id)) found_path_to_start = true;
+            if (measure_and_flag_scc_dfs(element->stack, scc_size, dfs_id))
+                found_path_to_start = true;
         }
 
         // Second condition is a check for the start, to not double-count.
