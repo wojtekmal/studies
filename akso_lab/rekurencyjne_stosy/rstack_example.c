@@ -365,6 +365,19 @@ static int wojtekmal_6(void) {
   return PASS;
 }
 
+static int wojtekmal_7(void) {
+  rstack_t *rs0 = rstack_new();
+  rstack_t *rs3 = rstack_new();
+
+  rstack_push_rstack(rs3, rs0);
+  rstack_pop(rs3);
+  rstack_pop(rs0);
+  rstack_delete(rs3);
+  rstack_delete(rs0);
+
+  return PASS;
+}
+
 /** URUCHAMIANIE TESTÓW **/
 
 typedef struct {
@@ -389,6 +402,7 @@ static const test_list_t test_list[] = {
   TEST(wojtekmal_4),
   TEST(wojtekmal_5),
   TEST(wojtekmal_6),
+  TEST(wojtekmal_7),
 };
 
 static int do_test(int (*function)(void)) {

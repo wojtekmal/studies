@@ -51,6 +51,9 @@ rstack_t* rstack_new()
 
         result->prev_alive = last_alive;
         result->next_alive = nullptr;
+        
+        if (last_alive != nullptr) last_alive->next_alive = result;
+
         last_alive = result;
     }
 
@@ -125,6 +128,7 @@ void set_mark_dfs(rstack_t *rs, bool mark_value, uintmax_t dfs_id)
     // Used both for clearing the marks and for setting them.
     if (rs->last_dfs_id == dfs_id) return;
 
+    rs->last_dfs_id = dfs_id;
     rs->mark = mark_value;
 
     for (Element* element = rs->top; element != nullptr;
@@ -141,6 +145,8 @@ bool prepare_for_sweep_dfs(rstack_t *rs, uintmax_t dfs_id)
     // Returns true if the current caller of this function should also call
     // sweep_dfs for this stack.
     if (rs->last_dfs_id == dfs_id || rs->mark == false) return false;
+
+    rs->last_dfs_id = dfs_id;
 
     for (Element* element = rs->top; element != nullptr;
         element = element->prev_element)
@@ -172,14 +178,12 @@ void sweep_dfs(rstack_t *rs)
         rs->top = element->prev_element;
         free(element);
     }
+
+    free(rs);
 }
 
-void rstack_delete(rstack_t *rs)
+void mark_and_sweep(rstack_t *rs)
 {
-    if (rs == nullptr) return;
-
-    remove_from_alive_list(rs);
-
     // Observation: the existence of a path between rs and a given stack is a
     // necessary condition for the removal of the given stack.
     set_mark_dfs(rs, true, next_dfs_id++);
@@ -194,9 +198,22 @@ void rstack_delete(rstack_t *rs)
     // Orders the stacks for removal, so that sweep_dfs is called for each stack
     // only once. It's also why sweep_dfs doesn't need a dfs_id, because
     // prepare_for_sweep_dfs leaves only one path to each stack.
-    prepare_for_sweep_dfs(rs, next_dfs_id++);
+    // prepare_for_sweep_dfs returns true if sweep should be called in the given
+    // stack by the caller of the prepare function. This means that we should
+    // also check for this here, in case rs shouldn't be removed.
+    if (prepare_for_sweep_dfs(rs, next_dfs_id++))
+    {
+        sweep_dfs(rs);
+    }
+}
 
-    sweep_dfs(rs);
+void rstack_delete(rstack_t *rs)
+{
+    if (rs == nullptr) return;
+
+    remove_from_alive_list(rs);
+
+    mark_and_sweep(rs);
 }
 
 void rstack_pop(rstack_t *rs)
@@ -205,10 +222,12 @@ void rstack_pop(rstack_t *rs)
 
     Element* element = rs->top;
 
-    // Order is important - we don't want the stack to see the popped element
-    // in the rstack_delete dfs.
+    // Order is important - we don't want a connection between rs and
+    // element->stack in mark_and_sweep.
     rs->top = element->prev_element;
-    if (element->is_stack) rstack_delete(element->stack);
+
+    if (element->is_stack) mark_and_sweep(element->stack);
+
     free(element);
 }
 
