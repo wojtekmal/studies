@@ -22,15 +22,18 @@ typedef struct Element
 struct rstack
 {
     Element* top;
-    uintmax_t reference_count;
     uintmax_t last_dfs_id;
 
-    uintmax_t dfs_where_was_part_of_scc;
-    uintmax_t scc_reference_count;
+    // Stacks that were deleted are "dead", the rest is alive. Deletion works by
+    // marking stacks for removal.
+    bool mark;
+    struct rstack* prev_alive;
+    struct rstack* next_alive;
 
     struct rstack* prev_in_write_dfs;
 };
 
+rstack_t* last_alive = nullptr;
 uintmax_t next_dfs_id = 1;
 
 rstack_t* rstack_new()
@@ -44,9 +47,11 @@ rstack_t* rstack_new()
     else
     {
         result->top = nullptr;
-        result->reference_count = 1;
         result->last_dfs_id = 0;
-        result->dfs_where_was_part_of_scc = 0;
+
+        result->prev_alive = last_alive;
+        result->next_alive = nullptr;
+        last_alive = result;
     }
 
     return result;
@@ -96,139 +101,102 @@ int rstack_push_rstack(rstack_t *rs1, rstack_t *rs2)
     element->is_stack = true;
     element->prev_element = rs1->top;
     
-    rs2->reference_count++;
     rs1->top = element;
     return 0;
 }
 
-bool measure_and_flag_scc_dfs(rstack_t* rs, uintmax_t* scc_size,
-    uintmax_t dfs_id)
+void remove_from_alive_list(rstack_t *rs)
 {
-    if (rs->last_dfs_id != dfs_id)
+    if (rs == last_alive) last_alive = rs->prev_alive;
+
+    if (rs->prev_alive != nullptr)
     {
-        rs->last_dfs_id = dfs_id;
-        bool found_path_to_start = false;
-
-        for (Element* element = rs->top; element != nullptr;
-            element = element->prev_element)
-        {
-            if (element->is_stack == false) continue;
-
-            if (measure_and_flag_scc_dfs(element->stack, scc_size, dfs_id))
-                found_path_to_start = true;
-        }
-
-        // Second condition is a check for the start, to not double-count.
-        if (found_path_to_start && rs->dfs_where_was_part_of_scc != dfs_id)
-        {
-            ++*scc_size;
-            rs->dfs_where_was_part_of_scc = dfs_id;
-        }
+        rs->prev_alive->next_alive = rs->next_alive;
     }
 
-    return (rs->dfs_where_was_part_of_scc == dfs_id);
-}
-
-void count_ready_in_scc_dfs(rstack_t* rs, uintmax_t* ready_count,
-    uintmax_t dfs_id)
-{
-    if (rs->dfs_where_was_part_of_scc != dfs_id - 1) return;
-
-    if (rs->last_dfs_id != dfs_id)
+    if (rs->next_alive != nullptr)
     {
-        rs->last_dfs_id = dfs_id;
-        rs->scc_reference_count = 0;
-
-        for (Element* element = rs->top; element != nullptr;
-            element = element->prev_element)
-        {
-            if (element->is_stack == false) continue;
-
-            count_ready_in_scc_dfs(element->stack, ready_count, dfs_id);
-        }
+        rs->next_alive->prev_alive = rs->prev_alive;
     }
-
-    rs->scc_reference_count++;
-    if (rs->scc_reference_count == rs->reference_count) ++*ready_count;
 }
 
-void gather_for_pruning_dfs(rstack_t* rs, rstack_t** next_to_prune,
-    uintmax_t dfs_id)
+void set_mark_dfs(rstack_t *rs, bool mark_value, uintmax_t dfs_id)
 {
-    if (rs->dfs_where_was_part_of_scc != dfs_id - 2 ||
-        rs->last_dfs_id == dfs_id) return;
+    // Used both for clearing the marks and for setting them.
+    if (rs->last_dfs_id == dfs_id) return;
 
-    rs->last_dfs_id = dfs_id;
+    rs->mark = mark_value;
 
     for (Element* element = rs->top; element != nullptr;
         element = element->prev_element)
     {
-        if (element->is_stack == false) continue;
+        if (!element->is_stack) continue;
 
-        gather_for_pruning_dfs(element->stack, next_to_prune, dfs_id);
+        set_mark_dfs(element->stack, mark_value, dfs_id);
+    }
+}
+
+bool prepare_for_sweep_dfs(rstack_t *rs, uintmax_t dfs_id)
+{
+    // Returns true if the current caller of this function should also call
+    // sweep_dfs for this stack.
+    if (rs->last_dfs_id == dfs_id || rs->mark == false) return false;
+
+    for (Element* element = rs->top; element != nullptr;
+        element = element->prev_element)
+    {
+        if (!element->is_stack) continue;
+
+        if (!prepare_for_sweep_dfs(element->stack, dfs_id))
+        {
+            // We remove unnecessary connections by treating the elements as
+            // values, not pointers to stacks.
+            element->is_stack = false;
+        }
     }
 
-    // Top of the stack is used to point to the next stack for removal.
-    if (rs->top->is_stack) rs->top->stack->reference_count--;
-    rs->top->stack = *next_to_prune;
-    *next_to_prune = rs;
+    return true;
 }
 
-void prune_elements_recursively(Element* to_prune)
+void sweep_dfs(rstack_t *rs)
 {
-    if (to_prune == nullptr) return;
+    while (rs->top != nullptr)
+    {
+        Element *element = rs->top;
 
-    // Order is important. The reference count is decreased no matter if the
-    // other stack is about to be deleted or not, so we want to decrease before
-    // deleting.
-    if (to_prune->is_stack) to_prune->stack->reference_count--;
+        if (element->is_stack)
+        {
+            sweep_dfs(element->stack);
+        }
 
-    prune_elements_recursively(to_prune->prev_element);
-
-    free(to_prune);
-}
-
-void prune_stacks_recursively(rstack_t* to_prune)
-{
-    if (to_prune == nullptr) return;
-
-    // Order is important. See the comment in prune_elements_recursively.
-    prune_elements_recursively(to_prune->top->prev_element);
-
-    prune_stacks_recursively(to_prune->top->stack);
-
-    free(to_prune->top);
-    free(to_prune);
+        rs->top = element->prev_element;
+        free(element);
+    }
 }
 
 void rstack_delete(rstack_t *rs)
 {
     if (rs == nullptr) return;
 
-    uintmax_t scc_size = 1;
-    rs->dfs_where_was_part_of_scc = next_dfs_id;
-    measure_and_flag_scc_dfs(rs, &scc_size, next_dfs_id);
+    remove_from_alive_list(rs);
+
+    // Observation: the existence of a path between rs and a given stack is a
+    // necessary condition for the removal of the given stack.
+    set_mark_dfs(rs, true, next_dfs_id++);
+
+    for (rstack_t *alive_stack = last_alive; alive_stack != nullptr;
+        alive_stack = alive_stack->prev_alive)
+    {
+        set_mark_dfs(alive_stack, false, next_dfs_id);
+    }
     next_dfs_id++;
 
-    uintmax_t ready_count = 0;
-    count_ready_in_scc_dfs(rs, &ready_count, next_dfs_id++);
+    // Orders the stacks for removal, so that sweep_dfs is called for each stack
+    // only once. It's also why sweep_dfs doesn't need a dfs_id, because
+    // prepare_for_sweep_dfs leaves only one path to each stack.
+    prepare_for_sweep_dfs(rs, next_dfs_id++);
 
-    // Has to be after count_ready_in_scc_dfs because that function increases
-    // the scc incoming edge counter when it enters.
-    rs->reference_count--;
-
-    if (ready_count != scc_size) return;
-
-    if (rs->top == nullptr)
-    {
-        free(rs);
-        return;
-    }
-
-    rstack_t* next_to_prune = nullptr;
-    gather_for_pruning_dfs(rs, &next_to_prune, next_dfs_id++);
-
-    prune_stacks_recursively(next_to_prune);
+    sweep_dfs(rs);
 }
 
 void rstack_pop(rstack_t *rs)
