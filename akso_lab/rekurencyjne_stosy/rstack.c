@@ -1,7 +1,6 @@
 #include "rstack.h"
 #include <errno.h>
 #include <stdio.h>
-#include <sys/types.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -24,8 +23,9 @@ struct rstack
     Element* top;
     uintmax_t last_dfs_id;
 
-    // Stacks that were deleted are "dead", the rest is alive. Deletion works by
-    // marking stacks for removal.
+    // Stacks that were deleted are "dead", the rest are alive. Deletion works 
+    // by removing the stack from the list of alive stacks and running mark and
+    // sweep.
     bool mark;
     struct rstack* prev_alive;
     struct rstack* next_alive;
@@ -33,7 +33,10 @@ struct rstack
     struct rstack* prev_in_write_dfs;
 };
 
+// Handle for the list of alive stacks.
 rstack_t* last_alive = nullptr;
+
+// Used by a few dfs functions to remember which stacks were visited.
 uintmax_t next_dfs_id = 1;
 
 rstack_t* rstack_new()
@@ -49,6 +52,9 @@ rstack_t* rstack_new()
         result->top = nullptr;
         result->last_dfs_id = 0;
 
+        // The stack is appended to the list of alive stacks. Three pointers
+        // need to be set: the connection before the new and last stack 
+        // (both ways) and nullptr at the end. 
         result->prev_alive = last_alive;
         result->next_alive = nullptr;
         
