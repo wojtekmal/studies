@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean build_zip
 
 rstack.o: rstack.c rstack.h
 	gcc -c -Wall -Wextra -Wno-implicit-fallthrough -std=gnu23 -fPIC -O2 rstack.c
@@ -15,3 +15,9 @@ librstack.so: rstack.o memory_tests.o
 rstack_example: librstack.so rstack_example.c
 	gcc -o rstack_example rstack_example.c -std=gnu23 -L. -lrstack \
 	-Wl,-rpath='$$ORIGIN'
+
+clean:
+	rm *.o
+
+build_zip:
+	zip rekurencyjne_stosy_wojciech_malinowski.zip -j rstack.c Makefile
