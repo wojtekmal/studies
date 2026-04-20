@@ -328,7 +328,7 @@ int check_and_trim_buffer(char* buffer, uintmax_t *buffer_size)
     return 0;
 }
 
-int read_into_buffer(char const *path, char **buffer, uintmax_t *buffer_size)
+int read_into_buffer(char const *path, char **buffer)
 {
     int file_descriptor = open(path, O_RDONLY);
     if (file_descriptor == -1) return -1; // open sets errno.
@@ -336,22 +336,22 @@ int read_into_buffer(char const *path, char **buffer, uintmax_t *buffer_size)
     struct stat file_statistics;
     int fstat_result = fstat(file_descriptor, &file_statistics);
     if (fstat_result == -1) return -1; // fstat sets errno.
-    *buffer_size = file_statistics.st_size + 1;
+    uintmax_t buffer_size = file_statistics.st_size + 1;
 
-    *buffer = malloc(*buffer_size);
+    *buffer = malloc(buffer_size);
     if (*buffer == nullptr)
     {
         errno = ENOMEM;
         return -1;
     }
 
-    int read_result = read(file_descriptor, *buffer, *buffer_size - 1);
+    int read_result = read(file_descriptor, *buffer, buffer_size - 1);
     if (read_result == -1) return -1; // read sets errno.
 
     int close_result = close(file_descriptor);
     if (close_result == -1) return -1; // close sets errno.
 
-    int check_and_trim_result = check_and_trim_buffer(*buffer, buffer_size);
+    int check_and_trim_result = check_and_trim_buffer(*buffer, &buffer_size);
     return check_and_trim_result;
 }
 
@@ -379,7 +379,6 @@ rstack_t* extract_stack_from_buffer(char* buffer)
         if (push_result == -1) return nullptr;
     }
 
-    free(buffer);
     return result;
 }
 
@@ -392,10 +391,13 @@ rstack_t* rstack_read(char const *path)
     }
 
     char* buffer;
-    uintmax_t buffer_size;
-    read_into_buffer(path, &buffer, &buffer_size);
+    int read_into_buffer_result = read_into_buffer(path, &buffer);
+    if (read_into_buffer_result == -1) return nullptr;
 
-    return extract_stack_from_buffer(buffer);
+    rstack_t* result = extract_stack_from_buffer(buffer);
+
+    free(buffer);
+    return result;
 }
 
 // write_dfs_stack and write_dfs_element call each other, so one of them has to
