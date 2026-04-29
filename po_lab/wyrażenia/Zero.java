@@ -4,7 +4,7 @@ public class Zero extends Stała {
         super(0);
     }
 
-    public Stała twórz()
+    static public Stała twórz()
     {
         return new Zero();
     }
