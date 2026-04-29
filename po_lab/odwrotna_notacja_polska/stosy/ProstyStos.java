@@ -31,7 +31,7 @@ public class ProstyStos implements IStos{
     public int pop() throws PustyStos {
         if (empty()) throw new PustyStos();
 
-        return dane[ile--];
+        return dane[--ile];
     }
 
     @Override

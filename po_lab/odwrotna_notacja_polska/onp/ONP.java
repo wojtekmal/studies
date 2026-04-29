@@ -30,8 +30,8 @@ public class ONP {
             super();
         }
     }
-    static class PusteWyrażenie extends WyjątekONP {}
-    static class ZłyArgument extends ZłeWyrażenie
+    public static class PusteWyrażenie extends WyjątekONP {}
+    public static class ZłyArgument extends ZłeWyrażenie
     {
         public ZłyArgument(String argument, int pozycja)
         {
@@ -39,8 +39,8 @@ public class ONP {
                 Integer.toString(pozycja) + "\n");
         }
     }
-    static class ZaMałoArgumentów extends ZłeWyrażenie {}
-    static class ZaDużoArgumentów extends ZłeWyrażenie {}
+    public static class ZaMałoArgumentów extends ZłeWyrażenie {}
+    public static class ZaDużoArgumentów extends ZłeWyrażenie {}
 
     public static final int rozmiarPamięciObliczeniowej = 100;
 
@@ -55,7 +55,7 @@ public class ONP {
         {
             słowo = sc.next();
 
-            if (słowo.matches("\\+-/\\*"))
+            if (słowo.matches("[+-/*]"))
             {
                 int drugiArgument;
                 int pierwszyArgument;
@@ -72,15 +72,15 @@ public class ONP {
 
                 int wynikDziałania;
 
-                if (słowo == "+")
+                if (słowo.compareTo("+") == 0)
                 {
                     wynikDziałania = pierwszyArgument + drugiArgument;
                 }
-                else if (słowo == "-")
+                else if (słowo.compareTo("-") == 0)
                 {
                     wynikDziałania = pierwszyArgument - drugiArgument;
                 }
-                else if (słowo == "*")
+                else if (słowo.compareTo("*") == 0)
                 {
                     wynikDziałania = pierwszyArgument * drugiArgument;
                 }
