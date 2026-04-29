@@ -16,6 +16,10 @@ public class ProstyStos implements IStos{
         ile = 0;
     }
 
+    /**
+     * Wstawia podaną liczbę <code>int</code> na stos.
+     * @param x - liczba wrzucana na stos.
+     */
     @Override
     public void push(int x) throws PełnyStos {
         if (ile == dane.length) throw new PełnyStos();
