@@ -1,6 +1,15 @@
 public class Mnożenie extends Operator
 {
-    protected static final int priorytet = 1;
+    @Override
+    protected String znak()
+    {
+        return "*";
+    }
+    
+    protected int priorytet()
+    {
+        return 1;
+    }
 
     public Mnożenie(Wyrażenie arg1, Wyrażenie arg2)
     {
@@ -10,5 +19,11 @@ public class Mnożenie extends Operator
     public double wartość(double x)
     {
         return arg1.wartość(x) + arg2.wartość(x);
+    }
+
+    public Wyrażenie pochodna()
+    {
+        return (arg1.pochodna().pomnóżPrzez(arg2)).dodaj
+               (arg1.pomnóżPrzez(arg2.pochodna()));
     }
 }

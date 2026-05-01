@@ -1,10 +1,9 @@
 public class Zero extends Stała {
-    private Zero()
+    protected Zero()
     {
         super(0);
     }
 
-    @Override
     public static Stała twórz()
     {
         return new Zero();

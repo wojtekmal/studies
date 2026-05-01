@@ -14,4 +14,9 @@ public class Zmienna extends Wyrażenie
     {
         return Jeden.twórz();
     }
+
+    public String toString()
+    {
+        return "x";
+    }
 }

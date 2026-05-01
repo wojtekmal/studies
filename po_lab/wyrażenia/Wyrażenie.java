@@ -1,6 +1,11 @@
 public abstract class Wyrażenie
 {
-    protected static final int priorytet = 0;
+    protected Wyrażenie() {};
+    
+    protected int priorytet()
+    {
+        return 1;
+    }
 
     public abstract double wartość(double x);
 

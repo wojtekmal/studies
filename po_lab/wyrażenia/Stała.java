@@ -9,7 +9,8 @@ public class Stała extends Wyrażenie
 
     public static Stała twórz(double x)
     {
-        if (x == 0) return Zero.twórz();
+        // Jak ktoś chce zero albo jeden, to wywołuje Zero.twórz() albo
+        // Jeden.twórz().
         return new Stała(x);
     }
 
