@@ -1,7 +1,7 @@
 public abstract class Wyrażenie
 {
     protected Wyrażenie() {};
-    
+
     protected int priorytet()
     {
         return 1;
@@ -21,7 +21,7 @@ public abstract class Wyrażenie
         
         for (int i = 1; i <= n; i++)
         {
-            double wartość_i = wartość(i);
+            double wartość_i = wartość(a + i * odcinek);
             wynik += (wartość_i + poprzedniaWartość) * odcinek / 2;
             poprzedniaWartość = wartość_i;
         }
@@ -57,5 +57,15 @@ public abstract class Wyrażenie
     protected Wyrażenie pomnóżPrzezStałą(Stała arg)
     {
         return new Mnożenie(arg, this);
+    }
+
+    protected Wyrażenie odejmij(Wyrażenie arg)
+    {
+        return new Odejmowanie(this, arg);
+    }
+
+    protected Wyrażenie podzielPrzez(Wyrażenie arg)
+    {
+        return new Dzielenie(this, arg);
     }
 }

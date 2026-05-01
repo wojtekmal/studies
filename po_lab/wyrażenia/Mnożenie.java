@@ -18,7 +18,7 @@ public class Mnożenie extends Operator
 
     public double wartość(double x)
     {
-        return arg1.wartość(x) + arg2.wartość(x);
+        return arg1.wartość(x) * arg2.wartość(x);
     }
 
     public Wyrażenie pochodna()

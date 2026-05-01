@@ -20,4 +20,16 @@ public class Zero extends Stała {
     {
         return arg;
     }
+
+    @Override
+    public Wyrażenie pomnóżPrzez(Wyrażenie arg)
+    {
+        return this;
+    }
+
+    @Override
+    protected Wyrażenie pomnóżPrzezOdwrotnie(Wyrażenie arg)
+    {
+        return this;
+    }
 }
