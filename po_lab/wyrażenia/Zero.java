@@ -1,15 +1,24 @@
 public class Zero extends Stała {
-    protected Zero()
+    private Zero()
     {
         super(0);
     }
 
-    static public Stała twórz()
+    @Override
+    public static Stała twórz()
     {
         return new Zero();
     }
 
-    public Wyrażenie dodaj()
+    @Override
+    public Wyrażenie dodaj(Wyrażenie arg)
+    {
+        return arg;
+    }
 
-    public Wyrażenie dodajStałą
+    @Override
+    protected Wyrażenie dodajOdwrotnie(Wyrażenie arg)
+    {
+        return arg;
+    }
 }

@@ -1,5 +1,28 @@
-public abstract class Wyrażenie {
-    public abstract double oblicz(double x);
+public abstract class Wyrażenie
+{
+    protected static final int priorytet = 0;
+
+    public abstract double wartość(double x);
+
+    public abstract Wyrażenie pochodna();
+
+    public abstract String toString();
+
+    public double całka(double a, double b, int n)
+    {
+        double wynik = 0;
+        double poprzedniaWartość = wartość(a);
+        double odcinek = (b - a) / n;
+        
+        for (int i = 1; i <= n; i++)
+        {
+            double wartość_i = wartość(i);
+            wynik += (wartość_i + poprzedniaWartość) * odcinek / 2;
+            poprzedniaWartość = wartość_i;
+        }
+
+        return wynik;
+    }
 
     public Wyrażenie dodaj(Wyrażenie arg)
     {
@@ -14,5 +37,20 @@ public abstract class Wyrażenie {
     protected Wyrażenie dodajStałą(Stała arg)
     {
         return new Dodawanie(arg, this);
+    }
+
+    public Wyrażenie pomnóżPrzez(Wyrażenie arg)
+    {
+        return arg.pomnóżPrzezOdwrotnie(this);
+    }
+
+    protected Wyrażenie pomnóżPrzezOdwrotnie(Wyrażenie arg)
+    {
+        return new Mnożenie(arg, this);
+    }
+
+    protected Wyrażenie pomnóżPrzezStałą(Stała arg)
+    {
+        return new Mnożenie(arg, this);
     }
 }
