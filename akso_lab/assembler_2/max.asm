@@ -1,6 +1,13 @@
-global smax, max
+global smax, umax
 
 smax:
-    mov rax rdi
-    cmp rdi rsi
-    cmov rax rsi
+    mov eax, esi
+    cmp edi, esi
+    cmovg eax, edi
+    ret
+
+umax:
+    mov eax, esi
+    cmp edi, esi
+    cmova eax, edi
+    ret
