@@ -44,7 +44,13 @@ public class Test
         System.out.println(jeden.pomnóżPrzez(log));
         
         System.out.println(
-            "\nSprawdzamy całkę sinusa - powinna wynosić 1 na [0, pi)");
+            "\nSprawdzamy całkę sinusa - powinna wynosić 2 na [0, pi)");
         System.out.println(sin.całka(0, Math.PI, 10000));
+
+        System.out.println("\nPochodna kwadratu sinusa, czyli 2sin(x)cos(x).");
+        System.out.println(sin_kwadrat.pochodna());
+
+        System.out.println("\nPochodna log(sin(x)), czyli cot(x).");
+        System.out.println(Logarytm.twórz(sin).pochodna());
     }
 }
