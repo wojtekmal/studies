@@ -59,12 +59,12 @@ public abstract class Wyrażenie
         return new Mnożenie(arg, this);
     }
 
-    protected Wyrażenie odejmij(Wyrażenie arg)
+    public Wyrażenie odejmij(Wyrażenie arg)
     {
         return new Odejmowanie(this, arg);
     }
 
-    protected Wyrażenie podzielPrzez(Wyrażenie arg)
+    public Wyrażenie podzielPrzez(Wyrażenie arg)
     {
         return new Dzielenie(this, arg);
     }

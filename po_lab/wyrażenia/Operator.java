@@ -1,9 +1,9 @@
 public abstract class Operator extends Wyrażenie
 {
-    abstract String znak();
-
     protected Wyrażenie arg1;
     protected Wyrażenie arg2;
+
+    abstract protected String znak();
 
     protected Operator(Wyrażenie arg1, Wyrażenie arg2)
     {
