@@ -36,6 +36,7 @@ int128_t arithmetic_sequence
             diff = A0[i] - A1[i];
             ku = -k;
         }
+        printf("diff: %lx, ku: %lx\n");
 
         __uint128_t prod = multiply_with_128(ku, diff);
 
@@ -64,11 +65,13 @@ int128_t arithmetic_sequence
     return result;
 }
 
-int main()
-{
-    uint64_t A0 = 0, A1 = 1, Ak;
-
-    arithmetic_sequence(&A0, &A1, &Ak, 1, -5);
-
-    printf("%lu\n", Ak);
-}
+//int main()
+//{
+//    uint64_t A0 = 0, A1 = 1, Ak;
+//
+//    int128_t high_bits = arithmetic_sequence(&A0, &A1, &Ak, 1, -5);
+//
+//    printf("%lx\n", (uint64_t) high_bits.hi);
+//    printf("%lx\n", high_bits.lo);
+//    printf("%lx\n", Ak);
+//}
