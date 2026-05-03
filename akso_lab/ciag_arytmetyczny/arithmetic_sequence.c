@@ -21,7 +21,7 @@ int128_t arithmetic_sequence
 
     int64_t remainder = 0, prev_high_bits = 0;
     
-    for (int i = n - 1; i >= 0; i--)
+    for (int i = 0; i < n; i++)
     {
         uint64_t diff;
         uint64_t ku;
@@ -36,7 +36,7 @@ int128_t arithmetic_sequence
             diff = A0[i] - A1[i];
             ku = -k;
         }
-        printf("diff: %lx, ku: %lx\n");
+        printf("diff: %.16lx, ku: %.16lx\n", diff, ku);
 
         __uint128_t prod = multiply_with_128(ku, diff);
 
@@ -44,20 +44,26 @@ int128_t arithmetic_sequence
         uint64_t low_bits = prod & (-1ULL);
 
         if (ku & (1ULL << 63)) high_bits -= diff;
+        printf("high_bits: %.16lx, low_bits: %.16lx\n", high_bits, low_bits);
 
         if (low_bits > ULLONG_MAX - prev_high_bits) remainder++;
         low_bits += prev_high_bits;
 
+        printf("Ak[i]: %.16lx\n", Ak[i]);
         if (low_bits > ULLONG_MAX - Ak[i]) remainder++;
         Ak[i] += low_bits;
 
+        printf("remainder: %lu\n", remainder);
         high_bits += remainder;
         
         if (high_bits & (1ULL << 63)) remainder = -1ULL;
         else remainder = 0;
 
         prev_high_bits = high_bits;
+        printf("\n");
     }
+
+    if (A0[n-1] & (1ULL << 63))
 
     int128_t result;
     result.hi = remainder;
