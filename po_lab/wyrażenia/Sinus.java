@@ -20,8 +20,8 @@ public class Sinus extends Funkcja
         return Cosinus.twórz(arg).pomnóżPrzez(arg.pochodna());
     }
 
-    public String toString()
+    protected String symbol()
     {
-        return "sin(" + arg.toString() + ")";
+        return "sin";
     }
 }

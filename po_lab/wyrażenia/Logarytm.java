@@ -20,8 +20,8 @@ public class Logarytm extends Funkcja
         return arg.pochodna().podzielPrzez(arg);
     }
 
-    public String toString()
+    protected String symbol()
     {
-        return "log(" + arg.toString() + ")";
+        return "log";
     }
 }

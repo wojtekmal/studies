@@ -21,8 +21,8 @@ public class Cosinus extends Funkcja
             arg.pochodna());
     }
 
-    public String toString()
+    protected String symbol()
     {
-        return "cos(" + arg.toString() + ")";
+        return "cos";
     }
 }
