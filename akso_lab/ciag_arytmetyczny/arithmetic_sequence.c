@@ -19,12 +19,13 @@ int128_t arithmetic_sequence
 {
     memcpy(Ak, A0, n * sizeof(uint64_t));
 
-    int64_t remainder = 0, prev_high_bits = 0;
+    int64_t remainder = 0;
+    uint64_t prev_high_bits = 0;
+    uint64_t ku = k;
     
     for (int i = 0; i < n; i++)
     {
         uint64_t diff = A1[i] - A0[i];
-        uint64_t ku = k;
 
         //printf("diff: %.16lx, ku: %.16lx\n", diff, ku);
 
@@ -35,14 +36,7 @@ int128_t arithmetic_sequence
 
         if (k < 0) high_bits -= diff;
 
-        if (i < n - 1)
-        {
-            if (A1[i] < A0[i]) high_bits -= ku;
-        }
-        else
-        {
-            if ((int64_t) A1[i] < (int64_t) A0[i]) high_bits -= ku;
-        }
+        if (A1[i] < A0[i]) high_bits -= ku;
         //printf("high_bits: %.16lx, low_bits: %.16lx\n", high_bits, low_bits);
 
         if (low_bits > ULLONG_MAX - prev_high_bits) remainder++;
@@ -54,6 +48,11 @@ int128_t arithmetic_sequence
 
         //printf("remainder: %lu\n", remainder);
         high_bits += remainder;
+
+        if (i == n - 1)
+        {
+            
+        }
         
         if (high_bits & (1ULL << 63)) remainder = -1ULL;
         else remainder = 0;
@@ -61,6 +60,9 @@ int128_t arithmetic_sequence
         prev_high_bits = high_bits;
         //printf("\n");
     }
+
+    if (A1[n - 1] < A0[n - 1]) prev_high_bits += ku;
+    if ((int64_t) A1[n - 1] < (int64_t) A0[n - 1]) prev_high_bits -= ku;
 
     if (A0[n-1] & (1ULL << 63))
     {
