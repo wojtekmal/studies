@@ -5,7 +5,7 @@ public class Logarytm extends Funkcja
         this.arg = arg;
     }
 
-    public static Funkcja twórz(Wyrażenie arg)
+    public static Logarytm twórz(Wyrażenie arg)
     {
         return new Logarytm(arg);
     }

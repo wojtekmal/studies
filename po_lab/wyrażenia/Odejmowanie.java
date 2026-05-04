@@ -11,7 +11,7 @@ public class Odejmowanie extends Operator
         return 0;
     }
 
-    public Odejmowanie(Wyrażenie arg1, Wyrażenie arg2)
+    protected Odejmowanie(Wyrażenie arg1, Wyrażenie arg2)
     {
         super(arg1, arg2);
     }

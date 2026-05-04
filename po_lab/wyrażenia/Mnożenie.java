@@ -11,7 +11,7 @@ public class Mnożenie extends Operator
         return 1;
     }
 
-    public Mnożenie(Wyrażenie arg1, Wyrażenie arg2)
+    protected Mnożenie(Wyrażenie arg1, Wyrażenie arg2)
     {
         super(arg1, arg2);
     }

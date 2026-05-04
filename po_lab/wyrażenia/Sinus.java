@@ -5,7 +5,7 @@ public class Sinus extends Funkcja
         this.arg = arg;
     }
 
-    public static Funkcja twórz(Wyrażenie arg)
+    public static Sinus twórz(Wyrażenie arg)
     {
         return new Sinus(arg);
     }

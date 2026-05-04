@@ -5,7 +5,7 @@ public class Cosinus extends Funkcja
         this.arg = arg;
     }
 
-    public static Funkcja twórz(Wyrażenie arg)
+    public static Cosinus twórz(Wyrażenie arg)
     {
         return new Cosinus(arg);
     }

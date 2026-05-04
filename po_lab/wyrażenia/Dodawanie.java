@@ -11,7 +11,7 @@ public class Dodawanie extends Operator
         return 0;
     }
 
-    public Dodawanie(Wyrażenie arg1, Wyrażenie arg2)
+    protected Dodawanie(Wyrażenie arg1, Wyrażenie arg2)
     {
         super(arg1, arg2);
     }

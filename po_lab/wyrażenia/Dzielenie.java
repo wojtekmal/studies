@@ -11,7 +11,7 @@ public class Dzielenie extends Operator
         return 1;
     }
 
-    public Dzielenie(Wyrażenie arg1, Wyrażenie arg2)
+    protected Dzielenie(Wyrażenie arg1, Wyrażenie arg2)
     {
         super(arg1, arg2);
     }
