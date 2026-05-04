@@ -9,11 +9,6 @@ typedef struct {
   int64_t  hi;
 } int128_t;
 
-__uint128_t multiply_with_128(uint64_t a, uint64_t b)
-{
-    return (__uint128_t) a * b;
-}
-
 int128_t arithmetic_sequence
     (uint64_t const *A0, uint64_t const *A1, uint64_t *Ak, size_t n, int64_t k)
 {
@@ -29,7 +24,7 @@ int128_t arithmetic_sequence
 
         //printf("diff: %.16lx, ku: %.16lx\n", diff, ku);
 
-        __uint128_t prod = multiply_with_128(ku, diff);
+        __uint128_t prod = (__uint128_t) ku * diff;
 
         uint64_t high_bits = prod >> 64;
         uint64_t low_bits = prod & (-1ULL);
@@ -48,11 +43,6 @@ int128_t arithmetic_sequence
 
         //printf("remainder: %lu\n", remainder);
         high_bits += remainder;
-
-        if (i == n - 1)
-        {
-            
-        }
         
         if (high_bits & (1ULL << 63)) remainder = -1ULL;
         else remainder = 0;
@@ -61,10 +51,13 @@ int128_t arithmetic_sequence
         //printf("\n");
     }
 
-    if (A1[n - 1] < A0[n - 1]) prev_high_bits += ku;
-    if ((int64_t) A1[n - 1] < (int64_t) A0[n - 1]) prev_high_bits -= ku;
+    if ((int64_t) A0[n - 1] < 0) prev_high_bits += ku;
+    if ((int64_t) A1[n - 1] < 0) prev_high_bits -= ku;
+    
+    if (prev_high_bits & (1ULL << 63)) remainder = -1ULL;
+    else remainder = 0;
 
-    if (A0[n-1] & (1ULL << 63))
+    if (A0[n - 1] & (1ULL << 63))
     {
         if (prev_high_bits == 0) remainder--;
         prev_high_bits--;
