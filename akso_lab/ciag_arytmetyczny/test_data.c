@@ -1,6 +1,12 @@
 #include <stdint.h>
 
 static const test_data_t test_data_table[] = {
+    {(uint64_t[2]){0x0000000000000000ULL,0x8000000000000000ULL}, (uint64_t[2LL]){0xffffffffffffffffULL,0x7fffffffffffffffULL}, (uint64_t[2]){0x8000000000000000ULL,0x8000000000000000ULL}, 2ULL,-9223372036854775807LL - 1, {0x7fffffffffffffffULL,0xffffffffffffffff}},//-0x80000000000000000000000000000000 0x7fffffffffffffffffffffffffffffff -0x80000000000000007fffffffffffffff8000000000000000 -0x8000000000000000
+    {(uint64_t[2]){0x0000000000000000ULL,0x8000000000000000ULL}, (uint64_t[2LL]){0xffffffffffffffffULL,0x7fffffffffffffffULL}, (uint64_t[2]){0x8000000000000001ULL,0x7fffffffffffffffULL}, 2ULL,9223372036854775807LL, {0x7ffffffffffffffeULL,0x0000000000000000}},//-0x80000000000000000000000000000000 0x7fffffffffffffffffffffffffffffff 0x7ffffffffffffffe7fffffffffffffff8000000000000001 0x7fffffffffffffff
+    {(uint64_t[2]){0xffffffffffffffffULL,0x7fffffffffffffffULL}, (uint64_t[2LL]){0x0000000000000000ULL,0x8000000000000000ULL}, (uint64_t[2]){0x7ffffffffffffffeULL,0x8000000000000000ULL}, 2ULL,9223372036854775807LL, {0x8000000000000001ULL,0xffffffffffffffff}},//0x7fffffffffffffffffffffffffffffff -0x80000000000000000000000000000000 -0x7ffffffffffffffe7fffffffffffffff8000000000000002 0x7fffffffffffffff
+    {(uint64_t[2]){0xffffffffffffffffULL,0x7fffffffffffffffULL}, (uint64_t[2LL]){0x0000000000000000ULL,0x8000000000000000ULL}, (uint64_t[2]){0x7fffffffffffffffULL,0x7fffffffffffffffULL}, 2ULL,-9223372036854775807LL - 1, {0x8000000000000000ULL,0x0000000000000000}},//0x7fffffffffffffffffffffffffffffff -0x80000000000000000000000000000000 0x80000000000000007fffffffffffffff7fffffffffffffff -0x8000000000000000
+    {(uint64_t[1]){0x7fffffffffffffffULL}, (uint64_t[1]){0x8000000000000000ULL}, (uint64_t[1]){0xffffffffffffffffULL}, 1,-9223372036854775807LL - 1, {0x7fffffffffffffffULL,0x0000000000000000}},//0x7fffffffffffffffffffffffffffffff -0x80000000000000000000000000000000 0x80000000000000007fffffffffffffff7fffffffffffffff -0x8000000000000000
+
     {(uint64_t[1]){1}, (uint64_t[1]){2}, (uint64_t[1]){7}, 1, 6, {0, 0}},
     {(uint64_t[1]){1},
      (uint64_t[1]){2},
