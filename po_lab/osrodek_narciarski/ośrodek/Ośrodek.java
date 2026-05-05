@@ -59,7 +59,11 @@ public class Ośrodek
         for (GrupaSportowców g : grupy)
         {
             Sportowiec[] sportowcyZGrupy = grupa.sportowcy();
-            sportowcy
+            
+            System.arraycopy(sportowcyZGrupy, 0, sportowcy,
+                idKolejnegoSportowca, sportowcyZGrupy.length);
+            
+            idKolejnegoSportowca += sportowcyZGrupy.length;
         }
     }
 
