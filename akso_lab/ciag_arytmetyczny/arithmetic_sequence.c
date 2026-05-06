@@ -37,10 +37,13 @@ int128_t arithmetic_sequence
         if (low_bits > ULLONG_MAX - Ak[i]) remainder++;
         Ak[i] += low_bits;
 
+        uint64_t was_overflow = (remainder > 0 && high_bits > ULLONG_MAX - remainder);
         high_bits += remainder;
         
         if (high_bits > 0x8000000000000000 || high_bits == 0x8000000000000000 && Ak[i] >= 0x8000000000000000) remainder = -1ULL;
         else remainder = 0;
+
+        remainder += was_overflow;
 
         prev_high_bits = high_bits;
     }
