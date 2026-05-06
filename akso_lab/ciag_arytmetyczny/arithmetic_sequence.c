@@ -22,50 +22,33 @@ int128_t arithmetic_sequence
     {
         uint64_t diff = A1[i] - A0[i];
 
-        printf("diff: %.16lx, ku: %.16lx\n", diff, ku);
-
         __uint128_t prod = (__uint128_t) ku * diff;
 
         uint64_t high_bits = prod >> 64;
         uint64_t low_bits = prod & (-1ULL);
-        //printf("high_bits: %.16lx, low_bits: %.16lx\n", high_bits, low_bits);
 
         if (k < 0) high_bits -= diff;
 
         if (A1[i] < A0[i]) high_bits -= ku;
-        printf("high_bits: %.16lx, low_bits: %.16lx\n", high_bits, low_bits);
-
-        printf("low_bits: %.16lx\n", low_bits);
         
-        if (low_bits > ULLONG_MAX - prev_high_bits) printf("performing first carry\n");
         if (low_bits > ULLONG_MAX - prev_high_bits) remainder++;
         low_bits += prev_high_bits;
-        printf("low_bits: %.16lx\n", low_bits);
 
-        //printf("Ak[i]: %.16lx\n", Ak[i]);
-        if (low_bits > ULLONG_MAX - Ak[i]) printf("performing second carry\n");
         if (low_bits > ULLONG_MAX - Ak[i]) remainder++;
         Ak[i] += low_bits;
-        printf("Ak[i]: %.16lx\n", Ak[i]);
 
-        printf("remainder: %ld\n", remainder);
         high_bits += remainder;
         
-        if (high_bits & (1ULL << 63)) remainder = -1ULL;
+        if (high_bits > 0x8000000000000000 || high_bits == 0x8000000000000000 && Ak[i] >= 0x8000000000000000) remainder = -1ULL;
         else remainder = 0;
-        printf("remainder: %ld\n", remainder);
 
         prev_high_bits = high_bits;
-        printf("\n");
     }
-
-    printf("prev_high_bits: %.16lx\n", prev_high_bits);
-    printf("remainder: %ld\n", remainder);
 
     if ((int64_t) A0[n - 1] < 0) prev_high_bits += ku;
     if ((int64_t) A1[n - 1] < 0) prev_high_bits -= ku;
     
-    if (prev_high_bits & (1ULL << 63)) remainder = -1ULL;
+    if (prev_high_bits > 0x8000000000000000 || prev_high_bits == 0x8000000000000000 && Ak[n - 1] >= 0x8000000000000000) remainder = -1ULL;
     else remainder = 0;
 
     if (A0[n - 1] & (1ULL << 63))
