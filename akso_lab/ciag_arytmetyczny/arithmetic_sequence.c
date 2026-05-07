@@ -29,48 +29,47 @@ int128_t arithmetic_sequence
 
         if (k < 0) high_bits -= diff;
         if (A1[i] < A0[i]) high_bits -= ku;
-        printf("high bits: %.16lx, low bits: %.16lx\n", high_bits, low_bits);
+        //printf("high bits: %.16lx, low bits: %.16lx\n", high_bits, low_bits);
 
-        uint64_t high_bits_was_negative = (high_bits >= 0x8000000000000000);
+        int64_t new_remainder = (high_bits >= 0x8000000000000000);
         
-        printf("prev_high_bits: %.16lx\n", prev_high_bits);
+        //printf("prev_high_bits: %.16lx\n", prev_high_bits);
         if (low_bits > ULLONG_MAX - prev_high_bits) remainder++;
         low_bits += prev_high_bits;
 
-        printf("Ak[i]: %.16lx\n", Ak[i]);
+        //printf("Ak[i]: %.16lx\n", Ak[i]);
         if (low_bits > ULLONG_MAX - Ak[i]) remainder++;
         Ak[i] += low_bits;
-        printf("Ak[i]: %.16lx\n", Ak[i]);
+        //printf("Ak[i]: %.16lx\n", Ak[i]);
 
-        uint64_t was_overflow = (remainder > 0 && high_bits > ULLONG_MAX - remainder);
-        uint64_t was_underflow = (remainder == -1 && high_bits == 0);
-        printf("was overflow: %ld, was underflow: %ld\n", was_overflow, was_underflow);
+        new_remainder += (remainder > 0 && high_bits > ULLONG_MAX - remainder);
+        new_remainder -= (remainder == -1 && high_bits == 0);
+        //printf("was overflow: %ld, was underflow: %ld\n", was_overflow, was_underflow);
+        //printf("remainder: %ld\n", remainder);
         high_bits += remainder;
-        
-        remainder = 0;
 
-        remainder += was_overflow;
-        remainder -= was_underflow;
-        remainder -= high_bits_was_negative;
-        printf("remainder: %ld\n", remainder);
+        remainder = new_remainder;
+        //printf("remainder: %ld\n", remainder);
 
         prev_high_bits = high_bits;
-        printf("\n");
+        //printf("\n");
     }
 
-    printf("prev_high_bits: %.16lx\n", prev_high_bits);
-    printf("remainder: %ld\n", remainder);
+    //printf("prev_high_bits: %.16lx\n", prev_high_bits);
+    //printf("remainder: %ld\n", remainder);
 
     if ((int64_t) A0[n - 1] < 0)
     {
-        if (prev_high_bits > ULLONG_MAX - ku) remainder++;
-        prev_high_bits += ku;
+        if (k < 0 && -k > prev_high_bits) remainder--;
+        if (k > 0 && prev_high_bits > ULLONG_MAX - k) remainder++;
+        prev_high_bits += k;
     }
 
     if ((int64_t) A1[n - 1] < 0)
     {
-        if (ku > prev_high_bits) remainder--;
-        prev_high_bits -= ku;
+        if (k > 0 && k > prev_high_bits) remainder--;
+        if (k < 0 && prev_high_bits > ULLONG_MAX + k) remainder++;
+        prev_high_bits -= k;
     }
 
     if (A0[n - 1] & (1ULL << 63))
