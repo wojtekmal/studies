@@ -74,8 +74,7 @@ after_sub_diff:
     mov r11, rax
     mov rcx, rdx
 
-    % Extend the previous remainder into 128 bits. At this moment all available
-    % registers are used.
+    % Extend the previous remainder into 128 bits.
     mov rax, rbx
     cqo
 
@@ -86,4 +85,46 @@ after_sub_diff:
     % r13 respectively, on the medium bits we have the high bits of the product
     % and the previous remainder, in r11 and rbx respectively, and the new
     % remainder and the extension of the old remainder in the highest bits,
-    % in rcx and rdx respectively.
+    % in rcx and rdx respectively. The highest bits are signed, while the medium
+    % and lower bits are unsigned, as if they all represented parts of signed
+    % 192 bit numbers.
+    % We start with summing three pairs of numbers: everything mentioned above,
+    % excluding the previous high bits (this choice is arbitrary).
+
+    % Sum the lower bits of the product and A0[i].
+    add r10, r9
+
+    % Sum the high bits of the product and the previous remainder while taking
+    % into account the carry flag from the previous addition:
+    adc r11, rbx
+
+    % Sum the new remainder and the extension of the old remainder while taking
+    % into account the carry flag from the previous addition:
+    adc rdx, rcx
+
+    % Now we have 3 sums, on the low, medium and high positions respectively,
+    % which collectively represent a signed 192 bit number. We also have to sum
+    % the previous high bits with this number. We do this by summing with the
+    % lower bits and carrying over to the medium and high bits.
+    add r10, r13
+    adc r11, 0
+    adc rdx, 0
+
+    % Right now we have what would be the answer if A0 and A1 would
+    % be cut of to the lowest (i + 1) * 64 bits and treated as unsigned numbers.
+    % The answer is in the following form: i blocks from the previous loop
+    % iterations are already stored in Ak and the highest 192 bits of the
+    % (signed) answer are stored in the above registers.
+
+    % Save the lowest bits of the sum in Ak[i].
+    mov [r12 + 8*r15] r10
+
+    % Save the medium bits of the sum as the high bits of the (soon to be)
+    % previous iteration.
+    mov r13, r11
+
+    % Save the high bits of the sum as the remainder of the (soon to be)
+    % previous iteration.
+    mov rbx, rdx
+
+    
