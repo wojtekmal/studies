@@ -20,7 +20,7 @@ arithmetic_sequence:
 
     % rdi will hold pointer to A0. It already happens to be here.
 
-    % rbx will hold remainder.
+    % rbx will hold the remainder.
     xor rbx, rbx
 
     % r13 will hold the high bits from the previous iteration.
@@ -64,3 +64,26 @@ after_sub_diff:
 
     % Copy the lower bits of the product into r10.
     mov r10, rax
+
+    % Extend the higher bits of the product into 128 bits.
+    mov rax, rdx
+    cqo
+    
+    % Copy the high bits of the product into r11 and the extended bits
+    % (the new remainder) into rcx.
+    mov r11, rax
+    mov rcx, rdx
+
+    % Extend the previous remainder into 128 bits. At this moment all available
+    % registers are used.
+    mov rax, rbx
+    cqo
+
+    % rax is free, because rbx also holds the low bits of the previous remainder.
+
+    % At this moment we have 7 summands: on the lowest bits we have the low bits
+    % of the product, A0[i] and the previous high bits, which are in r10, r9,
+    % r13 respectively, on the medium bits we have the high bits of the product
+    % and the previous remainder, in r11 and rbx respectively, and the new
+    % remainder and the extension of the old remainder in the highest bits,
+    % in rcx and rdx respectively.
