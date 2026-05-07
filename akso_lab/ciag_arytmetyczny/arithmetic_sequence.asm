@@ -44,9 +44,10 @@ main_loop:
     ; Multiply (u64) (A1[i] - A0[i]) and (u64) k.
     mul r8
 
-    ; If (i64) A1[i] < (i64) A0[i], subrtract (u64) k from the high bits.
+    ; If (u64) A1[i] < (u64) A0[i], subrtract (u64) k from the high bits in
+    ; in order to make up for the difference.
     cmp r10, r9
-    jge after_sub_k
+    jae after_sub_k
     sub rdx, r8
 after_sub_k:
 
