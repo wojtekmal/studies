@@ -12,9 +12,7 @@ typedef struct {
 int128_t arithmetic_sequence
     (uint64_t const *A0, uint64_t const *A1, uint64_t *Ak, size_t n, int64_t k)
 {
-    memcpy(Ak, A0, n * sizeof(uint64_t));
-
-    int64_t remainder = 0;
+    uint64_t remainder = 0;
     uint64_t prev_high_bits = 0;
     uint64_t ku = k;
     
@@ -31,19 +29,22 @@ int128_t arithmetic_sequence
         if (A1[i] < A0[i]) high_bits -= ku;
         //printf("high bits: %.16lx, low bits: %.16lx\n", high_bits, low_bits);
 
-        int64_t new_remainder = (high_bits >= 0x8000000000000000);
+        uint64_t new_remainder = -(high_bits >= 0x8000000000000000);
         
         //printf("prev_high_bits: %.16lx\n", prev_high_bits);
         if (low_bits > ULLONG_MAX - prev_high_bits) remainder++;
         low_bits += prev_high_bits;
+
+        if (low_bits > ULLONG_MAX - A0[i]) remainder++;
+        low_bits += A0[i];
 
         //printf("Ak[i]: %.16lx\n", Ak[i]);
         if (low_bits > ULLONG_MAX - Ak[i]) remainder++;
         Ak[i] += low_bits;
         //printf("Ak[i]: %.16lx\n", Ak[i]);
 
-        new_remainder += (remainder > 0 && high_bits > ULLONG_MAX - remainder);
-        new_remainder -= (remainder == -1 && high_bits == 0);
+        new_remainder += (high_bits > ULLONG_MAX - remainder);
+        new_remainder -= (remainder >= 0x8000000000000000);
         //printf("was overflow: %ld, was underflow: %ld\n", was_overflow, was_underflow);
         //printf("remainder: %ld\n", remainder);
         high_bits += remainder;
