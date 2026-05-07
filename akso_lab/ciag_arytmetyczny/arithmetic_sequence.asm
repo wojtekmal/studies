@@ -127,4 +127,49 @@ after_sub_diff:
     % previous iteration.
     mov rbx, rdx
 
-    
+    % Check if the loop should end by incrementing i and checking if i == n.
+    inc r15
+    cmp r15 r14
+    jne main_loop
+
+    % After the loop we'd have the answer were A0 and A1 unsigned. They're not,
+    % so we have to take this into account.
+
+    % First we convert k into 128 bits, so that we can add and subtract it from
+    % the high bits and remainder from the previous iteration.
+    mov rax, r8
+    cqo
+
+    % If A0 is actually negative, we add k * 2^(n*64) from the answer, which is
+    % equivalent to adding k to the highest 128 bits of the answer. Also we have
+    % to decrement the highest 128 bits of the answer, because A0 has two roles
+    % - the answer is A0 + (A1 - A0) * k.
+    % Conveniently, the saved value of A0[n - 1] is not overwritten in the last
+    % iteration of the loop.
+
+    % Check if A0 is negative.
+    cmp r9, 0
+    jge after_A0_negative
+
+    % Add k.
+    add r13, r8
+    adc rbx, rdx
+
+    % Decrement the highest 128 bits.
+    sub r13 1
+    sbb
+after_A0_negative:
+
+    % If A1 is actually negative, we subtract k from the highest 128 bits.
+    % Unfortunately we have to access A1[n - 1] again.
+
+    % Check if A1 is negative.
+    cmp [rsi + 8*r14 - 8] 0
+    jge after_A1_negative
+
+    % Subtract k.
+    sub r13, r8
+    sbb rbx, rdx
+after_A1_negative:
+
+    %
