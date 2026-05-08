@@ -3,27 +3,27 @@ global arithmetic_sequence
 arithmetic_sequence:
     ; Save the values of the registers that we're supposed to not change.
     push r15
-    push rcx
+    push r14
     push r13
     push r12
     push rbx
 
     ; r8 will hold k. It already happens to be here.
 
-    ; rcx will hold n
+    ; rcx will hold n. It already happens to be here.
 
-    ; r12 will hold pointer to Ak
+    ; r12 will hold the pointer to Ak
     mov r12, rdx
 
-    ; rsi will hold pointer to A1. It already happens to be here.
+    ; rsi will hold the pointer to A1. It already happens to be here.
 
-    ; rdi will hold pointer to A0. It already happens to be here.
+    ; rdi will hold the pointer to A0. It already happens to be here.
 
     ; rbx will hold the remainder.
-    xor rbx, rbx
+    xor ebx, ebx
 
     ; r13 will hold the high bits from the previous iteration.
-    xor r13, r13
+    mov r13, 0
 
     ; r15 will hold the current position (goes from 0 to n - 1).
     xor r15, r15
@@ -49,8 +49,6 @@ main_loop:
     jae after_sub_k
     sub rdx, r8
 after_sub_k:
-
-    ; We won't need A1[i] anymore, so r10 is free.
 
     ; If (i64) k < 0, subtract the difference from the high bits of the product.
     cmp r8, 0
@@ -180,6 +178,6 @@ after_A1_negative:
     pop rbx
     pop r12
     pop r13
-    pop rcx
+    pop r14
     pop r15
     ret
