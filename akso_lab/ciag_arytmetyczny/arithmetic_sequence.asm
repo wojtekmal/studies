@@ -2,7 +2,7 @@ global arithmetic_sequence
 
 arithmetic_sequence:
     ; Save the values of the registers that we're supposed to not change.
-    push r15
+    push rbp
     push r14
     push r13
     push r12
@@ -25,15 +25,15 @@ arithmetic_sequence:
     ; r13 will hold the high bits from the previous iteration.
     xor r13, r13
 
-    ; r15 will hold the current position (goes from 0 to n - 1).
-    xor r15, r15
+    ; rbp will hold the current position (goes from 0 to n - 1).
+    xor ebp, ebp
 
 main_loop:
     ; Copy current block from A0 into r9.
-    mov r9, [rdi + 8*r15]
+    mov r9, [rdi + 8*rbp]
 
     ; Copy current block from A1 into r10.
-    mov r10, [rsi + 8*r15]
+    mov r10, [rsi + 8*rbp]
 
     ; Extend the previous remainder into 128 bits and store the extension.
     mov rax, rbx
@@ -56,7 +56,17 @@ main_loop:
     ; If (u64) A1[i] < (u64) A0[i], subtract (u64) k from the high bits in
     ; in order to make up for the difference. Note that we already have the sign
     ; flag set by the calculation of (u64) (A1[i] - A0[i]).
+    inc rbp
+    cmp rbp, rcx
+    dec rbp
+    je signed_comparison
+    cmp rdx, r9
     jae after_sub_k
+    sub rax, r8
+    jmp after_sub_k
+signed_comparison:
+    cmp rdx, r9
+    jge after_sub_k
     sub rax, r8
 after_sub_k:
 
@@ -93,7 +103,7 @@ after_sub_diff:
     ; (signed) answer are stored in the above registers.
 
     ; Save the lowest bits of the sum in Ak[i].
-    mov [r12 + 8*r15], r11
+    mov [r12 + 8*rbp], r11
 
     ; Save the medium bits of the sum as the high bits of the (soon to be)
     ; previous iteration.
@@ -104,9 +114,10 @@ after_sub_diff:
     mov rbx, r14
 
     ; Check if the loop should end by incrementing i and checking if i == n.
-    inc r15
-    cmp r15, rcx
+    inc rbp
+    cmp rbp, rcx
     jne main_loop
+after_main_loop:
 
     ; After the loop we'd have the answer were A0 and A1 unsigned. They're not,
     ; so we have to take this into account.
@@ -123,29 +134,10 @@ after_sub_diff:
     ; Conveniently, the saved value of A0[n - 1] is not overwritten in the last
     ; iteration of the loop.
 
-    ; Check if A0 is negative.
-    test r9, r9
-    jge after_A0_negative
-
-    ; Add k.
-    add r13, r8
-    adc rbx, rdx
-
     ; Decrement the highest 128 bits.
     sub r13, 1
     sbb rbx, 0
 after_A0_negative:
-
-    ; If A1 is actually negative, we subtract k from the highest 128 bits.
-
-    ; Check if A1 is negative.
-    test r10, r10
-    jge after_A1_negative
-
-    ; Subtract k.
-    sub r13, r8
-    sbb rbx, rdx
-after_A1_negative:
 
     ; Transfer the highest 128 bits into rax and rdx.
     mov rax, r13
@@ -156,5 +148,5 @@ after_A1_negative:
     pop r12
     pop r13
     pop r14
-    pop r15
+    pop rbp
     ret
