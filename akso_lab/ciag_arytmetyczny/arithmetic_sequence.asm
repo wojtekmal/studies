@@ -3,15 +3,14 @@ global arithmetic_sequence
 arithmetic_sequence:
     ; Save the values of the registers that we're supposed to not change.
     push r15
-    push r14
+    push rcx
     push r13
     push r12
     push rbx
 
     ; r8 will hold k. It already happens to be here.
 
-    ; r14 will hold n
-    mov r14, rcx
+    ; rcx will hold n
 
     ; r12 will hold pointer to Ak
     mov r12, rdx
@@ -71,9 +70,9 @@ after_sub_diff:
     cqo
     
     ; Copy the high bits of the product into r11 and the extended bits
-    ; (the new remainder) into rcx.
+    ; (the new remainder) into r14.
     mov r11, rax
-    mov rcx, rdx
+    mov r14, rdx
 
     ; Extend the previous remainder into 128 bits.
     mov rax, rbx
@@ -86,7 +85,7 @@ after_sub_diff:
     ; r13 respectively, on the medium bits we have the high bits of the product
     ; and the previous remainder, in r11 and rbx respectively, and the new
     ; remainder and the extension of the old remainder in the highest bits,
-    ; in rcx and rdx respectively. The highest bits are signed, while the medium
+    ; in r14 and rdx respectively. The highest bits are signed, while the medium
     ; and lower bits are unsigned, as if they all represented parts of signed
     ; 192 bit numbers.
     ; We start with summing three pairs of numbers: everything mentioned above,
@@ -101,7 +100,7 @@ after_sub_diff:
 
     ; Sum the new remainder and the extension of the old remainder while taking
     ; into account the carry flag from the previous addition:
-    adc rdx, rcx
+    adc rdx, r14
 
     ; Now we have 3 sums, on the low, medium and high positions respectively,
     ; which collectively represent a signed 192 bit number. We also have to sum
@@ -130,7 +129,7 @@ after_sub_diff:
 
     ; Check if the loop should end by incrementing i and checking if i == n.
     inc r15
-    cmp r15, r14
+    cmp r15, rcx
     jne main_loop
 
     ; After the loop we'd have the answer were A0 and A1 unsigned. They're not,
@@ -165,7 +164,7 @@ after_A0_negative:
     ; Unfortunately we have to access A1[n - 1] again.
 
     ; Check if A1 is negative.
-    cmp QWORD [rsi + 8*r14 - 8], 0
+    cmp QWORD [rsi + 8*rcx - 8], 0
     jge after_A1_negative
 
     ; Subtract k.
@@ -181,6 +180,6 @@ after_A1_negative:
     pop rbx
     pop r12
     pop r13
-    pop r14
+    pop rcx
     pop r15
     ret
