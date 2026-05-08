@@ -56,17 +56,7 @@ main_loop:
     ; If (u64) A1[i] < (u64) A0[i], subtract (u64) k from the high bits in
     ; in order to make up for the difference. Note that we already have the sign
     ; flag set by the calculation of (u64) (A1[i] - A0[i]).
-    inc rbp
-    cmp rbp, rcx
-    dec rbp
-    je signed_comparison
-    test rdx, rdx
     jae after_sub_k
-    sub rax, r8
-    jmp after_sub_k
-signed_comparison:
-    test rdx, rdx
-    jge after_sub_k
     sub rax, r8
 after_sub_k:
 
@@ -134,10 +124,29 @@ after_main_loop:
     ; Conveniently, the saved value of A0[n - 1] is not overwritten in the last
     ; iteration of the loop.
 
+    ; Check if A0 is negative.
+    test r9, r9
+    jge after_A0_negative
+
+    ; Add k.
+    add r13, r8
+    adc rbx, rdx
+
     ; Decrement the highest 128 bits.
     sub r13, 1
     sbb rbx, 0
 after_A0_negative:
+
+    ; If A1 is actually negative, we subtract k from the highest 128 bits.
+
+    ; Check if A1 is negative.
+    test r10, r10
+    jge after_A1_negative
+
+    ; Subtract k.
+    sub r13, r8
+    sbb rbx, rdx
+after_A1_negative:
 
     ; Transfer the highest 128 bits into rax and rdx.
     mov rax, r13
