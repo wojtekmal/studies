@@ -40,6 +40,36 @@ main_loop:
     cqo
     mov r14, rdx
 
+    ; Make up for future difference if i == n - 1.
+    inc rbp
+    cmp rbp, rcx
+    dec rbp
+    jne after_A1_negative
+    mov r8, rax
+    cqo
+    
+    ; Check if A0 is negative.
+    test r9, r9
+    jge after_A0_negative
+
+    ; Add k.
+    add rbx, r8
+    adc r14, rdx
+
+    ; Decrement the highest 128 bits.
+    sub rbx, 1
+    sbb r14, 0
+after_A0_negative:
+
+    ; Check if A1 is negative.
+    test r10, r10
+    jge after_A1_negative
+
+    ; Subtract k.
+    sub rbx, r8
+    sbb r14, rdx
+after_A1_negative:
+
     ; Add A0[i] to the previous high bits and accumulate the carry in the
     ; remainder and the extension of the remainder.
     add r13, r9
@@ -56,17 +86,7 @@ main_loop:
     ; If (u64) A1[i] < (u64) A0[i], subtract (u64) k from the high bits in
     ; in order to make up for the difference. Note that we already have the sign
     ; flag set by the calculation of (u64) (A1[i] - A0[i]).
-    inc rbp
-    cmp rbp, rcx
-    dec rbp
-    ;je signed_comparison
-    cmp r10, r9
     jae after_sub_k
-    sub rax, r8
-    jmp after_sub_k
-signed_comparison:
-    cmp r10, r9
-    jge after_sub_k
     sub rax, r8
 after_sub_k:
 
@@ -75,6 +95,8 @@ after_sub_k:
     jge after_sub_diff
     sub rax, rdx
 after_sub_diff:
+
+
 
     ; Right now rax:r11 holds a signed 128 bit representation of
     ; k * (A1[i] - A0[i]), where k is signed and A1[i], A0[i] are unsigned.
@@ -118,45 +140,6 @@ after_sub_diff:
     cmp rbp, rcx
     jne main_loop
 after_main_loop:
-
-    ; After the loop we'd have the answer were A0 and A1 unsigned. They're not,
-    ; so we have to take this into account.
-
-    ; First we convert k into 128 bits, so that we can add and subtract it from
-    ; the high bits and remainder from the previous iteration.
-    mov rax, r8
-    cqo
-
-    ; If A0 is actually negative, we add k * 2^(n*64) from the answer, which is
-    ; equivalent to adding k to the highest 128 bits of the answer. Also we have
-    ; to decrement the highest 128 bits of the answer, because A0 has two roles
-    ; - the answer is A0 + (A1 - A0) * k.
-    ; Conveniently, the saved value of A0[n - 1] is not overwritten in the last
-    ; iteration of the loop.
-
-    ; Check if A0 is negative.
-    test r9, r9
-    jge after_A0_negative
-
-    ; Add k.
-    add r13, r8
-    adc rbx, rdx
-
-    ; Decrement the highest 128 bits.
-    sub r13, 1
-    sbb rbx, 0
-after_A0_negative:
-
-    ; If A1 is actually negative, we subtract k from the highest 128 bits.
-
-    ; Check if A1 is negative.
-    test r10, r10
-    jge after_A1_negative
-
-    ; Subtract k.
-    sub r13, r8
-    sbb rbx, rdx
-after_A1_negative:
 
     ; Transfer the highest 128 bits into rax and rdx.
     mov rax, r13
