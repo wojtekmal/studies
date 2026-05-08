@@ -23,7 +23,7 @@ arithmetic_sequence:
     xor ebx, ebx
 
     ; r13 will hold the high bits from the previous iteration.
-    mov r13, 0
+    xor r13, r13
 
     ; r15 will hold the current position (goes from 0 to n - 1).
     xor r15, r15
@@ -32,81 +32,59 @@ main_loop:
     ; Copy current block from A0 into r9.
     mov r9, [rdi + 8*r15]
 
-    ; Copy current block from A1 into r10 and rax.
+    ; Copy current block from A1 into r10.
     mov r10, [rsi + 8*r15]
-    mov r11, r10
 
-    ; Store the difference in r11 and copy to rax.
-    sub r11, r9
-    mov rax, r11
+    ; Extend the previous remainder into 128 bits and store the extension.
+    mov rax, rbx
+    cqo
+    mov r14, rdx
+
+    ; Add A0[i] to the previous high bits and accumulate the carry in the
+    ; remainder and the extension of the remainder.
+    add r13, r9
+    adc rbx, 0
+    adc r14, 0
+
+    ; Store (u64) (A1[i] - A0[i]) in rdx.
+    mov rdx, r10
+    sub rdx, r9
 
     ; Multiply (u64) (A1[i] - A0[i]) and (u64) k.
-    mul r8
+    mulx rax, r11, r8
 
-    ; If (u64) A1[i] < (u64) A0[i], subrtract (u64) k from the high bits in
-    ; in order to make up for the difference.
-    cmp r10, r9
+    ; If (u64) A1[i] < (u64) A0[i], subtract (u64) k from the high bits in
+    ; in order to make up for the difference. Note that we already have the sign
+    ; flag set by the calculation of (u64) (A1[i] - A0[i]).
     jae after_sub_k
-    sub rdx, r8
+    sub rax, r8
 after_sub_k:
 
     ; If (i64) k < 0, subtract the difference from the high bits of the product.
-    cmp r8, 0
+    test r8, r8
     jge after_sub_diff
-    sub rdx, r11
+    sub rax, rdx
 after_sub_diff:
 
-    ; We won't need the difference anymore, so r11 is free.
-    ; Right now rdx:rax holds a signed 128 bit representation of
+    ; Right now rax:r11 holds a signed 128 bit representation of
     ; k * (A1[i] - A0[i]), where k is signed and A1[i], A0[i] are unsigned.
 
-    ; Copy the lower bits of the product into r10.
-    mov r10, rax
-
     ; Extend the higher bits of the product into 128 bits.
-    mov rax, rdx
-    cqo
-    
-    ; Copy the high bits of the product into r11 and the extended bits
-    ; (the new remainder) into r14.
-    mov r11, rax
-    mov r14, rdx
-
-    ; Extend the previous remainder into 128 bits.
-    mov rax, rbx
     cqo
 
-    ; rax is free, because rbx also holds the low bits of the previous remainder.
+    ; We have 3 pairs of numbers on the low, medium and high bits respectively.
 
-    ; At this moment we have 7 summands: on the lowest bits we have the low bits
-    ; of the product, A0[i] and the previous high bits, which are in r10, r9,
-    ; r13 respectively, on the medium bits we have the high bits of the product
-    ; and the previous remainder, in r11 and rbx respectively, and the new
-    ; remainder and the extension of the old remainder in the highest bits,
-    ; in r14 and rdx respectively. The highest bits are signed, while the medium
-    ; and lower bits are unsigned, as if they all represented parts of signed
-    ; 192 bit numbers.
-    ; We start with summing three pairs of numbers: everything mentioned above,
-    ; excluding the previous high bits (this choice is arbitrary).
-
-    ; Sum the lower bits of the product and A0[i].
-    add r10, r9
+    ; Sum the previously computed A0[i] + previous high bits and the current
+    ; low bits.
+    add r11, r13
 
     ; Sum the high bits of the product and the previous remainder while taking
     ; into account the carry flag from the previous addition:
-    adc r11, rbx
+    adc rbx, rax
 
     ; Sum the new remainder and the extension of the old remainder while taking
     ; into account the carry flag from the previous addition:
-    adc rdx, r14
-
-    ; Now we have 3 sums, on the low, medium and high positions respectively,
-    ; which collectively represent a signed 192 bit number. We also have to sum
-    ; the previous high bits with this number. We do this by summing with the
-    ; lower bits and carrying over to the medium and high bits.
-    add r10, r13
-    adc r11, 0
-    adc rdx, 0
+    adc r14, rdx
 
     ; Right now we have what would be the answer if A0 and A1 would
     ; be cut of to the lowest (i + 1) * 64 bits and treated as unsigned numbers.
@@ -115,15 +93,15 @@ after_sub_diff:
     ; (signed) answer are stored in the above registers.
 
     ; Save the lowest bits of the sum in Ak[i].
-    mov [r12 + 8*r15], r10
+    mov [r12 + 8*r15], r11
 
     ; Save the medium bits of the sum as the high bits of the (soon to be)
     ; previous iteration.
-    mov r13, r11
+    mov r13, rbx
 
     ; Save the high bits of the sum as the remainder of the (soon to be)
     ; previous iteration.
-    mov rbx, rdx
+    mov rbx, r14
 
     ; Check if the loop should end by incrementing i and checking if i == n.
     inc r15
@@ -146,7 +124,7 @@ after_sub_diff:
     ; iteration of the loop.
 
     ; Check if A0 is negative.
-    cmp r9, 0
+    test r9, r9
     jge after_A0_negative
 
     ; Add k.
@@ -159,10 +137,9 @@ after_sub_diff:
 after_A0_negative:
 
     ; If A1 is actually negative, we subtract k from the highest 128 bits.
-    ; Unfortunately we have to access A1[n - 1] again.
 
     ; Check if A1 is negative.
-    cmp QWORD [rsi + 8*rcx - 8], 0
+    test r10, r10
     jge after_A1_negative
 
     ; Subtract k.
