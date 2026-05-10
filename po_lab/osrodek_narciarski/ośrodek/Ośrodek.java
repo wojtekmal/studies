@@ -1,6 +1,9 @@
 package ośrodek;
 
 import java.util.Scanner;
+import węzeł.Węzeł;
+import połączenie.Wyciąg;
+import połączenie.Trasa;
 
 public class Ośrodek
 {
@@ -137,6 +140,9 @@ public class Ośrodek
     {
         wczytajDane();
 
-        kolejkaZdarzeń.rozpocznij();
+        while (!kolejkaZdarzeń.brakZdarzeń())
+        {
+            
+        }
     }
 }
