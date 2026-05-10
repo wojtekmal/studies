@@ -27,7 +27,21 @@ arithmetic_sequence:
     ; or (A1i - A0i) * k + A0i, so clarification will be given where context
     ; isn't sufficient.
     ;
-    ; 5. 
+    ; 5. Each step i will pass the middle and high bits on to the next step and
+    ; save its low bits as Aki. This means that after calculating
+    ; (A1i - A0i) * k + A0i, we have to accumulate the middle and high blocks 
+    ; from the previous step. Since they are from the previous step, they 
+    ; account for 2^(64*(i-1)) in the sum for Ak, so they correspond to the
+    ; current low and middle blocks, respectively. The previous high block
+    ; represents a signed integer, so the previous blocks which we want to
+    ; accumulate collectively represent a 128 bit signed integer. In order to
+    ; add it to our 192 bit signed integer, we have to extend it to 192 bits.
+    ; By the nature of U2, we can do this by simply extending the previous high
+    ; bits. After that we sum these two numbers by summing the corresponding
+    ; blocks and taking carries into account, save the low block as Aki and pass
+    ; on the higher two blocks.
+    ;
+    ; 
     push rbp
     push r14
     push r13
