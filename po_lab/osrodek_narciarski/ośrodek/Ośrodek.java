@@ -139,10 +139,20 @@ public class Ośrodek
     public void rozpocznijSymulację()
     {
         wczytajDane();
+        boolean poCzasie = false;
 
-        while (!kolejkaZdarzeń.brakZdarzeń())
+        while (!kolejkaZdarzeń.brakZdarzeń() && !poCzasie)
         {
-            
+            Zdarzenie zdarzenie = kolejkaZdarzeń.kolejneZdarzenie();
+
+            if (jestPoCzasie(zdarzenie))
+            {
+                poCzasie = true;
+            }
+            else
+            {
+                zdarzenie.wydarzSię();
+            }
         }
     }
 }
