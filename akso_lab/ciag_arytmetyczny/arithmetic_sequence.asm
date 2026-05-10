@@ -41,7 +41,50 @@ arithmetic_sequence:
     ; blocks and taking carries into account, save the low block as Aki and pass
     ; on the higher two blocks.
     ;
-    ; 
+    ; 6. In order to calculate (A1i - A0i) * k + A0i, we first calculate
+    ; (A1i - A0i) * k and then add A0i. In order to calculate the product,
+    ; we first calculate A1i - A0i by subtracting the unsigned 64 bit
+    ; representations of A1i and A0i modulo 2^64 (which is done simply with the
+    ; sub instruction). If A1i - A0i < 0, then this is actually
+    ; A1i - A0i + 2^64. Similarly, for a moment we treat k as a unsigned number
+    ; modulo 2^64, which is actually k + 2^64 if k < 0. Now we can multiply
+    ; these two unsigned numbers with the mul instruction, which gives us an
+    ; unsigned 128 bit number.
+    ;
+    ; 7. This is (A1i - A0i) * k if both factors are positive,
+    ; (A1i - A0i + 2^64) * k if A1i - A0i < 0, (A1i - A0i) * (k + 2^64) if k < 0
+    ; and (A1i - A0i + 2^64) * (k + 2^64) if both are negative. In order to get
+    ; the unsigned 128 bit representation, we have to subtract 2^64 * k,
+    ; 2^64 * (A1i - A0i) or both along with 2^64 * 2^64 = 2^128, depending on
+    ; the case. Note that subtracting 2^128 is unnecessary, because we are
+    ; working with 128 bit representations. By the nature of U2, this is also
+    ; the signed representation of (A1i - A0i) * k modulo 2^128. (A1i - A0i) * k
+    ; is an integer with an absolute value no greater than 2^127, so we actually
+    ; obtained the signed 128 bit representation of (A1i - A0i) * k.
+    ;
+    ; 8. We extend into a 192 signed representation, add A0i while making sure
+    ; to carry and proceed as described in the previous steps.
+    ;
+    ; 9. Passing on the unsigned middle block and the signed high block is
+    ; convenient, because the last step (i = n - 1) will pass on what
+    ; arithmetic_sequence is supposed to return: the signed representation of
+    ; the highest 128 bits.
+    ;
+    ; 10. We still have to deal with the fact that we treated A0 and A1 as
+    ; unsigned numbers in order for the calculations to be simpler. Remember
+    ; that Ak = (A1 - A0) * k + A0. If A1 is actually negative, then what we
+    ; calculated is actually (A1 - A0 + 2^(64*n)) * k + A0, which means that we
+    ; have to subtract 2^(64*n) * k. This is equivalent to subtracting k from
+    ; the middle block that the last step passed on and doing the carry in the
+    ; high block that it passed on. If A0 is actually negative, we have to
+    ; similarly add 2^(64*n) * k and also subtract 2^(64*n), because of the A0
+    ; term at the end of the expression. These two steps can be done
+    ; sequentially, i.e. instead of doing 4 cases were A0 and A1 are positive or
+    ; negative, we can first make up for A0, then for A1.
+    ;
+    ; 11. Return the middle and high blocks from the last step of the loop.
+
+    ; Save the callee-saved registers which we'll use.
     push rbp
     push r14
     push r13
@@ -158,13 +201,6 @@ after_main_loop:
     ; the high bits and remainder from the previous iteration.
     mov rax, r8
     cqo
-
-    ; If A0 is actually negative, we add k * 2^(n*64) from the answer, which is
-    ; equivalent to adding k to the highest 128 bits of the answer. Also we have
-    ; to decrement the highest 128 bits of the answer, because A0 has two roles
-    ; - the answer is A0 + (A1 - A0) * k.
-    ; Conveniently, the saved value of A0[n - 1] is not overwritten in the last
-    ; iteration of the loop.
 
     ; Check if A0 is negative.
     test r9, r9

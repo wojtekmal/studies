@@ -1,7 +1,90 @@
 global arithmetic_sequence
 
 arithmetic_sequence:
-    ; Save the values of the registers that we're supposed to not change.
+    ; First a description of the algorithm.
+    ; 1. We write Ak = (A1 - A0) * k + A0.
+    ;
+    ; 2. We divide (A1 - A0) and A0 into blocks of 64 bits which can be operated
+    ; on by standard instructions. There are n blocks, which we number from 0
+    ; to n - 1 inclusively.
+    ;
+    ; 3. For the moment we do the calculations as if A0 and A1 were unsigned
+    ; integers. That way A0 is the sum of 2^(64*i)*A0i, where i is the number of
+    ; the block and A0i is the unsigned integer represented by block i. Later
+    ; we will deal with the signedness of the last blocks. Note that we are only
+    ; ignoring the signedness of the last blocks of A0 and A1; we still treat
+    ; k and (A0 - A1) and Ak as signed integers.
+    ;
+    ; 4. We can represent Ak as the sum of 2^(64*i)*((A1i - A0i) * k + A0i).
+    ; Unfortunately this isn't as simple as calculating each block of Ak
+    ; separately, because the first n blocks of Ak are unsigned 64 bit integers,
+    ; as in Ak can be represented as the sum of 2^(64*i)*Aki, were Aki are
+    ; all unsigned except for Ak(n+1), and (A1i - A0i) * k + A0i doesn't happen
+    ; to fit in a 64 bit unsigned integer. It fits in a signed 192 bit integer,
+    ; so an integer represented by 3 64 bit blocks. We will call these blocks
+    ; the low, middle and high blocks, respectively. Note that "low block" may
+    ; refer to the the low blocks of different numbers, such as (A1i - A0i) * k
+    ; or (A1i - A0i) * k + A0i, so clarification will be given where context
+    ; isn't sufficient.
+    ;
+    ; 5. Each step i will pass the middle and high bits on to the next step and
+    ; save its low bits as Aki. This means that after calculating
+    ; (A1i - A0i) * k + A0i, we have to accumulate the middle and high blocks 
+    ; from the previous step. Since they are from the previous step, they 
+    ; account for 2^(64*(i-1)) in the sum for Ak, so they correspond to the
+    ; current low and middle blocks, respectively. The previous high block
+    ; represents a signed integer, so the previous blocks which we want to
+    ; accumulate collectively represent a 128 bit signed integer. In order to
+    ; add it to our 192 bit signed integer, we have to extend it to 192 bits.
+    ; By the nature of U2, we can do this by simply extending the previous high
+    ; bits. After that we sum these two numbers by summing the corresponding
+    ; blocks and taking carries into account, save the low block as Aki and pass
+    ; on the higher two blocks.
+    ;
+    ; 6. In order to calculate (A1i - A0i) * k + A0i, we first calculate
+    ; (A1i - A0i) * k and then add A0i. In order to calculate the product,
+    ; we first calculate A1i - A0i by subtracting the unsigned 64 bit
+    ; representations of A1i and A0i modulo 2^64 (which is done simply with the
+    ; sub instruction). If A1i - A0i < 0, then this is actually
+    ; A1i - A0i + 2^64. Similarly, for a moment we treat k as a unsigned number
+    ; modulo 2^64, which is actually k + 2^64 if k < 0. Now we can multiply
+    ; these two unsigned numbers with the mul instruction, which gives us an
+    ; unsigned 128 bit number.
+    ;
+    ; 7. This is (A1i - A0i) * k if both factors are positive,
+    ; (A1i - A0i + 2^64) * k if A1i - A0i < 0, (A1i - A0i) * (k + 2^64) if k < 0
+    ; and (A1i - A0i + 2^64) * (k + 2^64) if both are negative. In order to get
+    ; the unsigned 128 bit representation, we have to subtract 2^64 * k,
+    ; 2^64 * (A1i - A0i) or both along with 2^64 * 2^64 = 2^128, depending on
+    ; the case. Note that subtracting 2^128 is unnecessary, because we are
+    ; working with 128 bit representations. By the nature of U2, this is also
+    ; the signed representation of (A1i - A0i) * k modulo 2^128. (A1i - A0i) * k
+    ; is an integer with an absolute value no greater than 2^127, so we actually
+    ; obtained the signed 128 bit representation of (A1i - A0i) * k.
+    ;
+    ; 8. We extend into a 192 signed representation, add A0i while making sure
+    ; to carry and proceed as described in the previous steps.
+    ;
+    ; 9. Passing on the unsigned middle block and the signed high block is
+    ; convenient, because the last step (i = n - 1) will pass on what
+    ; arithmetic_sequence is supposed to return: the signed representation of
+    ; the highest 128 bits.
+    ;
+    ; 10. We still have to deal with the fact that we treated A0 and A1 as
+    ; unsigned numbers in order for the calculations to be simpler. Remember
+    ; that Ak = (A1 - A0) * k + A0. If A1 is actually negative, then what we
+    ; calculated is actually (A1 - A0 + 2^(64*n)) * k + A0, which means that we
+    ; have to subtract 2^(64*n) * k. This is equivalent to subtracting k from
+    ; the middle block that the last step passed on and doing the carry in the
+    ; high block that it passed on. If A0 is actually negative, we have to
+    ; similarly add 2^(64*n) * k and also subtract 2^(64*n), because of the A0
+    ; term at the end of the expression. These two steps can be done
+    ; sequentially, i.e. instead of doing 4 cases were A0 and A1 are positive or
+    ; negative, we can first make up for A0, then for A1.
+    ;
+    ; 11. Return the middle and high blocks from the last step of the loop.
+
+    ; Save the callee-saved registers which we'll use.
     push rbp
     push r14
     push r13
@@ -25,7 +108,9 @@ arithmetic_sequence:
     ; r13 will hold the high bits from the previous iteration.
     xor r13, r13
 
-    ; rbp will hold the current position (goes from 0 to n - 1).
+    ; rbp will hold the current position (goes from 0 to n - 1). This register
+    ; is used instead of one of the general purpose registers in order to save
+    ; a byte in the code below.
     xor ebp, ebp
 
 main_loop:
