@@ -1,7 +1,33 @@
 global arithmetic_sequence
 
 arithmetic_sequence:
-    ; Save the values of the registers that we're supposed to not change.
+    ; First a description of the algorithm.
+    ; 1. We write Ak = (A1 - A0) * k + A0.
+    ;
+    ; 2. We divide (A1 - A0) and A0 into blocks of 64 bits which can be operated
+    ; on by standard instructions. There are n blocks, which we number from 0
+    ; to n - 1 inclusively.
+    ;
+    ; 3. For the moment we do the calculations as if A0 and A1 were unsigned
+    ; integers. That way A0 is the sum of 2^(64*i)*A0i, where i is the number of
+    ; the block and A0i is the unsigned integer represented by block i. Later
+    ; we will deal with the signedness of the last blocks. Note that we are only
+    ; ignoring the signedness of the last blocks of A0 and A1; we still treat
+    ; k and (A0 - A1) and Ak as signed integers.
+    ;
+    ; 4. We can represent Ak as the sum of 2^(64*i)*((A1i - A0i) * k + A0i).
+    ; Unfortunately this isn't as simple as calculating each block of Ak
+    ; separately, because the first n blocks of Ak are unsigned 64 bit integers,
+    ; as in Ak can be represented as the sum of 2^(64*i)*Aki, were Aki are
+    ; all unsigned except for Ak(n+1), and (A1i - A0i) * k + A0i doesn't happen
+    ; to fit in a 64 bit unsigned integer. It fits in a signed 192 bit integer,
+    ; so an integer represented by 3 64 bit blocks. We will call these blocks
+    ; the low, middle and high blocks, respectively. Note that "low block" may
+    ; refer to the the low blocks of different numbers, such as (A1i - A0i) * k
+    ; or (A1i - A0i) * k + A0i, so clarification will be given where context
+    ; isn't sufficient.
+    ;
+    ; 5. 
     push rbp
     push r14
     push r13
@@ -25,7 +51,9 @@ arithmetic_sequence:
     ; r13 will hold the high bits from the previous iteration.
     xor r13, r13
 
-    ; rbp will hold the current position (goes from 0 to n - 1).
+    ; rbp will hold the current position (goes from 0 to n - 1). This register
+    ; is used instead of one of the general purpose registers in order to save
+    ; a byte in the code below.
     xor ebp, ebp
 
 main_loop:
@@ -39,36 +67,6 @@ main_loop:
     mov rax, rbx
     cqo
     mov r14, rdx
-
-    ; Make up for future difference if i == n - 1.
-    inc rbp
-    cmp rbp, rcx
-    dec rbp
-    jne after_A1_negative
-    mov r8, rax
-    cqo
-    
-    ; Check if A0 is negative.
-    test r9, r9
-    jge after_A0_negative
-
-    ; Add k.
-    add rbx, r8
-    adc r14, rdx
-
-    ; Decrement the highest 128 bits.
-    sub rbx, 1
-    sbb r14, 0
-after_A0_negative:
-
-    ; Check if A1 is negative.
-    test r10, r10
-    jge after_A1_negative
-
-    ; Subtract k.
-    sub rbx, r8
-    sbb r14, rdx
-after_A1_negative:
 
     ; Add A0[i] to the previous high bits and accumulate the carry in the
     ; remainder and the extension of the remainder.
@@ -95,8 +93,6 @@ after_sub_k:
     jge after_sub_diff
     sub rax, rdx
 after_sub_diff:
-
-
 
     ; Right now rax:r11 holds a signed 128 bit representation of
     ; k * (A1[i] - A0[i]), where k is signed and A1[i], A0[i] are unsigned.
@@ -140,6 +136,45 @@ after_sub_diff:
     cmp rbp, rcx
     jne main_loop
 after_main_loop:
+
+    ; After the loop we'd have the answer were A0 and A1 unsigned. They're not,
+    ; so we have to take this into account.
+
+    ; First we convert k into 128 bits, so that we can add and subtract it from
+    ; the high bits and remainder from the previous iteration.
+    mov rax, r8
+    cqo
+
+    ; If A0 is actually negative, we add k * 2^(n*64) from the answer, which is
+    ; equivalent to adding k to the highest 128 bits of the answer. Also we have
+    ; to decrement the highest 128 bits of the answer, because A0 has two roles
+    ; - the answer is A0 + (A1 - A0) * k.
+    ; Conveniently, the saved value of A0[n - 1] is not overwritten in the last
+    ; iteration of the loop.
+
+    ; Check if A0 is negative.
+    test r9, r9
+    jge after_A0_negative
+
+    ; Add k.
+    add r13, r8
+    adc rbx, rdx
+
+    ; Decrement the highest 128 bits.
+    sub r13, 1
+    sbb rbx, 0
+after_A0_negative:
+
+    ; If A1 is actually negative, we subtract k from the highest 128 bits.
+
+    ; Check if A1 is negative.
+    test r10, r10
+    jge after_A1_negative
+
+    ; Subtract k.
+    sub r13, r8
+    sbb rbx, rdx
+after_A1_negative:
 
     ; Transfer the highest 128 bits into rax and rdx.
     mov rax, r13
