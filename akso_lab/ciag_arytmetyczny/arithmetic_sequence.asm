@@ -77,10 +77,11 @@ arithmetic_sequence:
     ; have to subtract 2^(64*n) * k. This is equivalent to subtracting k from
     ; the middle block that the last step passed on and doing the carry in the
     ; high block that it passed on. If A0 is actually negative, we have to
-    ; similarly add 2^(64*n) * k and also subtract 2^(64*n), because of the A0
-    ; term at the end of the expression. These two steps can be done
-    ; sequentially, i.e. instead of doing 4 cases were A0 and A1 are positive or
-    ; negative, we can first make up for A0, then for A1.
+    ; similarly add 2^(64*n) * k and also subtract 2^(64*n), which is equivalent
+    ; to decrementing the last middle block and carrying to the last high block,
+    ; because of the A0 term at the end of the expression. These two steps can
+    ; be done sequentially, i.e. instead of doing 4 cases were A0 and A1 are
+    ; positive or negative, we can first make up for A0, then for A1.
     ;
     ; 11. Return the middle and high blocks from the last step of the loop.
 
@@ -91,26 +92,26 @@ arithmetic_sequence:
     push r12
     push rbx
 
-    ; r8 will hold k. It already happens to be here.
+    ; r8 will hold k. It already happens to be there.
 
-    ; rcx will hold n. It already happens to be here.
+    ; rcx will hold n. It already happens to be there.
 
     ; r12 will hold the pointer to Ak
     mov r12, rdx
 
-    ; rsi will hold the pointer to A1. It already happens to be here.
+    ; rsi will hold the pointer to A1. It already happens to be there.
 
-    ; rdi will hold the pointer to A0. It already happens to be here.
+    ; rdi will hold the pointer to A0. It already happens to be there.
 
-    ; rbx will hold the remainder.
+    ; rbx will hold the passed on high block.
     xor ebx, ebx
 
-    ; r13 will hold the high bits from the previous iteration.
+    ; r13 will hold the passed on middle block.
     xor r13, r13
 
-    ; rbp will hold the current position (goes from 0 to n - 1). This register
+    ; rbp will hold the current position i (goes from 0 to n - 1). This register
     ; is used instead of one of the general purpose registers in order to save
-    ; a byte in the code below.
+    ; a byte in the line below.
     xor ebp, ebp
 
 main_loop:
@@ -120,22 +121,27 @@ main_loop:
     ; Copy current block from A1 into r10.
     mov r10, [rsi + 8*rbp]
 
-    ; Extend the previous remainder into 128 bits and store the extension.
+    ; Extend the previous high block into a signed 128 bit number and store it
+    ; in r14:rbx.
     mov rax, rbx
     cqo
     mov r14, rdx
 
-    ; Add A0[i] to the previous high bits and accumulate the carry in the
-    ; remainder and the extension of the remainder.
+    ; Add A0[i] to the previous middle block and accumulate the carry in the
+    ; extended previous and high blocks. After this the sum is stored as a 192
+    ; bit number in r14:rbx:r13.
     add r13, r9
     adc rbx, 0
     adc r14, 0
 
-    ; Store (u64) (A1[i] - A0[i]) in rdx.
+    ; Store (u64) (A1i - A0i) in rdx.
     mov rdx, r10
     sub rdx, r9
 
-    ; Multiply (u64) (A1[i] - A0[i]) and (u64) k.
+    ; Multiply (u64) (A1i - A0i) and (u64) k. We use mulx in order to save the
+    ; carry flag from the previous subtraction. This also allows us to store
+    ; the product in rax:r11, which will later turn out to be convenient. Note
+    ; that mulx implicitly uses rdx as the second factor.
     mulx rax, r11, r8
 
     ; If (u64) A1[i] < (u64) A0[i], subtract (u64) k from the high bits in
@@ -145,7 +151,7 @@ main_loop:
     sub rax, r8
 after_sub_k:
 
-    ; If (i64) k < 0, subtract the difference from the high bits of the product.
+    ; If (i64) k < 0, subtract A1i - A0i from the high bits of the product.
     test r8, r8
     jge after_sub_diff
     sub rax, rdx
@@ -154,83 +160,75 @@ after_sub_diff:
     ; Right now rax:r11 holds a signed 128 bit representation of
     ; k * (A1[i] - A0[i]), where k is signed and A1[i], A0[i] are unsigned.
 
-    ; Extend the higher bits of the product into 128 bits.
+    ; Extend the middle block of the product into 128 bits. After this the
+    ; product is held as a 192 bit signed number in rdx:rax:r11.
     cqo
 
-    ; We have 3 pairs of numbers on the low, medium and high bits respectively.
-
-    ; Sum the previously computed A0[i] + previous high bits and the current
-    ; low bits.
+    ; Sum r14:rbx:r13, which holds the previous blocks summed with A0i, and
+    ; rdx:rax:r11, which holds the product, while making sure to carry. After
+    ; this the sum will be in r14:rbx:r11.
     add r11, r13
-
-    ; Sum the high bits of the product and the previous remainder while taking
-    ; into account the carry flag from the previous addition:
     adc rbx, rax
-
-    ; Sum the new remainder and the extension of the old remainder while taking
-    ; into account the carry flag from the previous addition:
     adc r14, rdx
 
-    ; Right now we have what would be the answer if A0 and A1 would
-    ; be cut of to the lowest (i + 1) * 64 bits and treated as unsigned numbers.
-    ; The answer is in the following form: i blocks from the previous loop
-    ; iterations are already stored in Ak and the highest 192 bits of the
-    ; (signed) answer are stored in the above registers.
-
-    ; Save the lowest bits of the sum in Ak[i].
+    ; Save the lowest block of the sum in Aki.
     mov [r12 + 8*rbp], r11
 
-    ; Save the medium bits of the sum as the high bits of the (soon to be)
-    ; previous iteration.
+    ; Save the middle block of the sum in r13 in order to pass it on.
     mov r13, rbx
 
-    ; Save the high bits of the sum as the remainder of the (soon to be)
-    ; previous iteration.
+    ; Save the high block of the sum in rbx order to pass it on.
     mov rbx, r14
 
     ; Check if the loop should end by incrementing i and checking if i == n.
+    ; Reminder: rbp holds i, rcx holds n.
     inc rbp
     cmp rbp, rcx
     jne main_loop
 after_main_loop:
 
     ; After the loop we'd have the answer were A0 and A1 unsigned. They're not,
-    ; so we have to take this into account.
+    ; so we have to take this into account. At this moment the highest blocks
+    ; from the last iteration are stored in rbx:r13.
 
-    ; First we convert k into 128 bits, so that we can add and subtract it from
-    ; the high bits and remainder from the previous iteration.
+    ; First we extend k into 128 bits, so that we can add and subtract it from
+    ; the middle and high blocks from the previous iteration. After this k is
+    ; held in rdx:r8.
     mov rax, r8
     cqo
 
-    ; Check if A0 is negative.
+    ; Check if A0 is negative. Conveniently, r9 still holds A0(n-1), so we can
+    ; check this by checking if A0(n-1), interpreted as a signed 64 bit integer,
+    ; is negative.
     test r9, r9
     jge after_A0_negative
 
-    ; Add k.
+    ; Add k to the 128 bit signed number that the last middle and high blocks
+    ; collectively hold. The sum is accumulated in rbx:r13.
     add r13, r8
     adc rbx, rdx
 
-    ; Decrement the highest 128 bits.
+    ; Decrement the 128 bit signed number that the last middle and high blocks
+    ; collectively hold. Again, this is accumulated in rbx:r13.
     sub r13, 1
     sbb rbx, 0
 after_A0_negative:
 
-    ; If A1 is actually negative, we subtract k from the highest 128 bits.
-
-    ; Check if A1 is negative.
+    ; Check if A1 is negative. Conveniently, r10 still holds A1(n-1).
     test r10, r10
     jge after_A1_negative
 
-    ; Subtract k.
+    ; Subtract k from the 128 bit signed number that the last middle and high
+    ; blocks collectively hold. The difference is accumulated in rbx:r13.
     sub r13, r8
     sbb rbx, rdx
 after_A1_negative:
 
-    ; Transfer the highest 128 bits into rax and rdx.
+    ; Transfer the highest 2 blocks into rdx:rax.
     mov rax, r13
     mov rdx, rbx
 
-    ; Restore the registers and return.
+    ; Restore the callee-saved registers and return.
     pop rbx
     pop r12
     pop r13
