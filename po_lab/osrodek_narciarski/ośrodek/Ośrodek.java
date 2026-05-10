@@ -1,9 +1,13 @@
 package ośrodek;
 
 import java.util.Scanner;
+
 import węzeł.Węzeł;
+import zdarzenie.KolejkaZdarzeń;
+import zdarzenie.KolejkaZdarzeńLista;
 import połączenie.Wyciąg;
 import połączenie.Trasa;
+import zdarzenie.Zdarzenie;
 
 public class Ośrodek
 {

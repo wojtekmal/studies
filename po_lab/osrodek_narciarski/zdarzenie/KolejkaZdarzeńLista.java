@@ -2,8 +2,6 @@ package zdarzenie;
 
 public class KolejkaZdarzeńLista implements KolejkaZdarzeń
 {
-    public class WyjątekBrakZdarzeń extends Exception{};
-
     private Zdarzenie kolejneZdarzenie;
 
     public KolejkaZdarzeńLista()
@@ -11,11 +9,11 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
         kolejneZdarzenie = null;
     }
 
-    public Zdarzenie kolejneZdarzenie()
+    public Zdarzenie kolejneZdarzenie() throws BrakZdarzeń
     {
         if (kolejneZdarzenie == null)
         {
-            throw new WyjątekBrakZdarzeń();
+            throw new BrakZdarzeń();
         }
 
         Zdarzenie wynik = kolejneZdarzenie;
@@ -27,5 +25,10 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
     public boolean brakZdarzeń()
     {
         return kolejneZdarzenie == null;
+    }
+
+    public void dodajZdarzenie(Zdarzenie zdarzenie)
+    {
+        
     }
 }

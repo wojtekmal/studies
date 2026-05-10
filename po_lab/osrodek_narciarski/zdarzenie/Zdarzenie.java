@@ -24,4 +24,9 @@ public class Zdarzenie
     {
         return godzina;
     }
+
+    public boolean jestPrzed(Zdarzenie inne)
+    {
+        return godzina.jestPrzed(inne.godzina());
+    }
 }

@@ -28,4 +28,40 @@ public class Godzina
     {
         return String.format("%02d:%02d:%02d", godzina, minuta, sekunda);
     }
+
+    public int godzina()
+    {
+        return godzina;
+    }
+
+    public int minuta()
+    {
+        return minuta;
+    }
+
+    public int sekunda()
+    {
+        return sekunda;
+    }
+
+    public boolean jestPrzed(Godzina inna)
+    {
+        if (godzina != inna.godzina())
+        {
+            return godzina < inna.godzina();
+        }
+        else
+        {
+            if (minuta != inna.minuta())
+            {
+                return minuta < inna.minuta();
+            }
+            else
+            {
+                // Jeśli zdarzenia są w tej samej chwili, to nowe zdarzenie,
+                // które się przyrównuje do innych, ma być później.
+                return sekunda < inna.sekunda();
+            }
+        }
+    }
 }
