@@ -55,7 +55,7 @@ public class Ośrodek
 
             grupy[i] = new GrupaSportowców(rozmiarGrupy, poziom, spontaniczność,
                 czyŚledzić, odwaga, wybredność, startowy, godzinaStartu, 
-                odstępCzasowy);
+                odstępCzasowy, kolejkaZdarzeń);
             
             liczbaSportowców += rozmiarGrupy;
         }

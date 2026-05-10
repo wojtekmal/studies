@@ -2,33 +2,53 @@ package zdarzenie;
 
 public class KolejkaZdarzeńLista implements KolejkaZdarzeń
 {
-    private Zdarzenie kolejneZdarzenie;
+    private KolejkaZdarzeńWierzchołek pierwszyWierzchołek;
 
     public KolejkaZdarzeńLista()
     {
-        kolejneZdarzenie = null;
+        pierwszyWierzchołek = null;
     }
 
     public Zdarzenie kolejneZdarzenie() throws BrakZdarzeń
     {
-        if (kolejneZdarzenie == null)
+        if (pierwszyWierzchołek == null)
         {
             throw new BrakZdarzeń();
         }
 
-        Zdarzenie wynik = kolejneZdarzenie;
-        kolejneZdarzenie = kolejneZdarzenie.następneWKolejce();
+        Zdarzenie wynik = pierwszyWierzchołek.zdarzenie();
+        pierwszyWierzchołek = pierwszyWierzchołek.następny();
 
         return wynik;
     }
 
     public boolean brakZdarzeń()
     {
-        return kolejneZdarzenie == null;
+        return pierwszyWierzchołek == null;
     }
 
     public void dodajZdarzenie(Zdarzenie zdarzenie)
     {
+        KolejkaZdarzeńWierzchołek wierzchołek = new
+            KolejkaZdarzeńWierzchołek(zdarzenie);
         
+        if (zdarzenie.jestPrzed(pierwszyWierzchołek.zdarzenie()))
+        {
+            wierzchołek.ustawNastępny(pierwszyWierzchołek);
+            pierwszyWierzchołek = wierzchołek;
+        }
+        else
+        {
+            KolejkaZdarzeńWierzchołek poprzedni = pierwszyWierzchołek;
+
+            while (poprzedni.następny() != null && 
+                !zdarzenie.jestPrzed(poprzedni.zdarzenie()))
+            {
+                poprzedni = poprzedni.następny();
+            }
+
+            wierzchołek.ustawNastępny(poprzedni.następny());
+            poprzedni.ustawNastępny(wierzchołek);
+        }
     }
 }
