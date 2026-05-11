@@ -13,15 +13,24 @@ public class Godzina
         this.sekunda = Integer.parseInt(napis.substring(6, 8));
     }
 
-    public void dodaj(int sekundy)
+    private Godzina(int godzina, int minuta, int sekunda)
     {
-        sekunda += sekundy;
+        this.godzina = godzina;
+        this.minuta = minuta;
+        this.sekunda = sekunda;
+    }
 
-        minuta += sekunda / 60;
-        sekunda %= 60;
+    public Godzina dodaj(int sekundy)
+    {
+        int nowa_sekunda = sekunda + sekundy;
 
-        godzina += minuta / 60;
-        minuta %= 60;
+        int nowa_minuta = minuta + nowa_sekunda / 60;
+        nowa_sekunda %= 60;
+
+        int nowa_godzina = godzina + nowa_minuta / 60;
+        nowa_minuta %= 60;
+
+        return new Godzina(nowa_godzina, nowa_minuta, nowa_sekunda);
     }
 
     public String toString()

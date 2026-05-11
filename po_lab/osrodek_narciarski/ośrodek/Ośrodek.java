@@ -26,68 +26,19 @@ public class Ośrodek
 
     private void wczytajDane()
     {
-        Scanner scannerWejścia = new Scanner(System.in);
+        KlasaWczytująca objektWczytujący = new KlasaWczytująca();
 
-        Scanner scannerLinii = new Scanner(scannerWejścia.nextLine());
-        int liczbaWęzłów = scannerLinii.nextInt();
-        węzły = new Węzeł[liczbaWęzłów];
+        węzły = objektWczytujący.węzły();
+        wyciągi = objektWczytujący.wyciągi(węzły);
+        trasy = objektWczytujący.trasy(węzły);
+        sportowcy = objektWczytujący.sportowcy(węzły);
+    }
 
-        for (int i = 0; i < liczbaWęzłów; i++)
-        {
-            scannerLinii = new Scanner(scannerWejścia.nextLine());
+    private boolean jestPoCzasie(Zdarzenie zdarzenie)
+    {
+        Godzina koniecSymulacji = new Godzina("15:00:00");
 
-            int wysokość = scannerLinii.nextInt();
-            int x = scannerLinii.nextInt();
-            int y = scannerLinii.nextInt();
-            boolean jestStartowy = scannerLinii.hasNext();
-
-            węzły[i] = new Węzeł(wysokość, x, y, jestStartowy);
-        }
-
-        scannerLinii = new Scanner(scannerWejścia.nextLine());
-        int liczbaWyciągów = scannerLinii.nextInt();
-        wyciągi = new Wyciąg[liczbaWyciągów];
-
-        for (int i = 0; i < liczbaWyciągów; i++)
-        {
-            scannerLinii = new Scanner(scannerWejścia.nextLine());
-
-            int idPoczątkowego = scannerLinii.nextInt();
-            int idKońcowego = scannerLinii.nextInt();
-            int odstępCzasowy = scannerLinii.nextInt();
-            int rozmiarKrzesła = scannerLinii.nextInt();
-            int czasPrzejazdu = scannerLinii.nextInt();
-
-            Węzeł początkowy = węzły[idPoczątkowego];
-            Węzeł końcowy = węzły[idKońcowego];
-
-            wyciągi[i] = new Wyciąg(początkowy, końcowy, odstępCzasowy,
-                rozmiarKrzesła, czasPrzejazdu);
-        }
-
-        scannerLinii = new Scanner(scannerWejścia.nextLine());
-        int liczbaTras = scannerLinii.nextInt();
-        trasy = new Trasa[liczbaTras];
-
-        for (int i = 0; i < liczbaTras; i++)
-        {
-            scannerLinii = new Scanner(scannerWejścia.nextLine());
-
-            int idPoczątkowego = scannerLinii.nextInt();
-            int idKońcowego = scannerLinii.nextInt();
-            int poziom = scannerLinii.nextInt();
-            int czasPrzejazdu = scannerLinii.nextInt();
-            double bazowaAtrakcyjność = scannerLinii.nextDouble();
-            double odporność = scannerLinii.nextDouble();
-
-            Węzeł początkowy = węzły[idPoczątkowego];
-            Węzeł końcowy = węzły[idKońcowego];
-
-            trasy[i] = new Trasa(początkowy, końcowy, poziom, czasPrzejazdu,
-                bazowaAtrakcyjność, odporność);
-        }
-
-        wczytajSportowców(scannerWejścia);
+        return koniecSymulacji.jestPrzed(zdarzenie.godzina());
     }
 
     public void rozpocznijSymulację()

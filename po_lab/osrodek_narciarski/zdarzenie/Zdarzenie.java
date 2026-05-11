@@ -18,4 +18,6 @@ public abstract class Zdarzenie
     {
         return godzina.jestPrzed(inne.godzina());
     }
+
+    public abstract void wydarzSię();
 }

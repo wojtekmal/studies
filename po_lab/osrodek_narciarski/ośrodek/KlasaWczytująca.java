@@ -2,6 +2,7 @@ package ośrodek;
 
 import java.util.Scanner;
 
+import połączenie.Trasa;
 import połączenie.Wyciąg;
 import sportowiec.GrupaSportowców;
 import węzeł.Węzeł;
@@ -39,9 +40,9 @@ public class KlasaWczytująca
 
     public Wyciąg[] wyciągi(Węzeł[] węzły)
     {
-        scannerLinii = new Scanner(scannerWejścia.nextLine());
+        Scanner scannerLinii = new Scanner(scannerWejścia.nextLine());
         int liczbaWyciągów = scannerLinii.nextInt();
-        wyciągi = new Wyciąg[liczbaWyciągów];
+        Wyciąg[] wyciągi = new Wyciąg[liczbaWyciągów];
 
         for (int i = 0; i < liczbaWyciągów; i++)
         {
@@ -59,6 +60,35 @@ public class KlasaWczytująca
             wyciągi[i] = new Wyciąg(początkowy, końcowy, odstępCzasowy,
                 rozmiarKrzesła, czasPrzejazdu);
         }
+
+        return wyciągi;
+    }
+
+    public Trasa[] trasy(Węzeł[] węzły)
+    {
+        Scanner scannerLinii = new Scanner(scannerWejścia.nextLine());
+        int liczbaTras = scannerLinii.nextInt();
+        Trasa[] trasy = new Trasa[liczbaTras];
+
+        for (int i = 0; i < liczbaTras; i++)
+        {
+            scannerLinii = new Scanner(scannerWejścia.nextLine());
+
+            int idPoczątkowego = scannerLinii.nextInt();
+            int idKońcowego = scannerLinii.nextInt();
+            int poziom = scannerLinii.nextInt();
+            int czasPrzejazdu = scannerLinii.nextInt();
+            double bazowaAtrakcyjność = scannerLinii.nextDouble();
+            double odporność = scannerLinii.nextDouble();
+
+            Węzeł początkowy = węzły[idPoczątkowego];
+            Węzeł końcowy = węzły[idKońcowego];
+
+            trasy[i] = new Trasa(początkowy, końcowy, poziom, czasPrzejazdu,
+                bazowaAtrakcyjność, odporność);
+        }
+
+        return trasy;
     }
 
     public Sportowiec[] sportowcy(Węzeł[] węzły)
@@ -103,7 +133,7 @@ public class KlasaWczytująca
         Sportowiec[] sportowcy = new Sportowiec[liczbaSportowców];
         int idKolejnegoSportowca = 0;
 
-        for (GrupaSportowców g : grupy)
+        for (GrupaSportowców grupa : grupy)
         {
             Sportowiec[] sportowcyZGrupy = grupa.sportowcy(kolejkaZdarzeń);
             
