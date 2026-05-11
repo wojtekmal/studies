@@ -1,8 +1,8 @@
 package sportowiec;
 
+import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
-import zdarzenie.KolejkaZdarzeń;
 
 public class GrupaSportowców
 {
@@ -41,7 +41,12 @@ public class GrupaSportowców
 
         for (int i = 0; i < rozmiarGrupy; i++)
         {
-            sportowcy[i]
+            sportowcy[i] = new Sportowiec(poziom, spontaniczność, czyŚledzić,
+                odwaga, wybredność, startowy, godzinaStartu, kolejkaZdarzeń);
+            
+            godzinaStartu.dodaj(odstępCzasowy);
         }
+
+        return sportowcy;
     }
 }

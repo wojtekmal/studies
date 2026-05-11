@@ -1,4 +1,6 @@
-package zdarzenie;
+package struktury_danych;
+
+import zdarzenie.Zdarzenie;
 
 public class KolejkaZdarzeńLista implements KolejkaZdarzeń
 {
@@ -9,7 +11,7 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
         pierwszyWierzchołek = null;
     }
 
-    public Zdarzenie kolejneZdarzenie() throws BrakZdarzeń
+    public Zdarzenie dajKolejne() throws BrakZdarzeń
     {
         if (pierwszyWierzchołek == null)
         {
@@ -22,7 +24,7 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
         return wynik;
     }
 
-    public boolean brakZdarzeń()
+    public boolean jestPusta()
     {
         return pierwszyWierzchołek == null;
     }
@@ -31,6 +33,9 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
     {
         KolejkaZdarzeńWierzchołek wierzchołek = new
             KolejkaZdarzeńWierzchołek(zdarzenie);
+        
+        // Jeśli zdarzenia są w tej samej chwili, to nowe zdarzenie,
+        // które się przyrównuje do innych, ma być później.
         
         if (zdarzenie.jestPrzed(pierwszyWierzchołek.zdarzenie()))
         {
@@ -42,7 +47,7 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
             KolejkaZdarzeńWierzchołek poprzedni = pierwszyWierzchołek;
 
             while (poprzedni.następny() != null && 
-                !zdarzenie.jestPrzed(poprzedni.zdarzenie()))
+                !zdarzenie.jestPrzed(poprzedni.następny().zdarzenie()))
             {
                 poprzedni = poprzedni.następny();
             }

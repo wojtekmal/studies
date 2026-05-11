@@ -67,8 +67,6 @@ public class Godzina
             }
             else
             {
-                // Jeśli zdarzenia są w tej samej chwili, to nowe zdarzenie,
-                // które się przyrównuje do innych, ma być później.
                 return sekunda < inna.sekunda();
             }
         }

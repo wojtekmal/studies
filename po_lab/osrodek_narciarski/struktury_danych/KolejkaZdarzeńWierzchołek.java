@@ -1,4 +1,6 @@
-package zdarzenie;
+package struktury_danych;
+
+import zdarzenie.Zdarzenie;
 
 public class KolejkaZdarzeńWierzchołek
 {

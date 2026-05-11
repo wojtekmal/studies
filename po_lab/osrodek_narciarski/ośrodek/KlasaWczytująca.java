@@ -5,6 +5,7 @@ import java.util.Scanner;
 import połączenie.Trasa;
 import połączenie.Wyciąg;
 import sportowiec.GrupaSportowców;
+import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
 
@@ -38,7 +39,7 @@ public class KlasaWczytująca
         return węzły;
     }
 
-    public Wyciąg[] wyciągi(Węzeł[] węzły)
+    public Wyciąg[] wyciągi(Węzeł[] węzły, KolejkaZdarzeń kolejkaZdarzeń)
     {
         Scanner scannerLinii = new Scanner(scannerWejścia.nextLine());
         int liczbaWyciągów = scannerLinii.nextInt();
@@ -58,7 +59,7 @@ public class KlasaWczytująca
             Węzeł końcowy = węzły[idKońcowego];
 
             wyciągi[i] = new Wyciąg(początkowy, końcowy, odstępCzasowy,
-                rozmiarKrzesła, czasPrzejazdu);
+                rozmiarKrzesła, czasPrzejazdu, kolejkaZdarzeń);
         }
 
         return wyciągi;

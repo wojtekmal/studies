@@ -2,7 +2,7 @@ package zdarzenie;
 
 public abstract class Zdarzenie
 {
-    private Godzina godzina;
+    protected Godzina godzina;
 
     public Zdarzenie(Godzina godzina)
     {

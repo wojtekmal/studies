@@ -1,4 +1,6 @@
-package zdarzenie;
+package struktury_danych;
+
+import zdarzenie.Zdarzenie;
 
 public interface KolejkaZdarzeń
 {
@@ -6,7 +8,7 @@ public interface KolejkaZdarzeń
 
     public void dodajZdarzenie(Zdarzenie zdarzenie);
 
-    public Zdarzenie kolejneZdarzenie() throws BrakZdarzeń;
+    public Zdarzenie dajKolejne() throws BrakZdarzeń;
 
-    public boolean brakZdarzeń();
+    public boolean jestPusta();
 }

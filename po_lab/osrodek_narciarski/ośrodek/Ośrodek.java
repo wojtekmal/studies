@@ -4,10 +4,10 @@ import java.util.Scanner;
 
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
-import zdarzenie.KolejkaZdarzeń;
-import zdarzenie.KolejkaZdarzeńLista;
 import połączenie.Wyciąg;
 import sportowiec.GrupaSportowców;
+import struktury_danych.KolejkaZdarzeń;
+import struktury_danych.KolejkaZdarzeńLista;
 import połączenie.Trasa;
 import zdarzenie.Zdarzenie;
 
@@ -29,14 +29,14 @@ public class Ośrodek
         KlasaWczytująca objektWczytujący = new KlasaWczytująca();
 
         węzły = objektWczytujący.węzły();
-        wyciągi = objektWczytujący.wyciągi(węzły);
+        wyciągi = objektWczytujący.wyciągi(węzły, kolejkaZdarzeń);
         trasy = objektWczytujący.trasy(węzły);
-        sportowcy = objektWczytujący.sportowcy(węzły);
+        sportowcy = objektWczytujący.sportowcy(węzły, kolejkaZdarzeń);
     }
 
     private boolean jestPoCzasie(Zdarzenie zdarzenie)
     {
-        Godzina koniecSymulacji = new Godzina("15:00:00");
+        Godzina koniecSymulacji = new Godzina("16:00:00");
 
         return koniecSymulacji.jestPrzed(zdarzenie.godzina());
     }
@@ -46,9 +46,9 @@ public class Ośrodek
         wczytajDane();
         boolean poCzasie = false;
 
-        while (!kolejkaZdarzeń.brakZdarzeń() && !poCzasie)
+        while (!kolejkaZdarzeń.jestPusta() && !poCzasie)
         {
-            Zdarzenie zdarzenie = kolejkaZdarzeń.kolejneZdarzenie();
+            Zdarzenie zdarzenie = kolejkaZdarzeń.dajKolejne();
 
             if (jestPoCzasie(zdarzenie))
             {
