@@ -3,9 +3,11 @@ package ośrodek;
 import java.util.Scanner;
 
 import węzeł.Węzeł;
+import zdarzenie.Godzina;
 import zdarzenie.KolejkaZdarzeń;
 import zdarzenie.KolejkaZdarzeńLista;
 import połączenie.Wyciąg;
+import sportowiec.GrupaSportowców;
 import połączenie.Trasa;
 import zdarzenie.Zdarzenie;
 
@@ -20,58 +22,6 @@ public class Ośrodek
     public Ośrodek()
     {
         kolejkaZdarzeń = new KolejkaZdarzeńLista();
-    }
-
-    private void wczytajSportowców(Scanner scannerWejścia)
-    {
-        Scanner scannerLinii = new Scanner(scannerWejścia.nextLine());
-        int liczbaGrup = scannerLinii.nextInt();
-        GrupaSportowców grupy = new GrupaSportowców[liczbaGrup];
-        int liczbaSportowców = 0;
-
-        for (int i = 0; i < liczbaGrup; i++)
-        {
-            scannerLinii = new Scanner(scannerWejścia.nextLine());
-            int rozmiarGrupy = scannerLinii.nextInt();
-            int poziom = scannerLinii.nextInt();
-            double spontaniczność = scannerLinii.nextDouble();
-            boolean czyŚledzić = scannerLinii.hasNext();
-
-            scannerLinii = new Scanner(scannerWejścia.nextLine());
-            double odwaga = scannerLinii.nextDouble();
-            double wybredność = scannerLinii.nextDouble();
-
-            scannerLinii = new Scanner(scannerWejścia.nextLine());
-            int idStartowego = scannerLinii.nextInt();
-            String godzinaStartu = scannerLinii.next();
-            int odstępCzasowy = 0;
-
-            Węzeł startowy = węzły[idStartowego];
-
-            if (scannerLinii.hasNextInt())
-            {
-                odstępCzasowy = scannerLinii.nextInt();
-            }
-
-            grupy[i] = new GrupaSportowców(rozmiarGrupy, poziom, spontaniczność,
-                czyŚledzić, odwaga, wybredność, startowy, godzinaStartu, 
-                odstępCzasowy, kolejkaZdarzeń);
-            
-            liczbaSportowców += rozmiarGrupy;
-        }
-
-        sportowcy = new Sportowiec[liczbaSportowców];
-        int idKolejnegoSportowca = 0;
-
-        for (GrupaSportowców g : grupy)
-        {
-            Sportowiec[] sportowcyZGrupy = grupa.sportowcy();
-            
-            System.arraycopy(sportowcyZGrupy, 0, sportowcy,
-                idKolejnegoSportowca, sportowcyZGrupy.length);
-            
-            idKolejnegoSportowca += sportowcyZGrupy.length;
-        }
     }
 
     private void wczytajDane()
