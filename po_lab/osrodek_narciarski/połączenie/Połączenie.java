@@ -20,7 +20,7 @@ abstract public class Połączenie
         return id;
     }
 
-    private Węzeł końcowy()
+    public Węzeł końcowy()
     {
         return końcowy;
     }

@@ -18,5 +18,7 @@ public class Trasa extends Połączenie
         this.czasPrzejazdu = czasPrzejazdu;
         this. bazowaAtrakcyjność = bazowaAtrakcyjność;
         this.odporność = odporność;
+
+        początkowy.dodajTrasę(this);
     }
 }

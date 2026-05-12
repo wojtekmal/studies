@@ -1,5 +1,6 @@
 package zdarzenie;
 
+import ośrodek.KlasaRaportująca;
 import ośrodek.KlasaWczytująca;
 import połączenie.Wyciąg;
 import sportowiec.Sportowiec;

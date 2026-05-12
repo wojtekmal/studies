@@ -33,4 +33,9 @@ public class Sportowiec
     {
         return id;
     }
+
+    public void przyjedźDo(Węzeł węzeł)
+    {
+        
+    }
 }

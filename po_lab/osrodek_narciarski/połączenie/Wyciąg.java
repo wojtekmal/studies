@@ -1,5 +1,6 @@
 package połączenie;
 
+import ośrodek.KlasaRaportująca;
 import sportowiec.Sportowiec;
 import struktury_danych.KolejkaNaWyciąg;
 import struktury_danych.KolejkaZdarzeń;
@@ -51,6 +52,8 @@ public class Wyciąg extends Połączenie
         this.kolejkaZdarzeń = kolejkaZdarzeń;
 
         zaplanujOdjazdyKrzesełek();
+
+        początkowy.dodajWyciąg(this);
     }
 
     public void przyjmijZKolejki(Godzina godzina)
@@ -65,7 +68,7 @@ public class Wyciąg extends Połączenie
                 godzinaPrzyjazdu, sportowiec, this);
             kolejkaZdarzeń.dodajZdarzenie(zdarzenie);
 
-            KlasaRaportująca.odjazdWyciągiem(sportowiec, this);
+            KlasaRaportująca.odjazdWyciągiem(godzina, sportowiec, this);
         }
     }
 }

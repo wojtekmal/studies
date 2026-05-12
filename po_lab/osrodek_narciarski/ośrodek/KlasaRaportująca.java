@@ -15,4 +15,14 @@ public class KlasaRaportująca
         
         System.out.println(output);
     }
+
+    static public void odjazdWyciągiem(Godzina godzina, Sportowiec sportowiec,
+        Wyciąg wyciąg)
+    {
+        String output = String.format(
+            "%s: Sportowiec %d zakończył wjazd wyciągiem %d.",
+            godzina.toString(), sportowiec.id(), wyciąg.id());
+        
+        System.out.println(output);
+    }
 }
