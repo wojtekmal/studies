@@ -4,7 +4,7 @@ import zdarzenie.Zdarzenie;
 
 public class KolejkaZdarzeńLista implements KolejkaZdarzeń
 {
-    private KolejkaZdarzeńWierzchołek pierwszyWierzchołek;
+    private KolejkaZdarzeńWęzeł pierwszyWierzchołek;
 
     public KolejkaZdarzeńLista()
     {
@@ -31,8 +31,8 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
 
     public void dodajZdarzenie(Zdarzenie zdarzenie)
     {
-        KolejkaZdarzeńWierzchołek wierzchołek = new
-            KolejkaZdarzeńWierzchołek(zdarzenie);
+        KolejkaZdarzeńWęzeł wierzchołek = new
+            KolejkaZdarzeńWęzeł(zdarzenie);
         
         // Jeśli zdarzenia są w tej samej chwili, to nowe zdarzenie,
         // które się przyrównuje do innych, ma być później.
@@ -44,7 +44,7 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
         }
         else
         {
-            KolejkaZdarzeńWierzchołek poprzedni = pierwszyWierzchołek;
+            KolejkaZdarzeńWęzeł poprzedni = pierwszyWierzchołek;
 
             while (poprzedni.następny() != null && 
                 !zdarzenie.jestPrzed(poprzedni.następny().zdarzenie()))

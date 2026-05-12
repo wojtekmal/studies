@@ -1,10 +1,12 @@
 package połączenie;
 
+import sportowiec.Sportowiec;
 import struktury_danych.KolejkaNaWyciąg;
 import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
 import zdarzenie.OdjazdKrzesełka;
+import zdarzenie.PrzyjazdWyciągiem;
 
 public class Wyciąg extends Połączenie
 {
@@ -38,9 +40,10 @@ public class Wyciąg extends Połączenie
     }
 
     public Wyciąg(Węzeł początkowy, Węzeł końcowy, int odstępCzasowy,
-        int rozmiarKrzesła, int czasPrzejazdu, KolejkaZdarzeń kolejkaZdarzeń)
+        int rozmiarKrzesła, int czasPrzejazdu, KolejkaZdarzeń kolejkaZdarzeń,
+        int id)
     {
-        super(początkowy, końcowy);
+        super(początkowy, końcowy, id);
         
         this.odstępCzasowy = odstępCzasowy;
         this.rozmiarKrzesła = rozmiarKrzesła;
@@ -58,9 +61,11 @@ public class Wyciąg extends Połączenie
         {
             Sportowiec sportowiec = kolejkaNaWyciąg.dajKolejnego();
 
-            PrzyjazdWyciągiem zdarzenie = new PrzyjazdSportowca(
+            PrzyjazdWyciągiem zdarzenie = new PrzyjazdWyciągiem(
                 godzinaPrzyjazdu, sportowiec, this);
             kolejkaZdarzeń.dodajZdarzenie(zdarzenie);
+
+            KlasaRaportująca.odjazdWyciągiem(sportowiec, this);
         }
     }
 }

@@ -10,9 +10,9 @@ public class Trasa extends Połączenie
     private double odporność;
 
     public Trasa(Węzeł początkowy, Węzeł końcowy, int poziom, int czasPrzejazdu,
-        double bazowaAtrakcyjność, double odporność)
+        double bazowaAtrakcyjność, double odporność, int id)
     {
-        super(początkowy, końcowy);
+        super(początkowy, końcowy, id);
         
         this.poziom = poziom;
         this.czasPrzejazdu = czasPrzejazdu;

@@ -1,5 +1,7 @@
 package struktury_danych;
 
+import sportowiec.Sportowiec;
+
 public class KolejkaNaWyciąg
 {
     private KolejkaNaWyciągWęzeł pierwszy;
@@ -16,8 +18,13 @@ public class KolejkaNaWyciąg
         return pierwszy == null;
     }
 
-    public dajKolejnego()
+    public Sportowiec dajKolejnego()
     {
         Sportowiec sportowiec = pierwszy.sportowiec();
+
+        pierwszy = pierwszy.następny();
+        pierwszy.ustawPoprzedni(null);
+
+        return sportowiec;
     }
 }

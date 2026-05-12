@@ -5,6 +5,7 @@ import java.util.Scanner;
 import połączenie.Trasa;
 import połączenie.Wyciąg;
 import sportowiec.GrupaSportowców;
+import sportowiec.Sportowiec;
 import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
@@ -33,7 +34,7 @@ public class KlasaWczytująca
             int y = scannerLinii.nextInt();
             boolean jestStartowy = scannerLinii.hasNext();
 
-            węzły[i] = new Węzeł(wysokość, x, y, jestStartowy);
+            węzły[i] = new Węzeł(wysokość, x, y, jestStartowy, i);
         }
 
         return węzły;
@@ -59,7 +60,7 @@ public class KlasaWczytująca
             Węzeł końcowy = węzły[idKońcowego];
 
             wyciągi[i] = new Wyciąg(początkowy, końcowy, odstępCzasowy,
-                rozmiarKrzesła, czasPrzejazdu, kolejkaZdarzeń);
+                rozmiarKrzesła, czasPrzejazdu, kolejkaZdarzeń, i);
         }
 
         return wyciągi;
@@ -86,13 +87,13 @@ public class KlasaWczytująca
             Węzeł końcowy = węzły[idKońcowego];
 
             trasy[i] = new Trasa(początkowy, końcowy, poziom, czasPrzejazdu,
-                bazowaAtrakcyjność, odporność);
+                bazowaAtrakcyjność, odporność, i);
         }
 
         return trasy;
     }
 
-    public Sportowiec[] sportowcy(Węzeł[] węzły)
+    public Sportowiec[] sportowcy(Węzeł[] węzły, KolejkaZdarzeń kolejkaZdarzeń)
     {
         Scanner scannerLinii = new Scanner(scannerWejścia.nextLine());
         int liczbaGrup = scannerLinii.nextInt();
@@ -126,7 +127,7 @@ public class KlasaWczytująca
 
             grupy[i] = new GrupaSportowców(rozmiarGrupy, poziom, spontaniczność,
                 czyŚledzić, odwaga, wybredność, startowy, godzinaStartu, 
-                odstępCzasowy);
+                odstępCzasowy, liczbaSportowców);
             
             liczbaSportowców += rozmiarGrupy;
         }
@@ -143,5 +144,7 @@ public class KlasaWczytująca
             
             idKolejnegoSportowca += sportowcyZGrupy.length;
         }
+
+        return sportowcy;
     }
 }

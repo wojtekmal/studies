@@ -20,9 +20,11 @@ public class GrupaSportowców
     // startu sportowców z grupy.
     private int odstępCzasowy;
 
+    private int pierwszeId;
+
     public GrupaSportowców(int rozmiarGrupy, int poziom, double spontaniczność,
         boolean czyŚledzić, double odwaga, double wybredność, Węzeł startowy, 
-        Godzina godzinaStartu, int odstępCzasowy)
+        Godzina godzinaStartu, int odstępCzasowy, int pierwszeId)
     {
         this.rozmiarGrupy = rozmiarGrupy;
         this.poziom = poziom;
@@ -42,7 +44,8 @@ public class GrupaSportowców
         for (int i = 0; i < rozmiarGrupy; i++)
         {
             sportowcy[i] = new Sportowiec(poziom, spontaniczność, czyŚledzić,
-                odwaga, wybredność, startowy, godzinaStartu, kolejkaZdarzeń);
+                odwaga, wybredność, startowy, godzinaStartu, kolejkaZdarzeń, 
+                pierwszeId + i);
             
             godzinaStartu.dodaj(odstępCzasowy);
         }

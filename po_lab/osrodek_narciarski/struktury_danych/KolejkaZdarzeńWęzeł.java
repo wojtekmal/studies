@@ -2,12 +2,12 @@ package struktury_danych;
 
 import zdarzenie.Zdarzenie;
 
-public class KolejkaZdarzeńWierzchołek
+public class KolejkaZdarzeńWęzeł
 {
     private Zdarzenie zdarzenie;
-    private KolejkaZdarzeńWierzchołek następny;
+    private KolejkaZdarzeńWęzeł następny;
 
-    public KolejkaZdarzeńWierzchołek(Zdarzenie zdarzenie)
+    public KolejkaZdarzeńWęzeł(Zdarzenie zdarzenie)
     {
         this.zdarzenie = zdarzenie;
     }
@@ -17,12 +17,12 @@ public class KolejkaZdarzeńWierzchołek
         return zdarzenie;
     }
 
-    public KolejkaZdarzeńWierzchołek następny()
+    public KolejkaZdarzeńWęzeł następny()
     {
         return następny;
     }
 
-    public void ustawNastępny(KolejkaZdarzeńWierzchołek następny)
+    public void ustawNastępny(KolejkaZdarzeńWęzeł następny)
     {
         this.następny = następny;
     }

@@ -1,13 +1,12 @@
 package ośrodek;
 
-import java.util.Scanner;
-
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
 import połączenie.Wyciąg;
-import sportowiec.GrupaSportowców;
+import sportowiec.Sportowiec;
 import struktury_danych.KolejkaZdarzeń;
 import struktury_danych.KolejkaZdarzeńLista;
+import struktury_danych.KolejkaZdarzeń.BrakZdarzeń;
 import połączenie.Trasa;
 import zdarzenie.Zdarzenie;
 
@@ -48,7 +47,16 @@ public class Ośrodek
 
         while (!kolejkaZdarzeń.jestPusta() && !poCzasie)
         {
-            Zdarzenie zdarzenie = kolejkaZdarzeń.dajKolejne();
+            Zdarzenie zdarzenie;
+            try
+            {
+                zdarzenie = kolejkaZdarzeń.dajKolejne();
+            }
+            catch (BrakZdarzeń e)
+            {
+                System.err.println("Kolejka zdarzeń najpierw twierdzi, że nie jest pusta, a następnie nie podaje żadnego elementu.");
+                zdarzenie = null;
+            }
 
             if (jestPoCzasie(zdarzenie))
             {
