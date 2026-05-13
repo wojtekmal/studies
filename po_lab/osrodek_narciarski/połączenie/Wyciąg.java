@@ -1,12 +1,12 @@
 package połączenie;
 
-import ośrodek.KlasaRaportująca;
 import sportowiec.Sportowiec;
 import struktury_danych.KolejkaNaWyciąg;
 import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
 import zdarzenie.OdjazdKrzesełka;
+import zdarzenie.OdjazdWyciągiem;
 import zdarzenie.PrzyjazdWyciągiem;
 
 public class Wyciąg extends Połączenie
@@ -64,11 +64,13 @@ public class Wyciąg extends Połączenie
         {
             Sportowiec sportowiec = kolejkaNaWyciąg.dajKolejnego();
 
-            PrzyjazdWyciągiem zdarzenie = new PrzyjazdWyciągiem(
-                godzinaPrzyjazdu, sportowiec, this);
-            kolejkaZdarzeń.dodajZdarzenie(zdarzenie);
+            OdjazdWyciągiem odjazd = new OdjazdWyciągiem(godzina, sportowiec,
+                this);
+            kolejkaZdarzeń.dodajZdarzenie(odjazd);
 
-            KlasaRaportująca.odjazdWyciągiem(godzina, sportowiec, this);
+            PrzyjazdWyciągiem przyjazd = new PrzyjazdWyciągiem(
+                godzinaPrzyjazdu, sportowiec, this);
+            kolejkaZdarzeń.dodajZdarzenie(przyjazd);
         }
     }
 }

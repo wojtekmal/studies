@@ -1,5 +1,8 @@
 package sportowiec;
 
+import java.util.Random;
+
+import połączenie.Trasa;
 import połączenie.Wyciąg;
 import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
@@ -15,6 +18,7 @@ public class Sportowiec
     private Węzeł startowy;
     private Godzina godzinaStartu;
     private int id;
+    private Random generator;
 
     public Sportowiec(int poziom, double spontaniczność, boolean czyŚledzić,
         double odwaga, double wybredność, Węzeł startowy, Godzina godzinaStartu,
@@ -27,6 +31,8 @@ public class Sportowiec
         this.wybredność = wybredność;
         this.startowy = startowy;
         this.godzinaStartu = godzinaStartu;
+
+        generator = new Random();
     }
 
     public int id()
@@ -36,6 +42,9 @@ public class Sportowiec
 
     public void przyjedźDo(Węzeł węzeł)
     {
+        Trasa[] trasy = węzeł.trasy();
+        Wyciąg[] wyciągi = węzeł.wyciągi();
+
         
     }
 }

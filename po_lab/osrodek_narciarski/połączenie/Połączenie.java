@@ -4,9 +4,9 @@ import węzeł.Węzeł;
 
 abstract public class Połączenie
 {
-    private Węzeł początkowy;
-    private Węzeł końcowy;
-    private int id;
+    protected Węzeł początkowy;
+    protected Węzeł końcowy;
+    protected int id;
 
     public Połączenie(Węzeł początkowy, Węzeł końcowy, int id)
     {

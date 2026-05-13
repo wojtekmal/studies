@@ -1,16 +1,28 @@
 package zdarzenie;
 
-import połączenie.Wyciąg;
+import połączenie.Połączenie;
 import sportowiec.Sportowiec;
 
-public class PrzyjazdLubOdjazd extends Zdarzenie
+public abstract class PrzyjazdLubOdjazd extends Zdarzenie
 {
-    private Sportowiec sportowiec;
-    private Wyciąg wyciąg;
+    protected Sportowiec sportowiec;
+    protected Połączenie połączenie;
 
-    public PrzyjazdLubOdjazd(Sportowiec sportowiec, Wyciąg wyciąg)
+    public PrzyjazdLubOdjazd(Godzina godzina, Sportowiec sportowiec,
+        Połączenie połączenie)
     {
+        super(godzina);
         this.sportowiec = sportowiec;
-        this.wyciąg = wyciąg;
+        this.połączenie = połączenie;
     }
+
+    protected void zaraportuj()
+    {
+        String output = String.format(
+            format(), godzina.toString(), sportowiec.id(), połączenie.id());
+        
+        System.out.println(output);
+    }
+
+    protected abstract String format();
 }

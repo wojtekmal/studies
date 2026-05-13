@@ -3,28 +3,21 @@ package zdarzenie;
 import połączenie.Wyciąg;
 import sportowiec.Sportowiec;
 
-public class PrzyjazdWyciągiem extends Zdarzenie
+public class PrzyjazdWyciągiem extends PrzyjazdLubOdjazd
 {
     public PrzyjazdWyciągiem(Godzina godzina, Sportowiec sportowiec,
         Wyciąg wyciąg)
     {
-        super(godzina);
-
-        this.sportowiec = sportowiec;
-        this.wyciąg = wyciąg;
+        super(godzina, sportowiec, wyciąg);
     }
 
     public void poinformuj()
     {
-        sportowiec.przyjedźDo(wyciąg.końcowy());
+        sportowiec.przyjedźDo(połączenie.końcowy());
     }
 
-    protected void zaraportuj()
+    public String format()
     {
-        String output = String.format(
-            "%s: Sportowiec %d zakończył wjazd wyciągiem %d.",
-            godzina.toString(), sportowiec.id(), wyciąg.id());
-        
-        System.out.println(output);
+        return "%s: Sportowiec %d zakończył wjazd wyciągiem %d.";
     }
 }

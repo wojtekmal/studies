@@ -47,4 +47,14 @@ public class Węzeł
 
         wyciągi[wyciągi.length - 1] = wyciąg;
     }
+
+    public Trasa[] trasy()
+    {
+        return trasy;
+    }
+    
+    public Wyciąg[] wyciągi()
+    {
+        return wyciągi;
+    }
 }
