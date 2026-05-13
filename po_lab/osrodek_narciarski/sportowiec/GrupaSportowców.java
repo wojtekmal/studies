@@ -44,8 +44,7 @@ public class GrupaSportowców
         for (int i = 0; i < rozmiarGrupy; i++)
         {
             sportowcy[i] = new Sportowiec(poziom, spontaniczność, czyŚledzić,
-                odwaga, wybredność, startowy, godzinaStartu, kolejkaZdarzeń, 
-                pierwszeId + i);
+                odwaga, wybredność, startowy, godzinaStartu, pierwszeId + i);
             
             godzinaStartu.dodaj(odstępCzasowy);
         }

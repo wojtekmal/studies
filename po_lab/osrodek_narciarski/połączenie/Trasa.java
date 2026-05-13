@@ -21,4 +21,9 @@ public class Trasa extends Połączenie
 
         początkowy.dodajTrasę(this);
     }
+
+    public int poziom()
+    {
+        return poziom;
+    }
 }

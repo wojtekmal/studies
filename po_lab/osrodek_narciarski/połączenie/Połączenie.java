@@ -1,5 +1,6 @@
 package połączenie;
 
+import sportowiec.Sportowiec;
 import węzeł.Węzeł;
 
 abstract public class Połączenie
@@ -24,4 +25,6 @@ abstract public class Połączenie
     {
         return końcowy;
     }
+
+    public abstract void wybierzPołączenie(Sportowiec sportowiec);
 }
