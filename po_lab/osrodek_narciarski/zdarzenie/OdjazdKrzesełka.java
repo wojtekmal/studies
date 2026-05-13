@@ -12,10 +12,8 @@ public class OdjazdKrzesełka extends Zdarzenie
         this.wyciąg = wyciąg;
     }
 
-    public void poinformuj()
+    public void wydarzSię()
     {
         wyciąg.przyjmijZKolejki(godzina);
     }
-
-    public void zaraportuj() {}
 }

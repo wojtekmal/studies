@@ -13,7 +13,7 @@ public class PrzyjazdWyciągiem extends PrzyjazdLubOdjazd
 
     public void poinformuj()
     {
-        sportowiec.przyjedźDo(połączenie.końcowy());
+        sportowiec.przyjedźDo(połączenie.końcowy(), godzina);
     }
 
     public String format()

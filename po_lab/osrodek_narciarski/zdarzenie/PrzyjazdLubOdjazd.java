@@ -16,13 +16,24 @@ public abstract class PrzyjazdLubOdjazd extends Zdarzenie
         this.połączenie = połączenie;
     }
 
+    protected abstract String format();
+
     protected void zaraportuj()
     {
-        String output = String.format(
-            format(), godzina.toString(), sportowiec.id(), połączenie.id());
-        
-        System.out.println(output);
+        if (sportowiec.czyŚledzić())
+        {
+            String output = String.format(
+                format(), godzina.toString(), sportowiec.id(), połączenie.id());
+            
+            System.out.println(output);
+        }
     }
 
-    protected abstract String format();
+    protected abstract void poinformuj();
+
+    public void wydarzSię()
+    {
+        poinformuj();
+        zaraportuj();
+    }
 }

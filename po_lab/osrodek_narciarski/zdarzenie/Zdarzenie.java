@@ -19,13 +19,5 @@ public abstract class Zdarzenie
         return godzina.jestPrzed(inne.godzina());
     }
 
-    protected abstract void poinformuj();
-
-    protected abstract void zaraportuj();
-
-    public void wydarzSię()
-    {
-        poinformuj();
-        zaraportuj();
-    }
+    public abstract void wydarzSię();
 }

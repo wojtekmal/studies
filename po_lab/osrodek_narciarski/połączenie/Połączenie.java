@@ -1,7 +1,9 @@
 package połączenie;
 
 import sportowiec.Sportowiec;
+import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
+import zdarzenie.Godzina;
 
 abstract public class Połączenie
 {
@@ -9,11 +11,15 @@ abstract public class Połączenie
     protected Węzeł końcowy;
     protected int id;
 
-    public Połączenie(Węzeł początkowy, Węzeł końcowy, int id)
+    protected KolejkaZdarzeń kolejkaZdarzeń;
+
+    public Połączenie(Węzeł początkowy, Węzeł końcowy,
+        KolejkaZdarzeń kolejkaZdarzeń, int id)
     {
         this.początkowy = początkowy;
         this.końcowy = końcowy;
         this.id = id;
+        this.kolejkaZdarzeń = kolejkaZdarzeń;
     }
 
     public int id()
@@ -26,5 +32,6 @@ abstract public class Połączenie
         return końcowy;
     }
 
-    public abstract void wybierzPołączenie(Sportowiec sportowiec);
+    public abstract void wybierzPołączenie(Godzina godzina,
+        Sportowiec sportowiec);
 }

@@ -5,7 +5,6 @@ import java.util.Random;
 import połączenie.Połączenie;
 import połączenie.Trasa;
 import połączenie.Wyciąg;
-import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
 
@@ -16,21 +15,17 @@ public class Sportowiec
     private boolean czyŚledzić;
     private double odwaga;
     private double wybredność;
-    private Węzeł pozycja;
-    private Godzina godzinaStartu;
     private int id;
     private Random generator;
 
     public Sportowiec(int poziom, double spontaniczność, boolean czyŚledzić,
-        double odwaga, double wybredność, Węzeł startowy, Godzina godzinaStartu, int id)
+        double odwaga, double wybredność, int id)
     {
         this.poziom = poziom;
         this.spontaniczność = spontaniczność;
         this.czyŚledzić = czyŚledzić;
         this.odwaga = odwaga;
         this.wybredność = wybredność;
-        this.pozycja = startowy;
-        this.godzinaStartu = godzinaStartu;
 
         generator = new Random();
     }
@@ -40,20 +35,22 @@ public class Sportowiec
         return id;
     }
 
-    private void wylosujPołączenie(Trasa[] trasy, Wyciąg[] wyciągi)
+    private Połączenie wylosujPołączenie(Trasa[] trasy, Wyciąg[] wyciągi)
     {
         int liczbaPołączeń = trasy.length + wyciągi.length;
-        int wylosowanePołączenie = generator.nextInt(liczbaPołączeń);
+        int indeksWylosowanego = generator.nextInt(liczbaPołączeń);
+        Połączenie wynik = null;
 
-        if (wylosowanePołączenie < trasy.length)
+        if (indeksWylosowanego < trasy.length)
         {
-            trasy[wylosowanePołączenie].wybierzPołączenie(this);
+            wynik = trasy[indeksWylosowanego];
         }
         else
         {
-            int indeksWyciągu = wylosowanePołączenie - trasy.length;
-            wyciągi[indeksWyciągu].wybierzPołączenie(this);
+            wynik = wyciągi[indeksWylosowanego - trasy.length];
         }
+
+        return wynik;
     }
 
     private double dopasowanieTrudności(Trasa trasa)
@@ -78,6 +75,17 @@ public class Sportowiec
         return wynik;
     }
 
+    public double wyrównanieNawierzchnii(Trasa trasa)
+    {
+        double odporność = trasa.odporność();
+        double bazowaAtrakcyjność = trasa.bazowaAtrakcyjność();
+        double liczbaPrzejazdów = trasa.liczbaPrzejazdów();
+
+        double zużycie = Math.pow(odporność, liczbaPrzejazdów);
+
+        return bazowaAtrakcyjność + (1.0 - bazowaAtrakcyjność) * zużycie;
+    }
+
     private double atrakcyjność(Trasa trasa)
     {
         double dopasowanieTrudności = dopasowanieTrudności(trasa);
@@ -87,51 +95,64 @@ public class Sportowiec
             wybredność * wyrównanieNawierzchnii;
     }
 
-    public void przyjedźDo(Węzeł węzeł)
+    public Połączenie najlepszePołączenie(Trasa[] trasy, Wyciąg[] wyciągi)
     {
-        Trasa[] trasy = węzeł.trasy();
-        Wyciąg[] wyciągi = węzeł.wyciągi();
+        double najlepszaAtrakcyjność = -1;
+        Połączenie najlepszePołączenie = null;
 
-        if (generator.nextDouble() < spontaniczność)
+        for (Trasa trasa : trasy)
         {
-            wylosujPołączenie(trasy, wyciągi);
+            double atrakcyjność = atrakcyjność(trasa);
+
+            if (atrakcyjność > najlepszaAtrakcyjność)
+            {
+                najlepszaAtrakcyjność = atrakcyjność;
+                najlepszePołączenie = trasa;
+            }
         }
-        else
-        {
-            double najlepszaAtrakcyjność = -1;
-            Połączenie najlepszePołączenie;
 
-            for (Trasa trasa : trasy)
+        for (Wyciąg wyciąg : wyciągi)
+        {
+            for (Trasa trasa : wyciąg.końcowy().trasy())
             {
                 double atrakcyjność = atrakcyjność(trasa);
 
                 if (atrakcyjność > najlepszaAtrakcyjność)
                 {
                     najlepszaAtrakcyjność = atrakcyjność;
-                    najlepszePołączenie = trasa;
+
+                    // Podobieństwo tego kawałka kodu do poprzedniej pętli
+                    // jest tylko pozorne - tutaj nas nie obchodzi która
+                    // trasa na końcu danego wyciągu jest najlepsza, bo
+                    // ustawiamy ten wyciąg jako najlepsze połączenie.
+                    najlepszePołączenie = wyciąg;
                 }
             }
-
-            for (Wyciąg wyciąg : wyciągi)
-            {
-                for (Trasa trasa : wyciąg.końcowy().trasy())
-                {
-                    double atrakcyjność = atrakcyjność(trasa);
-
-                    if (atrakcyjność > najlepszaAtrakcyjność)
-                    {
-                        najlepszaAtrakcyjność = atrakcyjność;
-
-                        // Podobieństwo tego kawałka kodu do poprzedniej pętli
-                        // jest tylko pozorne - tutaj nas nie obchodzi która
-                        // trasa na końcu danego wyciągu jest najlepsza, bo
-                        // ustawiamy ten wyciąg jako najlepsze połączenie.
-                        najlepszePołączenie = wyciąg;
-                    }
-                }
-            }
-
-            najlepszePołączenie.wybierzPołączenie(this);
         }
+
+        return najlepszePołączenie;
+    }
+
+    public void przyjedźDo(Węzeł węzeł, Godzina godzina)
+    {
+        Trasa[] trasy = węzeł.trasy();
+        Wyciąg[] wyciągi = węzeł.wyciągi();
+        Połączenie wybranePołączenie = null;
+
+        if (generator.nextDouble() < spontaniczność)
+        {
+            wybranePołączenie = wylosujPołączenie(trasy, wyciągi);
+        }
+        else
+        {
+            wybranePołączenie = najlepszePołączenie(trasy, wyciągi);
+        }
+
+        wybranePołączenie.wybierzPołączenie(godzina, this);
+    }
+
+    public boolean czyŚledzić()
+    {
+        return czyŚledzić;
     }
 }

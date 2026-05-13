@@ -44,7 +44,7 @@ public class Wyciąg extends Połączenie
         int rozmiarKrzesła, int czasPrzejazdu, KolejkaZdarzeń kolejkaZdarzeń,
         int id)
     {
-        super(początkowy, końcowy, id);
+        super(początkowy, końcowy, kolejkaZdarzeń, id);
         
         this.odstępCzasowy = odstępCzasowy;
         this.rozmiarKrzesła = rozmiarKrzesła;
@@ -72,5 +72,12 @@ public class Wyciąg extends Połączenie
                 godzinaPrzyjazdu, sportowiec, this);
             kolejkaZdarzeń.dodajZdarzenie(przyjazd);
         }
+    }
+
+    public void wybierzPołączenie(Godzina godzina, Sportowiec sportowiec)
+    {
+        WejścieDoKolejki zdarzenie = new WejścieDoKolejki(godzina, sportowiec,
+            this);
+        kolejkaZdarzeń.dodajZdarzenie(zdarzenie);
     }
 }

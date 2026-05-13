@@ -29,7 +29,7 @@ public class Ośrodek
 
         węzły = objektWczytujący.węzły();
         wyciągi = objektWczytujący.wyciągi(węzły, kolejkaZdarzeń);
-        trasy = objektWczytujący.trasy(węzły);
+        trasy = objektWczytujący.trasy(węzły, kolejkaZdarzeń);
         sportowcy = objektWczytujący.sportowcy(węzły, kolejkaZdarzeń);
     }
 

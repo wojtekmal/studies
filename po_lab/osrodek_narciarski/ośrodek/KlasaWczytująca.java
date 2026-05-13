@@ -66,7 +66,7 @@ public class KlasaWczytująca
         return wyciągi;
     }
 
-    public Trasa[] trasy(Węzeł[] węzły)
+    public Trasa[] trasy(Węzeł[] węzły, KolejkaZdarzeń kolejkaZdarzeń)
     {
         Scanner scannerLinii = new Scanner(scannerWejścia.nextLine());
         int liczbaTras = scannerLinii.nextInt();
@@ -87,7 +87,7 @@ public class KlasaWczytująca
             Węzeł końcowy = węzły[idKońcowego];
 
             trasy[i] = new Trasa(początkowy, końcowy, poziom, czasPrzejazdu,
-                bazowaAtrakcyjność, odporność, i);
+                bazowaAtrakcyjność, odporność, kolejkaZdarzeń, i);
         }
 
         return trasy;

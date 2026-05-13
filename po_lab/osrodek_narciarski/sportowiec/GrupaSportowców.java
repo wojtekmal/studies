@@ -3,6 +3,7 @@ package sportowiec;
 import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
+import zdarzenie.PoczątekJazdy;
 
 public class GrupaSportowców
 {
@@ -44,9 +45,13 @@ public class GrupaSportowców
         for (int i = 0; i < rozmiarGrupy; i++)
         {
             sportowcy[i] = new Sportowiec(poziom, spontaniczność, czyŚledzić,
-                odwaga, wybredność, startowy, godzinaStartu, pierwszeId + i);
+                odwaga, wybredność, pierwszeId + i);
             
-            godzinaStartu.dodaj(odstępCzasowy);
+            PoczątekJazdy początekJazdy = new PoczątekJazdy(godzinaStartu,
+                sportowcy[i], startowy);
+            kolejkaZdarzeń.dodajZdarzenie(początekJazdy);
+            
+            godzinaStartu = godzinaStartu.dodaj(odstępCzasowy);
         }
 
         return sportowcy;
