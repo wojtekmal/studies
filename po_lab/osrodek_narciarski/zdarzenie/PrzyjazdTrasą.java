@@ -3,7 +3,7 @@ package zdarzenie;
 import połączenie.Trasa;
 import sportowiec.Sportowiec;
 
-public class PrzyjazdTrasą extends PrzyjazdLubOdjazd
+public class PrzyjazdTrasą extends EtapPodróży
 {
     public PrzyjazdTrasą(Godzina godzina, Sportowiec sportowiec,
         Trasa trasa)

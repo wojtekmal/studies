@@ -3,12 +3,12 @@ package zdarzenie;
 import połączenie.Połączenie;
 import sportowiec.Sportowiec;
 
-public abstract class PrzyjazdLubOdjazd extends Zdarzenie
+public abstract class EtapPodróży extends Zdarzenie
 {
     protected Sportowiec sportowiec;
     protected Połączenie połączenie;
 
-    public PrzyjazdLubOdjazd(Godzina godzina, Sportowiec sportowiec,
+    public EtapPodróży(Godzina godzina, Sportowiec sportowiec,
         Połączenie połączenie)
     {
         super(godzina);

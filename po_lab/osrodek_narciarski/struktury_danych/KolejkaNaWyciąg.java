@@ -27,4 +27,17 @@ public class KolejkaNaWyciąg
 
         return sportowiec;
     }
+
+    public void dodaj(Sportowiec sportowiec)
+    {
+        KolejkaNaWyciągWęzeł nowyOstatni = new KolejkaNaWyciągWęzeł(sportowiec);
+        nowyOstatni.ustawPoprzedni(ostatni);
+
+        if (ostatni != null)
+        {
+            ostatni.ustawNastępny(nowyOstatni);
+        }
+        
+        ostatni = nowyOstatni;
+    }
 }

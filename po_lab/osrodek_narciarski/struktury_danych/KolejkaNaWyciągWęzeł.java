@@ -8,12 +8,11 @@ public class KolejkaNaWyciągWęzeł
     private KolejkaNaWyciągWęzeł poprzedni;
     private KolejkaNaWyciągWęzeł następny;
 
-    public KolejkaNaWyciągWęzeł(Sportowiec sportowiec,
-        KolejkaNaWyciągWęzeł poprzedni, KolejkaNaWyciągWęzeł następny)
+    public KolejkaNaWyciągWęzeł(Sportowiec sportowiec)
     {
         this.sportowiec = sportowiec;
-        this.poprzedni = poprzedni;
-        this.następny = następny;
+        this.poprzedni = null;
+        this.następny = null;
     }
 
     public Sportowiec sportowiec()

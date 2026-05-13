@@ -3,7 +3,7 @@ package zdarzenie;
 import połączenie.Wyciąg;
 import sportowiec.Sportowiec;
 
-public class PrzyjazdWyciągiem extends PrzyjazdLubOdjazd
+public class PrzyjazdWyciągiem extends EtapPodróży
 {
     public PrzyjazdWyciągiem(Godzina godzina, Sportowiec sportowiec,
         Wyciąg wyciąg)

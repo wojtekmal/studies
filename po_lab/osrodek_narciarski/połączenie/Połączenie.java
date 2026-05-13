@@ -34,4 +34,10 @@ abstract public class Połączenie
 
     public abstract void wybierzPołączenie(Godzina godzina,
         Sportowiec sportowiec);
+
+    public void dodajDoKolejki(Sportowiec sportowiec)
+    {
+        // Co prawda trasy nie mają kolejek, ale dzięki temu odstępstwu
+        // hierarchia zdarzeń jest prostsza.
+    }
 }

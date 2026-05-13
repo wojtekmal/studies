@@ -8,6 +8,7 @@ import zdarzenie.Godzina;
 import zdarzenie.OdjazdKrzesełka;
 import zdarzenie.OdjazdWyciągiem;
 import zdarzenie.PrzyjazdWyciągiem;
+import zdarzenie.WejścieDoKolejki;
 
 public class Wyciąg extends Połączenie
 {
@@ -79,5 +80,10 @@ public class Wyciąg extends Połączenie
         WejścieDoKolejki zdarzenie = new WejścieDoKolejki(godzina, sportowiec,
             this);
         kolejkaZdarzeń.dodajZdarzenie(zdarzenie);
+    }
+
+    public void dodajDoKolejki(Sportowiec sportowiec)
+    {
+        kolejkaNaWyciąg.dodaj(sportowiec);
     }
 }
