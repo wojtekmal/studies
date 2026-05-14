@@ -51,6 +51,7 @@ public class Wyciąg extends Połączenie
         this.rozmiarKrzesła = rozmiarKrzesła;
         this.czasPrzejazdu = czasPrzejazdu;
         this.kolejkaZdarzeń = kolejkaZdarzeń;
+        this.kolejkaNaWyciąg = new KolejkaNaWyciąg();
 
         zaplanujOdjazdyKrzesełek();
 

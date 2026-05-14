@@ -37,6 +37,8 @@ public class KlasaWczytująca
             węzły[i] = new Węzeł(wysokość, x, y, jestStartowy, i);
         }
 
+        scannerWejścia.nextLine();
+
         return węzły;
     }
 
@@ -62,6 +64,8 @@ public class KlasaWczytująca
             wyciągi[i] = new Wyciąg(początkowy, końcowy, odstępCzasowy,
                 rozmiarKrzesła, czasPrzejazdu, kolejkaZdarzeń, i);
         }
+
+        scannerWejścia.nextLine();
 
         return wyciągi;
     }
@@ -89,6 +93,8 @@ public class KlasaWczytująca
             trasy[i] = new Trasa(początkowy, końcowy, poziom, czasPrzejazdu,
                 bazowaAtrakcyjność, odporność, kolejkaZdarzeń, i);
         }
+
+        scannerWejścia.nextLine();
 
         return trasy;
     }

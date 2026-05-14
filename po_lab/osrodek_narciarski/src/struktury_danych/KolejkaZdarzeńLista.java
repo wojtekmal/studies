@@ -37,7 +37,8 @@ public class KolejkaZdarzeńLista implements KolejkaZdarzeń
         // Jeśli zdarzenia są w tej samej chwili, to nowe zdarzenie,
         // które się przyrównuje do innych, ma być później.
         
-        if (zdarzenie.jestPrzed(pierwszyWierzchołek.zdarzenie()))
+        if (pierwszyWierzchołek == null ||
+            zdarzenie.jestPrzed(pierwszyWierzchołek.zdarzenie()))
         {
             wierzchołek.ustawNastępny(pierwszyWierzchołek);
             pierwszyWierzchołek = wierzchołek;
