@@ -13,7 +13,6 @@ public class Trasa extends Połączenie
     private int czasPrzejazdu;
     private double bazowaAtrakcyjność;
     private double odporność;
-    private int liczbaPrzejazdów;
 
     public Trasa(Węzeł początkowy, Węzeł końcowy, int poziom, int czasPrzejazdu,
         double bazowaAtrakcyjność, double odporność,
@@ -58,5 +57,13 @@ public class Trasa extends Połączenie
         PrzyjazdTrasą dojazd = new PrzyjazdTrasą(godzina.dodaj(czasPrzejazdu),
             sportowiec, this);
         kolejkaZdarzeń.dodajZdarzenie(dojazd);
+
+        liczbaPrzejazdów++;
+    }
+
+    public void wypiszStatystyki()
+    {
+        String format = "Łączna liczba przejazdów trasą %d: %d.";
+        System.out.println(String.format(format, id, liczbaPrzejazdów));
     }
 }

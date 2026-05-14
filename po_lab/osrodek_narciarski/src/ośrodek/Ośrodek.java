@@ -40,9 +40,8 @@ public class Ośrodek
         return koniecSymulacji.jestPrzed(zdarzenie.godzina());
     }
 
-    public void rozpocznijSymulację()
+    private void przeróbZdarzenia()
     {
-        wczytajDane();
         boolean poCzasie = false;
 
         while (!kolejkaZdarzeń.jestPusta() && !poCzasie)
@@ -67,5 +66,27 @@ public class Ośrodek
                 zdarzenie.wydarzSię();
             }
         }
+    }
+
+    private void wypiszStatystyki()
+    {
+        for (Trasa trasa : trasy)
+        {
+            trasa.wypiszStatystyki();
+        }
+
+        for (Wyciąg wyciąg : wyciągi)
+        {
+            wyciąg.wypiszStatystyki();
+        }
+    }
+
+    public void rozpocznijSymulację()
+    {
+        wczytajDane();
+        
+        przeróbZdarzenia();
+
+        wypiszStatystyki();
     }
 }

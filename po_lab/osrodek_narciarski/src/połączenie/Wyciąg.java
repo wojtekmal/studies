@@ -72,6 +72,8 @@ public class Wyciąg extends Połączenie
             PrzyjazdWyciągiem przyjazd = new PrzyjazdWyciągiem(
                 godzinaPrzyjazdu, sportowiec, this);
             kolejkaZdarzeń.dodajZdarzenie(przyjazd);
+
+            liczbaPrzejazdów++;
         }
     }
 
@@ -85,5 +87,11 @@ public class Wyciąg extends Połączenie
     public void dodajDoKolejki(Sportowiec sportowiec)
     {
         kolejkaNaWyciąg.dodaj(sportowiec);
+    }
+
+    public void wypiszStatystyki()
+    {
+        String format = "Łączna liczba przejazdów wyciągiem %d: %d.";
+        System.out.println(String.format(format, id, liczbaPrzejazdów));
     }
 }

@@ -12,6 +12,7 @@ abstract public class Połączenie
     protected int id;
 
     protected KolejkaZdarzeń kolejkaZdarzeń;
+    protected int liczbaPrzejazdów;
 
     public Połączenie(Węzeł początkowy, Węzeł końcowy,
         KolejkaZdarzeń kolejkaZdarzeń, int id)
@@ -40,4 +41,6 @@ abstract public class Połączenie
         // Co prawda trasy nie mają kolejek, ale dzięki temu odstępstwu
         // hierarchia zdarzeń jest prostsza.
     }
+
+    public abstract void wypiszStatystyki();
 }
