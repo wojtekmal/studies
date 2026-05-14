@@ -6,4 +6,5 @@ public class TrasaTesty
 {
     @Test
     public void testujTrasa()
+    {}
 }
