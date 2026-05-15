@@ -3,6 +3,7 @@ zdarzenie/OdjazdTrasą.class
 struktury_danych/KolejkaZdarzeńWęzeł.class
 struktury_danych/KolejkaZdarzeń.class
 połączenie/Trasa.class
+main/Main.class
 zdarzenie/PoczątekJazdy.class
 węzeł/Węzeł.class
 zdarzenie/OdjazdKrzesełka.class
@@ -13,14 +14,13 @@ struktury_danych/KolejkaZdarzeńLista.class
 ośrodek/Ośrodek.class
 ośrodek/KlasaWczytująca.class
 połączenie/Wyciąg.class
-test/Test.class
 zdarzenie/PrzyjazdWyciągiem.class
 zdarzenie/EtapPodróży.class
 zdarzenie/PrzyjazdTrasą.class
 zdarzenie/Zdarzenie.class
 sportowiec/GrupaSportowców.class
 sportowiec/Sportowiec.class
-połączenie/TrasaTesty.class
+połączenie/PołączenieTesty.class
 połączenie/Połączenie.class
 struktury_danych/KolejkaNaWyciągWęzeł.class
 zdarzenie/WejścieDoKolejki.class

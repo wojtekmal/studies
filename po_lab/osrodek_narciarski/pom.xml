@@ -48,7 +48,7 @@
                     <!-- Specify test file naming conventions -->
                     <includes>
                         <include>**/*Test.java</include>
-                        <include>**/*Tests.java</include>
+                        <include>**/*Testy.java</include>
                     </includes>
                 </configuration>
             </plugin>

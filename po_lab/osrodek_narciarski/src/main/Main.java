@@ -1,8 +1,8 @@
-package test;
+package main;
 
 import ośrodek.Ośrodek;
 
-public class Test
+public class Main
 {
     public static void main(String[] args)
     {

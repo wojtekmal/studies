@@ -1,33 +1,62 @@
 package połączenie;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.junit.jupiter.api.Assertions.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import struktury_danych.KolejkaZdarzeń;
+import sportowiec.Sportowiec;
+
+import org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import struktury_danych.KolejkaZdarzeńLista;
 import węzeł.Węzeł;
+import zdarzenie.Godzina;
+import zdarzenie.OdjazdTrasą;
+import zdarzenie.Zdarzenie;
 
+@ExtendWith(MockitoExtension.class)
 public class PołączenieTesty
 {
     @Mock
     private Węzeł początkowy;
-    
     @Mock
     private Węzeł końcowy;
-    
-    @BeforeEach
-    public void inicjalizacja()
-    {
-        początkowy = new Węzeł(0, 0, 0, false, 0);
-        końcowy = new Węzeł(0, 0, 0, false, 1);
-    }
+    @Mock
+    private KolejkaZdarzeńLista kolekjaZdarzeń;
+    @Mock
+    private Godzina godzina;
+    @Mock
+    private Sportowiec sportowiec;
     
     @Test
     public void testujKonstruktor()
     {
-        KolejkaZdarzeń kolejkaZdarzeń = new KolejkaZdarzeńLista();
-        Trasa trasa = new Trasa(początkowy, końcowy, 0, 0, 0, 0, kolejkaZdarzeń, 0);
+        Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
+        verify(początkowy).dodajTrasę(trasa);
+        assertEquals(trasa.bazowaAtrakcyjność(), 0.5);
+        assertEquals(trasa.id(), 0);
+        assertEquals(trasa.końcowy(), końcowy);
+        assertEquals(trasa.liczbaPrzejazdów(), 0);
+        assertEquals(trasa.poziom(), 1);
+        assertEquals(trasa.odporność(), 0.8);
+    }
 
+    @Test
+    public void testujWybierzPołączenie()
+    {
+        Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
+        ArgumentCaptor<OdjazdTrasą> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdTrasą.class);
+        trasa.wybierzPołączenie(godzina, sportowiec);
+        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
+        List<Zdarzenie> zdarzenia = porywaczZdarzenia.getAllValues();
+        Zdarzenie odjazd = 
     }
 }

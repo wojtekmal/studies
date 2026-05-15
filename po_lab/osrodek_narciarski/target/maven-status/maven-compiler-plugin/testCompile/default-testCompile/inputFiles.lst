@@ -1,8 +1,9 @@
+/home/wojtekmal/studies/po_lab/osrodek_narciarski/src/main/Main.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/ośrodek/KlasaWczytująca.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/ośrodek/Ośrodek.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/połączenie/Połączenie.java
+/home/wojtekmal/studies/po_lab/osrodek_narciarski/src/połączenie/PołączenieTesty.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/połączenie/Trasa.java
-/home/wojtekmal/studies/po_lab/osrodek_narciarski/src/połączenie/TrasaTesty.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/połączenie/Wyciąg.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/sportowiec/GrupaSportowców.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/sportowiec/Sportowiec.java
@@ -11,7 +12,6 @@
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/struktury_danych/KolejkaZdarzeń.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/struktury_danych/KolejkaZdarzeńLista.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/struktury_danych/KolejkaZdarzeńWęzeł.java
-/home/wojtekmal/studies/po_lab/osrodek_narciarski/src/test/Test.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/węzeł/Węzeł.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/zdarzenie/EtapPodróży.java
 /home/wojtekmal/studies/po_lab/osrodek_narciarski/src/zdarzenie/Godzina.java
