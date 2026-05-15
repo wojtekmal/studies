@@ -43,7 +43,7 @@ public class Wyciąg extends Połączenie
 
     public Wyciąg(Węzeł początkowy, Węzeł końcowy, int odstępCzasowy,
         int rozmiarKrzesła, int czasPrzejazdu, KolejkaZdarzeń kolejkaZdarzeń,
-        int id)
+        KolejkaNaWyciąg kolejkaNaWyciąg, int id)
     {
         super(początkowy, końcowy, kolejkaZdarzeń, id);
         

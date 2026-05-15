@@ -6,6 +6,7 @@ import połączenie.Trasa;
 import połączenie.Wyciąg;
 import sportowiec.GrupaSportowców;
 import sportowiec.Sportowiec;
+import struktury_danych.KolejkaNaWyciąg;
 import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
@@ -60,9 +61,11 @@ public class KlasaWczytująca
 
             Węzeł początkowy = węzły[idPoczątkowego];
             Węzeł końcowy = węzły[idKońcowego];
+            KolejkaNaWyciąg kolejkaNaWyciąg = new KolejkaNaWyciąg();
 
             wyciągi[i] = new Wyciąg(początkowy, końcowy, odstępCzasowy,
-                rozmiarKrzesła, czasPrzejazdu, kolejkaZdarzeń, i);
+                rozmiarKrzesła, czasPrzejazdu, kolejkaZdarzeń, kolejkaNaWyciąg,
+                i);
         }
 
         scannerWejścia.nextLine();
