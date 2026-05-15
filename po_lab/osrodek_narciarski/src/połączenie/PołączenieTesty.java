@@ -20,6 +20,7 @@ import struktury_danych.KolejkaZdarzeńLista;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
 import zdarzenie.OdjazdTrasą;
+import zdarzenie.PrzyjazdTrasą;
 import zdarzenie.Zdarzenie;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,9 +55,13 @@ public class PołączenieTesty
     {
         Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
         ArgumentCaptor<OdjazdTrasą> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdTrasą.class);
+        ArgumentCaptor<PrzyjazdTrasą> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdTrasą.class);
         trasa.wybierzPołączenie(godzina, sportowiec);
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
-        List<Zdarzenie> zdarzenia = porywaczZdarzenia.getAllValues();
-        Zdarzenie odjazd = 
+        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczPrzyjazdu.capture());
+        Zdarzenie odjazd = porywaczOdjazdu.getValue();
+        Zdarzenie przyjazd = porywaczPrzyjazdu.getValue();
+        assertEquals(odjazd.godzina(), godzina);
+        assertEquals(przyjazd.godzina().toString(), odjazd.godzina().dodaj(20).toString());
     }
 }
