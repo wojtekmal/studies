@@ -75,7 +75,7 @@ public class Sportowiec
         return wynik;
     }
 
-    public double wyrównanieNawierzchnii(Trasa trasa)
+    private double wyrównanieNawierzchnii(Trasa trasa)
     {
         double odporność = trasa.odporność();
         double bazowaAtrakcyjność = trasa.bazowaAtrakcyjność();
@@ -95,7 +95,7 @@ public class Sportowiec
             wybredność * wyrównanieNawierzchnii;
     }
 
-    public Połączenie najlepszePołączenie(Trasa[] trasy, Wyciąg[] wyciągi)
+    private Połączenie najlepszePołączenie(Trasa[] trasy, Wyciąg[] wyciągi)
     {
         double najlepszaAtrakcyjność = -1;
         Połączenie najlepszePołączenie = null;
