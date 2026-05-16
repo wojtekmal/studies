@@ -19,8 +19,8 @@ public abstract class EtapPodróży extends Zdarzenie
     {
         if (sportowiec.czyŚledzić())
         {
-            String output = String.format(
-                format(), godzina.toString(), sportowiec.id(), połączenie.id());
+            String output = String.format(format(), godzina.toString(),
+                sportowiec.id());
             
             System.out.println(output);
         }
