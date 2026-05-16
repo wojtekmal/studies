@@ -1,18 +1,15 @@
 -------------------------------------------------------------------------------
 Test set: połączenie.PołączenieTesty
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.750 s <<< FAILURE! -- in połączenie.PołączenieTesty
-połączenie.PołączenieTesty.testujPrzyjmijZKolejki -- Time elapsed: 0.022 s <<< FAILURE!
-org.mockito.exceptions.verification.TooManyActualInvocations: 
-
+Tests run: 4, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.714 s <<< FAILURE! -- in połączenie.PołączenieTesty
+połączenie.PołączenieTesty.testujPrzyjmijZKolejki -- Time elapsed: 0.019 s <<< FAILURE!
+Wanted but not invoked:
 kolejkaNaWyciąg.dajKolejnego();
-Wanted 1 time:
 -> at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)
-But was 4 times:
--> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)
--> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)
--> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)
--> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)
+
+However, there was exactly 1 interaction with this mock:
+kolejkaNaWyciąg.jestPusta();
+-> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:64)
 
 
 	at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)

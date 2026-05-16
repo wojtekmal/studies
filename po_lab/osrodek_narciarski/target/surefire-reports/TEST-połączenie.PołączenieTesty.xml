@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="połączenie.PołączenieTesty" time="0.75" tests="4" errors="0" skipped="0" failures="1">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="połączenie.PołączenieTesty" time="0.714" tests="4" errors="0" skipped="0" failures="1">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk-amd64/lib"/>
-    <property name="sun.java.command" value="/home/wojtekmal/studies/po_lab/osrodek_narciarski/target/surefire/surefirebooter-20260516124655417_3.jar /home/wojtekmal/studies/po_lab/osrodek_narciarski/target/surefire 2026-05-16T12-46-55_361-jvmRun1 surefire-20260516124655417_1tmp surefire_0-20260516124655417_2tmp"/>
+    <property name="sun.java.command" value="/home/wojtekmal/studies/po_lab/osrodek_narciarski/target/surefire/surefirebooter-20260516143954334_3.jar /home/wojtekmal/studies/po_lab/osrodek_narciarski/target/surefire 2026-05-16T14-39-54_282-jvmRun1 surefire-20260516143954334_1tmp surefire_0-20260516143954334_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/wojtekmal/studies/po_lab/osrodek_narciarski/target/test-classes:/home/wojtekmal/studies/po_lab/osrodek_narciarski/target/classes:/home/wojtekmal/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.0/junit-jupiter-5.10.0.jar:/home/wojtekmal/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.0/junit-jupiter-api-5.10.0.jar:/home/wojtekmal/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/wojtekmal/.m2/repository/org/junit/platform/junit-platform-commons/1.10.0/junit-platform-commons-1.10.0.jar:/home/wojtekmal/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/wojtekmal/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.0/junit-jupiter-params-5.10.0.jar:/home/wojtekmal/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.0/junit-jupiter-engine-5.10.0.jar:/home/wojtekmal/.m2/repository/org/junit/platform/junit-platform-engine/1.10.0/junit-platform-engine-1.10.0.jar:/home/wojtekmal/.m2/repository/org/mockito/mockito-core/5.5.0/mockito-core-5.5.0.jar:/home/wojtekmal/.m2/repository/net/bytebuddy/byte-buddy/1.14.6/byte-buddy-1.14.6.jar:/home/wojtekmal/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.6/byte-buddy-agent-1.14.6.jar:/home/wojtekmal/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/home/wojtekmal/.m2/repository/org/mockito/mockito-junit-jupiter/5.5.0/mockito-junit-jupiter-5.5.0.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -28,7 +28,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/wojtekmal/studies/po_lab/osrodek_narciarski/target/surefire/surefirebooter-20260516124655417_3.jar"/>
+    <property name="surefire.real.class.path" value="/home/wojtekmal/studies/po_lab/osrodek_narciarski/target/surefire/surefirebooter-20260516143954334_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.10+7-Debian-1deb13u1"/>
     <property name="user.name" value="wojtekmal"/>
@@ -54,7 +54,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testujWybierzPołączenieWyciąg" classname="połączenie.PołączenieTesty" time="0.688">
+  <testcase name="testujWybierzPołączenieWyciąg" classname="połączenie.PołączenieTesty" time="0.659">
     <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/home/wojtekmal/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.6/byte-buddy-agent-1.14.6.jar)
 WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
 WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
@@ -62,17 +62,14 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 ]]></system-err>
   </testcase>
   <testcase name="testujKonstruktor" classname="połączenie.PołączenieTesty" time="0.005"/>
-  <testcase name="testujPrzyjmijZKolejki" classname="połączenie.PołączenieTesty" time="0.022">
-    <failure message="&#10;kolejkaNaWyciąg.dajKolejnego();&#10;Wanted 1 time:&#10;-&gt; at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)&#10;But was 4 times:&#10;-&gt; at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)&#10;-&gt; at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)&#10;-&gt; at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)&#10;-&gt; at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)&#10;&#10;" type="org.mockito.exceptions.verification.TooManyActualInvocations"><![CDATA[org.mockito.exceptions.verification.TooManyActualInvocations: 
-
+  <testcase name="testujPrzyjmijZKolejki" classname="połączenie.PołączenieTesty" time="0.019">
+    <failure message="&#10;Wanted but not invoked:&#10;kolejkaNaWyciąg.dajKolejnego();&#10;-&gt; at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)&#10;&#10;However, there was exactly 1 interaction with this mock:&#10;kolejkaNaWyciąg.jestPusta();&#10;-&gt; at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:64)&#10;&#10;" type="Wanted but not invoked"><![CDATA[Wanted but not invoked:
 kolejkaNaWyciąg.dajKolejnego();
-Wanted 1 time:
 -> at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)
-But was 4 times:
--> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)
--> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)
--> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)
--> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:66)
+
+However, there was exactly 1 interaction with this mock:
+kolejkaNaWyciąg.jestPusta();
+-> at połączenie.Wyciąg.przyjmijZKolejki(Wyciąg.java:64)
 
 
 	at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)
@@ -82,5 +79,5 @@ But was 4 times:
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 ]]></failure>
   </testcase>
-  <testcase name="testujWybierzPołączenieTrasa" classname="połączenie.PołączenieTesty" time="0.005"/>
+  <testcase name="testujWybierzPołączenieTrasa" classname="połączenie.PołączenieTesty" time="0.004"/>
 </testsuite>

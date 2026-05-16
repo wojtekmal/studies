@@ -23,21 +23,30 @@ public class KolejkaNaWyciąg
         Sportowiec sportowiec = pierwszy.sportowiec();
 
         pierwszy = pierwszy.następny();
-        pierwszy.ustawPoprzedni(null);
+
+        if (pierwszy == null)
+        {
+            ostatni = null;
+        }
+        else
+        {
+            pierwszy.ustawPoprzedni(null);
+        }
 
         return sportowiec;
     }
 
     public void dodaj(Sportowiec sportowiec)
     {
-        KolejkaNaWyciągWęzeł nowyOstatni = new KolejkaNaWyciągWęzeł(sportowiec);
-        nowyOstatni.ustawPoprzedni(ostatni);
+        KolejkaNaWyciągWęzeł nowy = new KolejkaNaWyciągWęzeł(sportowiec);
+        nowy.ustawNastępny(null);
+        nowy.ustawPoprzedni(ostatni);
 
-        if (ostatni != null)
+        if (jestPusta())
         {
-            ostatni.ustawNastępny(nowyOstatni);
+            pierwszy = nowy;
         }
-        
-        ostatni = nowyOstatni;
+
+        ostatni = nowy;
     }
 }

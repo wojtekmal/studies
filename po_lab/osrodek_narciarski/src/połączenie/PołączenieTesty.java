@@ -90,7 +90,7 @@ public class PołączenieTesty
     @Test
     public void testujPrzyjmijZKolejki()
     {
-        KolejkaNaWyciąg kolejkaNaWyciąg = mock(KolejkaNaWyciąg.class);
+        KolejkaNaWyciąg kolejkaNaWyciąg = spy(KolejkaNaWyciąg.class);
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
         wyciąg.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
         
