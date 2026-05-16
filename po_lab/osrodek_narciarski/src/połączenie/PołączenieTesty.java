@@ -21,7 +21,9 @@ import struktury_danych.KolejkaZdarzeńLista;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
 import zdarzenie.OdjazdTrasą;
+import zdarzenie.OdjazdWyciągiem;
 import zdarzenie.PrzyjazdTrasą;
+import zdarzenie.PrzyjazdWyciągiem;
 import zdarzenie.Zdarzenie;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,28 +73,40 @@ public class PołączenieTesty
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczPrzyjazdu.capture());
 
-        Zdarzenie odjazd = porywaczOdjazdu.getValue();
-        Zdarzenie przyjazd = porywaczPrzyjazdu.getValue();
+        OdjazdTrasą odjazdTrasą = porywaczOdjazdu.getValue();
+        PrzyjazdTrasą przyjazdTrasą = porywaczPrzyjazdu.getValue();
 
-        assertEquals(odjazd.godzina(), godzina);
-        assertEquals(przyjazd.godzina().toString(), odjazd.godzina().dodaj(20).toString());
+        assertEquals(odjazdTrasą.godzina(), godzina);
+        assertEquals(przyjazdTrasą.godzina().toString(), odjazdTrasą.godzina().dodaj(20).toString());
+
+        //assertEquals(odjazdTrasą.);
     }
 
     @Test
     public void testujWybierzPołączenieWyciąg()
     {
-        ArgumentCaptor<KolejkaNaWyciąg> porywaczKolejkiNaWyciąg = ArgumentCaptor.forClass(KolejkaNaWyciąg.class);
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
 
-        KolejkaNaWyciąg kolejkaNaWyciąg = verify()
         wyciąg.wybierzPołączenie(godzina, sportowiec);
 
-        verify(kolekjaZdarzeń)
+        verify(kolejkaNaWyciąg).dodaj(sportowiec);
+    }
 
-        Zdarzenie odjazd = porywaczOdjazdu.getValue();
-        Zdarzenie przyjazd = porywaczPrzyjazdu.getValue();
+    @Test
+    public void testujPrzyjmijZKolejki()
+    {
+        Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        
+        ArgumentCaptor<OdjazdWyciągiem> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdWyciągiem.class);
+        ArgumentCaptor<PrzyjazdWyciągiem> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdWyciągiem.class);
+        wyciąg.przyjmijZKolejki(godzina);
 
-        assertEquals(odjazd.godzina(), godzina);
-        assertEquals(przyjazd.godzina().toString(), odjazd.godzina().dodaj(20).toString());
+        verify(kolejkaNaWyciąg).dajKolejnego();
+        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
+        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczPrzyjazdu.capture());
+
+        OdjazdWyciągiem odjazdWyciągiem = porywaczOdjazdu.getValue();
+        PrzyjazdWyciągiem przyjazdWyciągiem = porywaczPrzyjazdu.getValue();
+
     }
 }

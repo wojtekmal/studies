@@ -1,7 +1,7 @@
 package ośrodek;
 
 import węzeł.Węzeł;
-import zdarzenie.Godzina;
+import zdarzenie.KoniecSymulacji;
 import połączenie.Wyciąg;
 import sportowiec.Sportowiec;
 import struktury_danych.KolejkaZdarzeń;
@@ -17,6 +17,7 @@ public class Ośrodek
     private Wyciąg[] wyciągi;
     private Trasa[] trasy;
     private Sportowiec[] sportowcy;
+    private boolean symulacjaZakończona;
 
     public Ośrodek()
     {
@@ -31,22 +32,29 @@ public class Ośrodek
         wyciągi = objektWczytujący.wyciągi(węzły, kolejkaZdarzeń);
         trasy = objektWczytujący.trasy(węzły, kolejkaZdarzeń);
         sportowcy = objektWczytujący.sportowcy(węzły, kolejkaZdarzeń);
+
+        symulacjaZakończona = false;
     }
 
-    private boolean jestPoCzasie(Zdarzenie zdarzenie)
+    public void zakończSymulację()
     {
-        Godzina koniecSymulacji = new Godzina("16:00:00");
-
-        return koniecSymulacji.jestPrzed(zdarzenie.godzina());
+        symulacjaZakończona = true;
     }
 
     private void przeróbZdarzenia()
     {
-        boolean poCzasie = false;
+        KoniecSymulacji koniecSymulacji = new KoniecSymulacji(this);
+        kolejkaZdarzeń.dodajZdarzenie(koniecSymulacji);
 
-        while (!kolejkaZdarzeń.jestPusta() && !poCzasie)
+        while (!symulacjaZakończona)
         {
+            // Zdarzenie o klasie KoniecSymulacji zawsze powinno być ostatnim
+            // z zrealizowanych, a ono ustawia koniecSymulacji, więc w teorii
+            // nie trzeba sprawdzać czy kolejka jest pusta, więc warunek while
+            // tego nie sprawdza, ale na wszelki wypadek poniżej jest łapany
+            // błąd o braku kolejnych zdarzeń.
             Zdarzenie zdarzenie;
+
             try
             {
                 zdarzenie = kolejkaZdarzeń.dajKolejne();
@@ -57,14 +65,24 @@ public class Ośrodek
                 zdarzenie = null;
             }
 
-            if (jestPoCzasie(zdarzenie))
+            zdarzenie.wydarzSię();
+        }
+
+        while (!kolejkaZdarzeń.jestPusta())
+        {
+            Zdarzenie zdarzenie;
+
+            try
             {
-                poCzasie = true;
+                zdarzenie = kolejkaZdarzeń.dajKolejne();
             }
-            else
+            catch (BrakZdarzeń e)
             {
-                zdarzenie.wydarzSię();
+                System.err.println("Kolejka zdarzeń najpierw twierdzi, że nie jest pusta, a następnie nie podaje żadnego elementu.");
+                zdarzenie = null;
             }
+
+            zdarzenie.zaraportuj();
         }
     }
 

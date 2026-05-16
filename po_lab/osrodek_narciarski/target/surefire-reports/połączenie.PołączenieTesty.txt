@@ -1,4 +1,28 @@
 -------------------------------------------------------------------------------
 Test set: połączenie.PołączenieTesty
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.691 s -- in połączenie.PołączenieTesty
+Tests run: 4, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 1.596 s <<< FAILURE! -- in połączenie.PołączenieTesty
+połączenie.PołączenieTesty.testujWybierzPołączenieWyciąg -- Time elapsed: 1.283 s <<< FAILURE!
+Wanted but not invoked:
+kolejkaNaWyciąg.dodaj(sportowiec);
+-> at struktury_danych.KolejkaNaWyciąg.dodaj(KolejkaNaWyciąg.java:33)
+Actually, there were zero interactions with this mock.
+
+	at struktury_danych.KolejkaNaWyciąg.dodaj(KolejkaNaWyciąg.java:33)
+	at połączenie.PołączenieTesty.testujWybierzPołączenieWyciąg(PołączenieTesty.java:92)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+połączenie.PołączenieTesty.testujPrzyjmijZKolejki -- Time elapsed: 0.242 s <<< FAILURE!
+Wanted but not invoked:
+kolejkaNaWyciąg.dajKolejnego();
+-> at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)
+Actually, there were zero interactions with this mock.
+
+	at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)
+	at połączenie.PołączenieTesty.testujPrzyjmijZKolejki(PołączenieTesty.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

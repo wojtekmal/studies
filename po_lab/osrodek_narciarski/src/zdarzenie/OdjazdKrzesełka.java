@@ -15,5 +15,6 @@ public class OdjazdKrzesełka extends Zdarzenie
     public void wydarzSię()
     {
         wyciąg.przyjmijZKolejki(godzina);
+        wyciąg.zaplanujKolejneKrzesełko(godzina);
     }
 }

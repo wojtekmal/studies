@@ -18,7 +18,7 @@ public abstract class EtapPodróży extends Zdarzenie
 
     protected abstract String format();
 
-    protected void zaraportuj()
+    public void zaraportuj()
     {
         if (sportowiec.czyŚledzić())
         {

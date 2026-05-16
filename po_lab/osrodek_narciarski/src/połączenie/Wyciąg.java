@@ -18,7 +18,7 @@ public class Wyciąg extends Połączenie
     private KolejkaZdarzeń kolejkaZdarzeń;
     private KolejkaNaWyciąg kolejkaNaWyciąg;
 
-    public void zaplanujOdjazdyKrzesełek()
+    public void dodajKrzesełko(Godzina godzinaOdjazdu)
     {
         // Zakładamy, że wyciągi zaczynają pracę wtedy, gdy się zaczyna
         // symulacja, czyli o 9:00:00. Każdy wyciąg wrzuca na kolejkę zdarzeń
@@ -28,17 +28,16 @@ public class Wyciąg extends Połączenie
         // nawet jeśli sportowiec przyjdzie równo o 9:00:00, czyli pierwsze
         // krzesełko każdego wyciągu będzie puste.
 
-        Godzina godzinaOdjazdu = new Godzina("09:00:00");
-        Godzina koniecSymulacjiOdjazdów = new Godzina("15:00:00");
+        OdjazdKrzesełka zdarzenie = new OdjazdKrzesełka(godzinaOdjazdu, this);
 
-        while (!koniecSymulacjiOdjazdów.jestPrzed(godzinaOdjazdu))
-        {
-            OdjazdKrzesełka zdarzenie = new OdjazdKrzesełka(godzinaOdjazdu,
-                this);
-            kolejkaZdarzeń.dodajZdarzenie(zdarzenie);
+        kolejkaZdarzeń.dodajZdarzenie(zdarzenie);
+    }
 
-            godzinaOdjazdu = godzinaOdjazdu.dodaj(odstępCzasowy);
-        }
+    public void zaplanujKolejneKrzesełko(Godzina godzinaPoprzedniego)
+    {
+        Godzina godzinaOdjazdu = godzinaPoprzedniego.dodaj(odstępCzasowy);
+
+        dodajKrzesełko(godzinaOdjazdu);
     }
 
     public Wyciąg(Węzeł początkowy, Węzeł końcowy, int odstępCzasowy,
@@ -53,7 +52,7 @@ public class Wyciąg extends Połączenie
         this.kolejkaZdarzeń = kolejkaZdarzeń;
         this.kolejkaNaWyciąg = new KolejkaNaWyciąg();
 
-        zaplanujOdjazdyKrzesełek();
+        dodajKrzesełko(new Godzina("09:00:00"));
 
         początkowy.dodajWyciąg(this);
     }
