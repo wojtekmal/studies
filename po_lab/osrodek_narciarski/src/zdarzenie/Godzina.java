@@ -8,9 +8,9 @@ public class Godzina
 
     public Godzina(String napis)
     {
-        this.godzina = Integer.parseInt(napis.substring(0, 2));
-        this.minuta = Integer.parseInt(napis.substring(3, 5));
-        this.sekunda = Integer.parseInt(napis.substring(6, 8));
+        godzina = Integer.parseInt(napis.substring(0, 2));
+        minuta = Integer.parseInt(napis.substring(3, 5));
+        sekunda = Integer.parseInt(napis.substring(6, 8));
     }
 
     private Godzina(int godzina, int minuta, int sekunda)
@@ -38,36 +38,21 @@ public class Godzina
         return String.format("%02d:%02d:%02d", godzina, minuta, sekunda);
     }
 
-    public int godzina()
-    {
-        return godzina;
-    }
-
-    public int minuta()
-    {
-        return minuta;
-    }
-
-    public int sekunda()
-    {
-        return sekunda;
-    }
-
     public boolean jestPrzed(Godzina inna)
     {
-        if (godzina != inna.godzina())
+        if (godzina != inna.godzina)
         {
-            return godzina < inna.godzina();
+            return godzina < inna.godzina;
         }
         else
         {
-            if (minuta != inna.minuta())
+            if (minuta != inna.minuta)
             {
-                return minuta < inna.minuta();
+                return minuta < inna.minuta;
             }
             else
             {
-                return sekunda < inna.sekunda();
+                return sekunda < inna.sekunda;
             }
         }
     }

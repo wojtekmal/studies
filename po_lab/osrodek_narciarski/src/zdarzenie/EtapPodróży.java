@@ -6,14 +6,11 @@ import sportowiec.Sportowiec;
 public abstract class EtapPodróży extends Zdarzenie
 {
     protected Sportowiec sportowiec;
-    protected Połączenie połączenie;
 
-    public EtapPodróży(Godzina godzina, Sportowiec sportowiec,
-        Połączenie połączenie)
+    public EtapPodróży(Godzina godzina, Sportowiec sportowiec)
     {
         super(godzina);
         this.sportowiec = sportowiec;
-        this.połączenie = połączenie;
     }
 
     protected abstract String format();
