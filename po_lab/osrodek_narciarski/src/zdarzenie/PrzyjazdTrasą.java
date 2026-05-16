@@ -23,4 +23,17 @@ public class PrzyjazdTrasą extends EtapPodróży
     {
         return "%s: Sportowiec %d zakończył zjazd trasą " + trasa.id() + ".";
     }
+
+    @Override
+    public boolean equals(Object obiekt)
+    {
+        if (obiekt instanceof PrzyjazdTrasą)
+        {
+            PrzyjazdTrasą inny = (PrzyjazdTrasą) obiekt;
+            return inny.godzina == godzina && inny.sportowiec == sportowiec &&
+                inny.trasa == trasa;
+        }
+
+        return false;
+    }
 }

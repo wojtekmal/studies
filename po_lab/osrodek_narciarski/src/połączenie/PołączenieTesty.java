@@ -1,11 +1,8 @@
 package połączenie;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -13,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import sportowiec.Sportowiec;
 
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import struktury_danych.KolejkaNaWyciąg;
@@ -24,7 +20,6 @@ import zdarzenie.OdjazdTrasą;
 import zdarzenie.OdjazdWyciągiem;
 import zdarzenie.PrzyjazdTrasą;
 import zdarzenie.PrzyjazdWyciągiem;
-import zdarzenie.Zdarzenie;
 
 @ExtendWith(MockitoExtension.class)
 public class PołączenieTesty
@@ -36,17 +31,7 @@ public class PołączenieTesty
     @Mock
     private KolejkaZdarzeńLista kolekjaZdarzeń;
     @Mock
-    private KolejkaNaWyciąg kolejkaNaWyciąg;
-    
-    private Godzina godzina;
-    @Mock
     private Sportowiec sportowiec;
-
-    @BeforeEach
-    public void inicjalizacja()
-    {
-        this.godzina = new Godzina("09:00:00");
-    }
     
     @Test
     public void testujKonstruktor()
@@ -68,7 +53,7 @@ public class PołączenieTesty
         ArgumentCaptor<OdjazdTrasą> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdTrasą.class);
         ArgumentCaptor<PrzyjazdTrasą> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdTrasą.class);
 
-        trasa.wybierzPołączenie(godzina, sportowiec);
+        trasa.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
 
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczPrzyjazdu.capture());
@@ -76,18 +61,20 @@ public class PołączenieTesty
         OdjazdTrasą odjazdTrasą = porywaczOdjazdu.getValue();
         PrzyjazdTrasą przyjazdTrasą = porywaczPrzyjazdu.getValue();
 
-        assertEquals(odjazdTrasą.godzina(), godzina);
-        assertEquals(przyjazdTrasą.godzina().toString(), odjazdTrasą.godzina().dodaj(20).toString());
+        OdjazdTrasą oczekiwanyOdjazd = new OdjazdTrasą(new Godzina("09:00:00"), sportowiec, trasa);
+        PrzyjazdTrasą oczekiwanyPrzyjazd = new PrzyjazdTrasą(new Godzina("09:20:00"), sportowiec, trasa);
 
-        //assertEquals(odjazdTrasą.);
+        assertEquals(odjazdTrasą, oczekiwanyOdjazd);
+        assertEquals(przyjazdTrasą, oczekiwanyPrzyjazd);
     }
 
     @Test
     public void testujWybierzPołączenieWyciąg()
     {
+        KolejkaNaWyciąg kolejkaNaWyciąg = spy(new KolejkaNaWyciąg());
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
 
-        wyciąg.wybierzPołączenie(godzina, sportowiec);
+        wyciąg.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
 
         verify(kolejkaNaWyciąg).dodaj(sportowiec);
     }
@@ -95,11 +82,12 @@ public class PołączenieTesty
     @Test
     public void testujPrzyjmijZKolejki()
     {
+        KolejkaNaWyciąg kolejkaNaWyciąg = spy(new KolejkaNaWyciąg());
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
         
         ArgumentCaptor<OdjazdWyciągiem> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdWyciągiem.class);
         ArgumentCaptor<PrzyjazdWyciągiem> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdWyciągiem.class);
-        wyciąg.przyjmijZKolejki(godzina);
+        wyciąg.przyjmijZKolejki(new Godzina("09:00:00"));
 
         verify(kolejkaNaWyciąg).dajKolejnego();
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
@@ -108,5 +96,10 @@ public class PołączenieTesty
         OdjazdWyciągiem odjazdWyciągiem = porywaczOdjazdu.getValue();
         PrzyjazdWyciągiem przyjazdWyciągiem = porywaczPrzyjazdu.getValue();
 
+        OdjazdWyciągiem oczekiwanyOdjazd = new OdjazdWyciągiem(new Godzina("09:00:00"), sportowiec, wyciąg);
+        PrzyjazdWyciągiem oczekiwanyPrzyjazd = new PrzyjazdWyciągiem(new Godzina("10:00:00"), sportowiec, wyciąg);
+
+        assertEquals(odjazdWyciągiem, oczekiwanyOdjazd);
+        assertEquals(przyjazdWyciągiem, oczekiwanyPrzyjazd);
     }
 }

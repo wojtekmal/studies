@@ -50,7 +50,7 @@ public class Wyciąg extends Połączenie
         this.rozmiarKrzesła = rozmiarKrzesła;
         this.czasPrzejazdu = czasPrzejazdu;
         this.kolejkaZdarzeń = kolejkaZdarzeń;
-        this.kolejkaNaWyciąg = new KolejkaNaWyciąg();
+        this.kolejkaNaWyciąg = kolejkaNaWyciąg;
 
         dodajKrzesełko(new Godzina("09:00:00"));
 

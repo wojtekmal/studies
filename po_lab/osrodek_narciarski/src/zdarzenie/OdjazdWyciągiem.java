@@ -21,4 +21,17 @@ public class OdjazdWyciągiem extends EtapPodróży
         return "%s: Sportowiec %d rozpoczął wjazd wyciągiem " + wyciąg.id() +
             ".";
     }
+
+    @Override
+    public boolean equals(Object obiekt)
+    {
+        if (obiekt instanceof OdjazdWyciągiem)
+        {
+            OdjazdWyciągiem inny = (OdjazdWyciągiem) obiekt;
+            return inny.godzina == godzina && inny.sportowiec == sportowiec &&
+                inny.wyciąg == wyciąg;
+        }
+
+        return false;
+    }
 }

@@ -56,4 +56,17 @@ public class Godzina
             }
         }
     }
+
+    @Override
+    public boolean equals(Object obiekt)
+    {
+        if (obiekt instanceof Godzina)
+        {
+            Godzina inna = (Godzina) obiekt;
+            return inna.godzina == godzina && inna.minuta == minuta && 
+                inna.sekunda == sekunda;
+        }
+
+        return false;
+    }
 }

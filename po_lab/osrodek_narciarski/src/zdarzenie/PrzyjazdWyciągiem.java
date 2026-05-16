@@ -24,4 +24,17 @@ public class PrzyjazdWyciągiem extends EtapPodróży
         return "%s: Sportowiec %d zakończył wjazd wyciągiem " + wyciąg.id() +
             ".";
     }
+
+    @Override
+    public boolean equals(Object obiekt)
+    {
+        if (obiekt instanceof PrzyjazdWyciągiem)
+        {
+            PrzyjazdWyciągiem inny = (PrzyjazdWyciągiem) obiekt;
+            return inny.godzina == godzina && inny.sportowiec == sportowiec &&
+                inny.wyciąg == wyciąg;
+        }
+
+        return false;
+    }
 }

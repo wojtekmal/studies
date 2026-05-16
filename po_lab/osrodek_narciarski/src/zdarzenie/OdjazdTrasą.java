@@ -20,4 +20,17 @@ public class OdjazdTrasą extends EtapPodróży
     {
         return "%s: Sportowiec %d rozpoczął zjazd trasą " + trasa.id() + ".";
     }
+
+    @Override
+    public boolean equals(Object obiekt)
+    {
+        if (obiekt instanceof OdjazdTrasą)
+        {
+            OdjazdTrasą inny = (OdjazdTrasą) obiekt;
+            return inny.godzina == godzina && inny.sportowiec == sportowiec &&
+                inny.trasa == trasa;
+        }
+
+        return false;
+    }
 }
