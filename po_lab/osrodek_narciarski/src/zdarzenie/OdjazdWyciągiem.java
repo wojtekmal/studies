@@ -28,8 +28,8 @@ public class OdjazdWyciągiem extends EtapPodróży
         if (obiekt instanceof OdjazdWyciągiem)
         {
             OdjazdWyciągiem inny = (OdjazdWyciągiem) obiekt;
-            return inny.godzina == godzina && inny.sportowiec == sportowiec &&
-                inny.wyciąg == wyciąg;
+            return inny.godzina.equals(godzina) && inny.sportowiec == sportowiec
+                && inny.wyciąg == wyciąg;
         }
 
         return false;

@@ -31,7 +31,7 @@ public class PrzyjazdWyciągiem extends EtapPodróży
         if (obiekt instanceof PrzyjazdWyciągiem)
         {
             PrzyjazdWyciągiem inny = (PrzyjazdWyciągiem) obiekt;
-            return inny.godzina == godzina && inny.sportowiec == sportowiec &&
+            return inny.godzina.equals(godzina) && inny.sportowiec == sportowiec &&
                 inny.wyciąg == wyciąg;
         }
 

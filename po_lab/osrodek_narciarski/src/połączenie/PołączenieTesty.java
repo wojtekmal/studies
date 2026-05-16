@@ -1,5 +1,6 @@
 package połączenie;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -20,6 +21,7 @@ import zdarzenie.OdjazdTrasą;
 import zdarzenie.OdjazdWyciągiem;
 import zdarzenie.PrzyjazdTrasą;
 import zdarzenie.PrzyjazdWyciągiem;
+import zdarzenie.WejścieDoKolejki;
 
 @ExtendWith(MockitoExtension.class)
 public class PołączenieTesty
@@ -62,7 +64,7 @@ public class PołączenieTesty
         PrzyjazdTrasą przyjazdTrasą = porywaczPrzyjazdu.getValue();
 
         OdjazdTrasą oczekiwanyOdjazd = new OdjazdTrasą(new Godzina("09:00:00"), sportowiec, trasa);
-        PrzyjazdTrasą oczekiwanyPrzyjazd = new PrzyjazdTrasą(new Godzina("09:20:00"), sportowiec, trasa);
+        PrzyjazdTrasą oczekiwanyPrzyjazd = new PrzyjazdTrasą(new Godzina("09:00:20"), sportowiec, trasa);
 
         assertEquals(odjazdTrasą, oczekiwanyOdjazd);
         assertEquals(przyjazdTrasą, oczekiwanyPrzyjazd);
@@ -73,17 +75,24 @@ public class PołączenieTesty
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = spy(new KolejkaNaWyciąg());
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        ArgumentCaptor<WejścieDoKolejki> porywaczWejściaDoKolejki = ArgumentCaptor.forClass(WejścieDoKolejki.class);
 
         wyciąg.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
 
-        verify(kolejkaNaWyciąg).dodaj(sportowiec);
+        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczWejściaDoKolejki.capture());
+
+        WejścieDoKolejki wejścieDoKolejki = porywaczWejściaDoKolejki.getValue();
+        WejścieDoKolejki oczekiwaneWejścieDoKolejki = new WejścieDoKolejki(new Godzina("09:00:00"), sportowiec, wyciąg);
+
+        assertEquals(wejścieDoKolejki, oczekiwaneWejścieDoKolejki);
     }
 
     @Test
     public void testujPrzyjmijZKolejki()
     {
-        KolejkaNaWyciąg kolejkaNaWyciąg = spy(new KolejkaNaWyciąg());
+        KolejkaNaWyciąg kolejkaNaWyciąg = mock(KolejkaNaWyciąg.class);
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        wyciąg.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
         
         ArgumentCaptor<OdjazdWyciągiem> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdWyciągiem.class);
         ArgumentCaptor<PrzyjazdWyciągiem> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdWyciągiem.class);
@@ -97,7 +106,7 @@ public class PołączenieTesty
         PrzyjazdWyciągiem przyjazdWyciągiem = porywaczPrzyjazdu.getValue();
 
         OdjazdWyciągiem oczekiwanyOdjazd = new OdjazdWyciągiem(new Godzina("09:00:00"), sportowiec, wyciąg);
-        PrzyjazdWyciągiem oczekiwanyPrzyjazd = new PrzyjazdWyciągiem(new Godzina("10:00:00"), sportowiec, wyciąg);
+        PrzyjazdWyciągiem oczekiwanyPrzyjazd = new PrzyjazdWyciągiem(new Godzina("09:01:00"), sportowiec, wyciąg);
 
         assertEquals(odjazdWyciągiem, oczekiwanyOdjazd);
         assertEquals(przyjazdWyciągiem, oczekiwanyPrzyjazd);

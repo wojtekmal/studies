@@ -27,8 +27,8 @@ public class OdjazdTrasą extends EtapPodróży
         if (obiekt instanceof OdjazdTrasą)
         {
             OdjazdTrasą inny = (OdjazdTrasą) obiekt;
-            return inny.godzina == godzina && inny.sportowiec == sportowiec &&
-                inny.trasa == trasa;
+            return inny.godzina.equals(godzina) && inny.sportowiec == sportowiec
+                && inny.trasa == trasa;
         }
 
         return false;

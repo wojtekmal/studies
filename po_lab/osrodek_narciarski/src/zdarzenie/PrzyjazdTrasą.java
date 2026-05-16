@@ -30,8 +30,8 @@ public class PrzyjazdTrasą extends EtapPodróży
         if (obiekt instanceof PrzyjazdTrasą)
         {
             PrzyjazdTrasą inny = (PrzyjazdTrasą) obiekt;
-            return inny.godzina == godzina && inny.sportowiec == sportowiec &&
-                inny.trasa == trasa;
+            return inny.godzina.equals(godzina) && inny.sportowiec == sportowiec
+                && inny.trasa == trasa;
         }
 
         return false;

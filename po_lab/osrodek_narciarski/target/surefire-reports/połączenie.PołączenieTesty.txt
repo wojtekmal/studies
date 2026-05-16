@@ -1,20 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: połączenie.PołączenieTesty
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.750 s <<< FAILURE! -- in połączenie.PołączenieTesty
-połączenie.PołączenieTesty.testujWybierzPołączenieWyciąg -- Time elapsed: 0.698 s <<< FAILURE!
-Wanted but not invoked:
-kolejkaNaWyciąg.dodaj(sportowiec);
--> at struktury_danych.KolejkaNaWyciąg.dodaj(KolejkaNaWyciąg.java:33)
-Actually, there were zero interactions with this mock.
-
-	at struktury_danych.KolejkaNaWyciąg.dodaj(KolejkaNaWyciąg.java:33)
-	at połączenie.PołączenieTesty.testujWybierzPołączenieWyciąg(PołączenieTesty.java:79)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
-połączenie.PołączenieTesty.testujPrzyjmijZKolejki -- Time elapsed: 0.011 s <<< FAILURE!
+Tests run: 4, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.750 s <<< FAILURE! -- in połączenie.PołączenieTesty
+połączenie.PołączenieTesty.testujPrzyjmijZKolejki -- Time elapsed: 0.022 s <<< FAILURE!
 org.mockito.exceptions.verification.TooManyActualInvocations: 
 
 kolejkaNaWyciąg.dajKolejnego();
@@ -28,20 +16,7 @@ But was 4 times:
 
 
 	at struktury_danych.KolejkaNaWyciąg.dajKolejnego(KolejkaNaWyciąg.java:23)
-	at połączenie.PołączenieTesty.testujPrzyjmijZKolejki(PołączenieTesty.java:91)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
-połączenie.PołączenieTesty.testujWybierzPołączenieTrasa -- Time elapsed: 0.006 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: expected: <zdarzenie.OdjazdTrasą@6dc1484> but was: <zdarzenie.OdjazdTrasą@6e92c6ad>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
-	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
-	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1141)
-	at połączenie.PołączenieTesty.testujWybierzPołączenieTrasa(PołączenieTesty.java:68)
+	at połączenie.PołączenieTesty.testujPrzyjmijZKolejki(PołączenieTesty.java:101)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
