@@ -1,0 +1,23 @@
+-------------------------------------------------------------------------------
+Test set: sportowiec.SportowiecTesty
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.031 s <<< FAILURE! -- in sportowiec.SportowiecTesty
+sportowiec.SportowiecTesty.testujWybórMniejZużytejTrasy -- Time elapsed: 0.023 s <<< FAILURE!
+org.mockito.exceptions.verification.TooManyActualInvocations: 
+
+kolejkaZdarzeńLista.dodajZdarzenie(
+    <Capturing argument: OdjazdTrasą>
+);
+Wanted 1 time:
+-> at struktury_danych.KolejkaZdarzeńLista.dodajZdarzenie(KolejkaZdarzeńLista.java:34)
+But was 2 times:
+-> at połączenie.Trasa.wybierzPołączenie(Trasa.java:55)
+-> at połączenie.Trasa.wybierzPołączenie(Trasa.java:55)
+
+
+	at struktury_danych.KolejkaZdarzeńLista.dodajZdarzenie(KolejkaZdarzeńLista.java:34)
+	at sportowiec.SportowiecTesty.testujWybórMniejZużytejTrasy(SportowiecTesty.java:56)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

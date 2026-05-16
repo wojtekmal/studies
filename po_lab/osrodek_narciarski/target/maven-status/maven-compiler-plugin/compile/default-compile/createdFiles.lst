@@ -6,6 +6,7 @@ struktury_danych/KolejkaZdarzeń.class
 połączenie/Trasa.class
 main/Main.class
 zdarzenie/PoczątekJazdy.class
+sportowiec/SportowiecTesty.class
 węzeł/Węzeł.class
 zdarzenie/OdjazdKrzesełka.class
 zdarzenie/Godzina.class

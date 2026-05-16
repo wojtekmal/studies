@@ -1,14 +1,27 @@
 package sportowiec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import połączenie.Trasa;
+import struktury_danych.KolejkaZdarzeń;
+import struktury_danych.KolejkaZdarzeńLista;
 import węzeł.Węzeł;
+import zdarzenie.EtapPodróży;
+import zdarzenie.Godzina;
+import zdarzenie.OdjazdKrzesełka;
+import zdarzenie.OdjazdTrasą;
+import zdarzenie.PrzyjazdTrasą;
 
 @ExtendWith(MockitoExtension.class)
 public class SportowiecTesty
@@ -22,12 +35,26 @@ public class SportowiecTesty
     }
 
     @Test
-    public void testujPrzyjedźDo()
+    public void testujWybórMniejZużytejTrasy()
     {
-        Węzeł węzeł = spy(new Węzeł(0, 0, 0, false, 0));
-        Węzeł węzeł1 = spy(new Węzeł(0, 0, 0, false, 1));
-        Węzeł węzeł2 = spy(new Węzeł(0, 0, 0, false, 2));
-        Trasa trasa02 = spy(new Trasa(węzeł, węzeł2, 6, 1000, 0.9, 0.9, ))
-        Sportowiec sportowiec = new Sportowiec(5, 0, false, 0.4, 0.3, 0);
+        Sportowiec sportowiec = new Sportowiec(0, 0, false, 0.5, 0.5, 0);
+
+        Węzeł węzeł = new Węzeł(0, 0, 0, false, 0);
+        Węzeł węzeł1 = new Węzeł(0, 0, 0, false, 1);
+
+        KolejkaZdarzeń kolekjaZdarzeń = mock(KolejkaZdarzeńLista.class);
+        Trasa mniejZużyta = spy(new Trasa(węzeł, węzeł1, 0, 0, 0, 0.5, kolekjaZdarzeń, 0));
+        Trasa bardziejZużyta = spy(new Trasa(węzeł, węzeł1, 0, 0, 0, 0.5, kolekjaZdarzeń, 0));
+
+        bardziejZużyta.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
+        assertEquals(bardziejZużyta.liczbaPrzejazdów(), 1);
+
+        sportowiec.przyjedźDo(węzeł, new Godzina("10:00:00"));
+
+        OdjazdTrasą odjazd = porywaczOdjazdu.getValue();
+        OdjazdTrasą oczekiwanyOdjazd = new OdjazdTrasą(new Godzina("10:00:00"), sportowiec, mniejZużyta);
+
+        assertEquals(odjazd, oczekiwanyOdjazd);
+        verifyNoMoreInteractions(kolekjaZdarzeń);
     }
 }
