@@ -17,4 +17,16 @@ public class OdjazdKrzesełka extends Zdarzenie
         wyciąg.przyjmijZKolejki(godzina);
         wyciąg.zaplanujKolejneKrzesełko(godzina);
     }
+
+    @Override
+    public boolean equals(Object obiekt)
+    {
+        if (obiekt instanceof OdjazdKrzesełka)
+        {
+            OdjazdKrzesełka inny = (OdjazdKrzesełka) obiekt;
+            return inny.godzina.equals(godzina) && inny.wyciąg == wyciąg;
+        }
+
+        return false;
+    }
 }

@@ -17,14 +17,13 @@ import struktury_danych.KolejkaNaWyciąg;
 import struktury_danych.KolejkaZdarzeńLista;
 import węzeł.Węzeł;
 import zdarzenie.Godzina;
-import zdarzenie.OdjazdTrasą;
+import zdarzenie.OdjazdKrzesełka;
 import zdarzenie.OdjazdWyciągiem;
-import zdarzenie.PrzyjazdTrasą;
 import zdarzenie.PrzyjazdWyciągiem;
 import zdarzenie.WejścieDoKolejki;
 
 @ExtendWith(MockitoExtension.class)
-public class PołączenieTesty
+public class WyciągTesty
 {
     @Mock
     private Węzeł początkowy;
@@ -34,40 +33,23 @@ public class PołączenieTesty
     private KolejkaZdarzeńLista kolekjaZdarzeń;
     @Mock
     private Sportowiec sportowiec;
-    
-    @Test
-    public void testujKonstruktor()
-    {
-        Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
-        verify(początkowy).dodajTrasę(trasa);
-        assertEquals(trasa.bazowaAtrakcyjność(), 0.5);
-        assertEquals(trasa.id(), 0);
-        assertEquals(trasa.końcowy(), końcowy);
-        assertEquals(trasa.liczbaPrzejazdów(), 0);
-        assertEquals(trasa.poziom(), 1);
-        assertEquals(trasa.odporność(), 0.8);
-    }
 
     @Test
-    public void testujWybierzPołączenieTrasa()
+    public void testujKonstruktorWyciągu()
     {
-        Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
-        ArgumentCaptor<OdjazdTrasą> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdTrasą.class);
-        ArgumentCaptor<PrzyjazdTrasą> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdTrasą.class);
+        KolejkaNaWyciąg kolejkaNaWyciąg = mock(KolejkaNaWyciąg.class);
+        ArgumentCaptor<OdjazdKrzesełka> porywaczOdjazdyKrzesełka = ArgumentCaptor.forClass(OdjazdKrzesełka.class);
+        Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 30, 3, 500, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
 
-        trasa.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
+        verify(początkowy).dodajWyciąg(wyciąg);
+        assertEquals(wyciąg.id(), 0);
+        assertEquals(wyciąg.końcowy(), końcowy);
+        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdyKrzesełka.capture());
 
-        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
-        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczPrzyjazdu.capture());
+        OdjazdKrzesełka odjazdKrzesełka = porywaczOdjazdyKrzesełka.getValue();
+        OdjazdKrzesełka oczekiwanyOdjazdKrzesełka = new OdjazdKrzesełka(new Godzina("09:00:00"), wyciąg);
 
-        OdjazdTrasą odjazdTrasą = porywaczOdjazdu.getValue();
-        PrzyjazdTrasą przyjazdTrasą = porywaczPrzyjazdu.getValue();
-
-        OdjazdTrasą oczekiwanyOdjazd = new OdjazdTrasą(new Godzina("09:00:00"), sportowiec, trasa);
-        PrzyjazdTrasą oczekiwanyPrzyjazd = new PrzyjazdTrasą(new Godzina("09:00:20"), sportowiec, trasa);
-
-        assertEquals(odjazdTrasą, oczekiwanyOdjazd);
-        assertEquals(przyjazdTrasą, oczekiwanyPrzyjazd);
+        assertEquals(odjazdKrzesełka, oczekiwanyOdjazdKrzesełka);
     }
 
     @Test
@@ -92,7 +74,7 @@ public class PołączenieTesty
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = spy(KolejkaNaWyciąg.class);
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
-        wyciąg.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
+        kolejkaNaWyciąg.dodaj(sportowiec);
         
         ArgumentCaptor<OdjazdWyciągiem> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdWyciągiem.class);
         ArgumentCaptor<PrzyjazdWyciągiem> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdWyciągiem.class);
