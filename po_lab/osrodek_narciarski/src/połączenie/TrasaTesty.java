@@ -30,7 +30,7 @@ public class TrasaTesty
     private Sportowiec sportowiec;
     
     @Test
-    public void testujKonstruktorTrasy()
+    public void testujKonstruktor()
     {
         Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
         verify(początkowy).dodajTrasę(trasa);
@@ -43,7 +43,7 @@ public class TrasaTesty
     }
 
     @Test
-    public void testujWybierzPołączenieTrasa()
+    public void testujWybierzPołączenie()
     {
         Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
         ArgumentCaptor<OdjazdTrasą> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdTrasą.class);

@@ -1,9 +1,13 @@
 package połączenie;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.ArgumentMatchers.any;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -35,28 +39,33 @@ public class WyciągTesty
     private Sportowiec sportowiec;
 
     @Test
-    public void testujKonstruktorWyciągu()
+    public void testujKonstruktor()
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = mock(KolejkaNaWyciąg.class);
-        ArgumentCaptor<OdjazdKrzesełka> porywaczOdjazdyKrzesełka = ArgumentCaptor.forClass(OdjazdKrzesełka.class);
+        ArgumentCaptor<OdjazdKrzesełka> porywaczOdjazduKrzesełka = ArgumentCaptor.forClass(OdjazdKrzesełka.class);
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 30, 3, 500, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
 
         verify(początkowy).dodajWyciąg(wyciąg);
         assertEquals(wyciąg.id(), 0);
         assertEquals(wyciąg.końcowy(), końcowy);
-        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdyKrzesełka.capture());
+        verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazduKrzesełka.capture());
 
-        OdjazdKrzesełka odjazdKrzesełka = porywaczOdjazdyKrzesełka.getValue();
+        OdjazdKrzesełka odjazdKrzesełka = porywaczOdjazduKrzesełka.getValue();
         OdjazdKrzesełka oczekiwanyOdjazdKrzesełka = new OdjazdKrzesełka(new Godzina("09:00:00"), wyciąg);
 
         assertEquals(odjazdKrzesełka, oczekiwanyOdjazdKrzesełka);
+
+        verifyNoMoreInteractions(kolejkaNaWyciąg);
     }
 
     @Test
-    public void testujWybierzPołączenieWyciąg()
+    public void testujWybierzPołączenie()
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = spy(new KolejkaNaWyciąg());
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        verify(kolekjaZdarzeń).dodajZdarzenie(any(OdjazdKrzesełka.class));
+        verify(początkowy).dodajWyciąg(wyciąg);
+
         ArgumentCaptor<WejścieDoKolejki> porywaczWejściaDoKolejki = ArgumentCaptor.forClass(WejścieDoKolejki.class);
 
         wyciąg.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
@@ -67,6 +76,8 @@ public class WyciągTesty
         WejścieDoKolejki oczekiwaneWejścieDoKolejki = new WejścieDoKolejki(new Godzina("09:00:00"), sportowiec, wyciąg);
 
         assertEquals(wejścieDoKolejki, oczekiwaneWejścieDoKolejki);
+        
+        verifyNoMoreInteractions(kolejkaNaWyciąg);
     }
 
     @Test
@@ -74,7 +85,11 @@ public class WyciągTesty
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = spy(KolejkaNaWyciąg.class);
         Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        verify(kolekjaZdarzeń).dodajZdarzenie(any(OdjazdKrzesełka.class));
+        verify(początkowy).dodajWyciąg(wyciąg);
+
         kolejkaNaWyciąg.dodaj(sportowiec);
+        verify(kolejkaNaWyciąg).dodaj(sportowiec);
         
         ArgumentCaptor<OdjazdWyciągiem> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdWyciągiem.class);
         ArgumentCaptor<PrzyjazdWyciągiem> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdWyciągiem.class);
@@ -92,5 +107,14 @@ public class WyciągTesty
 
         assertEquals(odjazdWyciągiem, oczekiwanyOdjazd);
         assertEquals(przyjazdWyciągiem, oczekiwanyPrzyjazd);
+
+        verify(kolejkaNaWyciąg, atLeast(0)).jestPusta();
+        verifyNoMoreInteractions(kolejkaNaWyciąg);
+    }
+
+    @AfterEach
+    public void poWszystkich()
+    {
+        verifyNoMoreInteractions(początkowy, końcowy, kolekjaZdarzeń, sportowiec);
     }
 }
