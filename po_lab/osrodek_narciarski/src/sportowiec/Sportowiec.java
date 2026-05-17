@@ -26,6 +26,7 @@ public class Sportowiec
         this.czyŚledzić = czyŚledzić;
         this.odwaga = odwaga;
         this.wybredność = wybredność;
+        this.id = id;
 
         generator = new Random();
     }

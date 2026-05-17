@@ -23,6 +23,7 @@ zdarzenie/Zdarzenie.class
 sportowiec/GrupaSportowców.class
 sportowiec/Sportowiec.class
 połączenie/TrasaTesty.class
+zdarzenie/GodzinaTesty.class
 połączenie/Połączenie.class
 zdarzenie/KoniecSymulacji.class
 struktury_danych/KolejkaNaWyciągWęzeł.class

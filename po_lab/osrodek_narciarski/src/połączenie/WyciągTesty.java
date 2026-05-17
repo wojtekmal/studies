@@ -41,9 +41,9 @@ public class WyciągTesty
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = mock(KolejkaNaWyciąg.class);
         ArgumentCaptor<OdjazdKrzesełka> porywaczOdjazduKrzesełka = ArgumentCaptor.forClass(OdjazdKrzesełka.class);
-        Wyciąg wyciąg = new Wyciąg(końcowy, 30, 3, 500, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        Wyciąg wyciąg = new Wyciąg(końcowy, 30, 3, 500, kolekjaZdarzeń, kolejkaNaWyciąg, 9);
 
-        assertEquals(wyciąg.id(), 0);
+        assertEquals(wyciąg.id(), 9);
         assertEquals(wyciąg.końcowy(), końcowy);
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazduKrzesełka.capture());
 
@@ -64,12 +64,12 @@ public class WyciągTesty
 
         ArgumentCaptor<WejścieDoKolejki> porywaczWejściaDoKolejki = ArgumentCaptor.forClass(WejścieDoKolejki.class);
 
-        wyciąg.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
+        wyciąg.wybierzPołączenie(new Godzina("11:00:00"), sportowiec);
 
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczWejściaDoKolejki.capture());
 
         WejścieDoKolejki wejścieDoKolejki = porywaczWejściaDoKolejki.getValue();
-        WejścieDoKolejki oczekiwaneWejścieDoKolejki = new WejścieDoKolejki(new Godzina("09:00:00"), sportowiec, wyciąg);
+        WejścieDoKolejki oczekiwaneWejścieDoKolejki = new WejścieDoKolejki(new Godzina("11:00:00"), sportowiec, wyciąg);
 
         assertEquals(wejścieDoKolejki, oczekiwaneWejścieDoKolejki);
         
@@ -88,7 +88,7 @@ public class WyciągTesty
         
         ArgumentCaptor<OdjazdWyciągiem> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdWyciągiem.class);
         ArgumentCaptor<PrzyjazdWyciągiem> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdWyciągiem.class);
-        wyciąg.przyjmijZKolejki(new Godzina("09:00:00"));
+        wyciąg.przyjmijZKolejki(new Godzina("11:00:00"));
 
         verify(kolejkaNaWyciąg).dajKolejnego();
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
@@ -97,8 +97,8 @@ public class WyciągTesty
         OdjazdWyciągiem odjazdWyciągiem = porywaczOdjazdu.getValue();
         PrzyjazdWyciągiem przyjazdWyciągiem = porywaczPrzyjazdu.getValue();
 
-        OdjazdWyciągiem oczekiwanyOdjazd = new OdjazdWyciągiem(new Godzina("09:00:00"), sportowiec, wyciąg);
-        PrzyjazdWyciągiem oczekiwanyPrzyjazd = new PrzyjazdWyciągiem(new Godzina("09:01:00"), sportowiec, wyciąg);
+        OdjazdWyciągiem oczekiwanyOdjazd = new OdjazdWyciągiem(new Godzina("11:00:00"), sportowiec, wyciąg);
+        PrzyjazdWyciągiem oczekiwanyPrzyjazd = new PrzyjazdWyciągiem(new Godzina("11:01:00"), sportowiec, wyciąg);
 
         assertEquals(odjazdWyciągiem, oczekiwanyOdjazd);
         assertEquals(przyjazdWyciągiem, oczekiwanyPrzyjazd);

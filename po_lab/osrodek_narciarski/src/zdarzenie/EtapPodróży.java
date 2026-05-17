@@ -1,6 +1,5 @@
 package zdarzenie;
 
-import połączenie.Połączenie;
 import sportowiec.Sportowiec;
 
 public abstract class EtapPodróży extends Zdarzenie

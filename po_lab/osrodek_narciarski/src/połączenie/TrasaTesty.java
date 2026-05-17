@@ -32,9 +32,9 @@ public class TrasaTesty
     @Test
     public void testujKonstruktor()
     {
-        Trasa trasa = new Trasa(końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
+        Trasa trasa = new Trasa(końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 5);
         assertEquals(trasa.bazowaAtrakcyjność(), 0.5);
-        assertEquals(trasa.id(), 0);
+        assertEquals(trasa.id(), 5);
         assertEquals(trasa.końcowy(), końcowy);
         assertEquals(trasa.liczbaPrzejazdów(), 0);
         assertEquals(trasa.poziom(), 1);
@@ -44,11 +44,11 @@ public class TrasaTesty
     @Test
     public void testujWybierzPołączenie()
     {
-        Trasa trasa = new Trasa(końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
+        Trasa trasa = new Trasa(końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 7);
         ArgumentCaptor<OdjazdTrasą> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdTrasą.class);
         ArgumentCaptor<PrzyjazdTrasą> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdTrasą.class);
 
-        trasa.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
+        trasa.wybierzPołączenie(new Godzina("11:00:00"), sportowiec);
 
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazdu.capture());
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczPrzyjazdu.capture());
@@ -56,8 +56,8 @@ public class TrasaTesty
         OdjazdTrasą odjazdTrasą = porywaczOdjazdu.getValue();
         PrzyjazdTrasą przyjazdTrasą = porywaczPrzyjazdu.getValue();
 
-        OdjazdTrasą oczekiwanyOdjazd = new OdjazdTrasą(new Godzina("09:00:00"), sportowiec, trasa);
-        PrzyjazdTrasą oczekiwanyPrzyjazd = new PrzyjazdTrasą(new Godzina("09:00:20"), sportowiec, trasa);
+        OdjazdTrasą oczekiwanyOdjazd = new OdjazdTrasą(new Godzina("11:00:00"), sportowiec, trasa);
+        PrzyjazdTrasą oczekiwanyPrzyjazd = new PrzyjazdTrasą(new Godzina("11:00:20"), sportowiec, trasa);
 
         assertEquals(odjazdTrasą, oczekiwanyOdjazd);
         assertEquals(przyjazdTrasą, oczekiwanyPrzyjazd);

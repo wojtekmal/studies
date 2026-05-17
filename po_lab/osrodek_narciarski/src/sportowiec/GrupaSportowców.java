@@ -36,6 +36,7 @@ public class GrupaSportowców
         this.startowy = startowy;
         this.godzinaStartu = godzinaStartu;
         this.odstępCzasowy = odstępCzasowy;
+        this.pierwszeId = pierwszeId;
     }
 
     public Sportowiec[] sportowcy(KolejkaZdarzeń kolejkaZdarzeń)
