@@ -346,13 +346,28 @@ int read_into_buffer(char const *path, char **buffer)
     }
 
     int read_result = read(file_descriptor, *buffer, buffer_size - 1);
-    if (read_result == -1) return -1; // read sets errno.
+    if (read_result == -1)
+    {
+        close(file_descriptor);
+        free(*buffer);
+        return -1; // read sets errno.
+    }
 
     int close_result = close(file_descriptor);
-    if (close_result == -1) return -1; // close sets errno.
+    if (close_result == -1)
+    {
+        free(*buffer);
+        return -1; // close sets errno.
+    }
 
     int check_and_trim_result = check_and_trim_buffer(*buffer, &buffer_size);
-    return check_and_trim_result;
+    if (check_and_trim_result == -1)
+    {
+        free(*buffer);
+        return -1;
+    }
+
+    return 0;
 }
 
 rstack_t* extract_stack_from_buffer(char* buffer)
