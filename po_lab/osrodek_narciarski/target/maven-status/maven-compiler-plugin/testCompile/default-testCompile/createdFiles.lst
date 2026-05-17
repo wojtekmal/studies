@@ -3,7 +3,6 @@ zdarzenie/OdjazdTrasą.class
 struktury_danych/KolejkaZdarzeńWęzeł.class
 struktury_danych/KolejkaZdarzeń.class
 połączenie/Trasa.class
-main/Main.class
 zdarzenie/PoczątekJazdy.class
 węzeł/Węzeł.class
 zdarzenie/OdjazdKrzesełka.class

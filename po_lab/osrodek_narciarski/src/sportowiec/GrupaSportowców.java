@@ -39,7 +39,7 @@ public class GrupaSportowców
         this.pierwszeId = pierwszeId;
     }
 
-    public Sportowiec[] sportowcy(KolejkaZdarzeń kolejkaZdarzeń)
+    public Sportowiec[] wyślijSportowców(KolejkaZdarzeń kolejkaZdarzeń)
     {
         Sportowiec[] sportowcy = new Sportowiec[rozmiarGrupy];
 

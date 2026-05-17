@@ -1,16 +1,19 @@
 package węzeł;
 
-import java.util.Arrays;
-
 import połączenie.Trasa;
 import połączenie.Wyciąg;
 
 public class Węzeł
 {
+    @SuppressWarnings("unused")
     private int wysokość;
+    @SuppressWarnings("unused")
     private int x;
+    @SuppressWarnings("unused")
     private int y;
+    @SuppressWarnings("unused")
     private boolean jestStartowy;
+    @SuppressWarnings("unused")
     private int id;
 
     private Trasa[] trasy;

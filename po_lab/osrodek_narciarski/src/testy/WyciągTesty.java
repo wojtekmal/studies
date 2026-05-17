@@ -1,4 +1,4 @@
-package połączenie;
+package testy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
@@ -13,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import połączenie.Wyciąg;
 import sportowiec.Sportowiec;
 
 import org.junit.jupiter.api.extension.ExtendWith;

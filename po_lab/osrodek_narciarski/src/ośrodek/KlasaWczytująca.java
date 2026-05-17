@@ -5,7 +5,6 @@ import java.util.Scanner;
 import połączenie.Trasa;
 import połączenie.Wyciąg;
 import sportowiec.GrupaSportowców;
-import sportowiec.Sportowiec;
 import struktury_danych.KolejkaNaWyciąg;
 import struktury_danych.KolejkaZdarzeń;
 import węzeł.Węzeł;
@@ -105,11 +104,11 @@ public class KlasaWczytująca
         return trasy;
     }
 
-    public Sportowiec[] sportowcy(Węzeł[] węzły, KolejkaZdarzeń kolejkaZdarzeń)
+    @SuppressWarnings("resource")
+    public void sportowcy(Węzeł[] węzły, KolejkaZdarzeń kolejkaZdarzeń)
     {
         Scanner scannerLinii = new Scanner(scannerWejścia.nextLine());
         int liczbaGrup = scannerLinii.nextInt();
-        GrupaSportowców[] grupy = new GrupaSportowców[liczbaGrup];
         int liczbaSportowców = 0;
 
         for (int i = 0; i < liczbaGrup; i++)
@@ -137,26 +136,13 @@ public class KlasaWczytująca
                 odstępCzasowy = scannerLinii.nextInt();
             }
 
-            grupy[i] = new GrupaSportowców(rozmiarGrupy, poziom, spontaniczność,
-                czyŚledzić, odwaga, wybredność, startowy, godzinaStartu, 
-                odstępCzasowy, liczbaSportowców);
+            GrupaSportowców grupaSportowców = new GrupaSportowców(rozmiarGrupy,
+                poziom, spontaniczność, czyŚledzić, odwaga, wybredność,
+                startowy, godzinaStartu, odstępCzasowy, liczbaSportowców);
+            
+            grupaSportowców.wyślijSportowców(kolejkaZdarzeń);
             
             liczbaSportowców += rozmiarGrupy;
         }
-
-        Sportowiec[] sportowcy = new Sportowiec[liczbaSportowców];
-        int idKolejnegoSportowca = 0;
-
-        for (GrupaSportowców grupa : grupy)
-        {
-            Sportowiec[] sportowcyZGrupy = grupa.sportowcy(kolejkaZdarzeń);
-            
-            System.arraycopy(sportowcyZGrupy, 0, sportowcy,
-                idKolejnegoSportowca, sportowcyZGrupy.length);
-            
-            idKolejnegoSportowca += sportowcyZGrupy.length;
-        }
-
-        return sportowcy;
     }
 }

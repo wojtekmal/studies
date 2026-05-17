@@ -3,7 +3,6 @@ package ośrodek;
 import węzeł.Węzeł;
 import zdarzenie.KoniecSymulacji;
 import połączenie.Wyciąg;
-import sportowiec.Sportowiec;
 import struktury_danych.KolejkaZdarzeń;
 import struktury_danych.KolejkaZdarzeńLista;
 import struktury_danych.KolejkaZdarzeń.BrakZdarzeń;
@@ -12,11 +11,16 @@ import zdarzenie.Zdarzenie;
 
 public class Ośrodek
 {
+    public static void main(String[] args)
+    {
+        Ośrodek ośrodek = new Ośrodek();
+        ośrodek.rozpocznijSymulację();
+    }
+
     private KolejkaZdarzeń kolejkaZdarzeń;
     private Węzeł[] węzły;
     private Wyciąg[] wyciągi;
     private Trasa[] trasy;
-    private Sportowiec[] sportowcy;
     private boolean symulacjaZakończona;
 
     public Ośrodek()
@@ -31,7 +35,7 @@ public class Ośrodek
         węzły = objektWczytujący.węzły();
         wyciągi = objektWczytujący.wyciągi(węzły, kolejkaZdarzeń);
         trasy = objektWczytujący.trasy(węzły, kolejkaZdarzeń);
-        sportowcy = objektWczytujący.sportowcy(węzły, kolejkaZdarzeń);
+        objektWczytujący.sportowcy(węzły, kolejkaZdarzeń);
 
         symulacjaZakończona = false;
     }
