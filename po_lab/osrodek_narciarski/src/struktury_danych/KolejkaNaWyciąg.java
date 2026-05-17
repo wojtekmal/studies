@@ -46,6 +46,10 @@ public class KolejkaNaWyciąg
         {
             pierwszy = nowy;
         }
+        else
+        {
+            ostatni.ustawNastępny(nowy);
+        }
 
         ostatni = nowy;
     }
