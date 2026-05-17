@@ -1,7 +1,9 @@
 package połączenie;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -21,8 +23,6 @@ import zdarzenie.PrzyjazdTrasą;
 public class TrasaTesty
 {
     @Mock
-    private Węzeł początkowy;
-    @Mock
     private Węzeł końcowy;
     @Mock
     private KolejkaZdarzeńLista kolekjaZdarzeń;
@@ -32,8 +32,7 @@ public class TrasaTesty
     @Test
     public void testujKonstruktor()
     {
-        Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
-        verify(początkowy).dodajTrasę(trasa);
+        Trasa trasa = new Trasa(końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
         assertEquals(trasa.bazowaAtrakcyjność(), 0.5);
         assertEquals(trasa.id(), 0);
         assertEquals(trasa.końcowy(), końcowy);
@@ -45,7 +44,7 @@ public class TrasaTesty
     @Test
     public void testujWybierzPołączenie()
     {
-        Trasa trasa = new Trasa(początkowy, końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
+        Trasa trasa = new Trasa(końcowy, 1, 20, 0.5, 0.8, kolekjaZdarzeń, 0);
         ArgumentCaptor<OdjazdTrasą> porywaczOdjazdu = ArgumentCaptor.forClass(OdjazdTrasą.class);
         ArgumentCaptor<PrzyjazdTrasą> porywaczPrzyjazdu = ArgumentCaptor.forClass(PrzyjazdTrasą.class);
 
@@ -62,5 +61,11 @@ public class TrasaTesty
 
         assertEquals(odjazdTrasą, oczekiwanyOdjazd);
         assertEquals(przyjazdTrasą, oczekiwanyPrzyjazd);
+    }
+
+    @AfterEach
+    public void poWszystkich()
+    {
+        verifyNoMoreInteractions(końcowy, kolekjaZdarzeń, sportowiec);
     }
 }

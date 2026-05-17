@@ -30,8 +30,6 @@ import zdarzenie.WejścieDoKolejki;
 public class WyciągTesty
 {
     @Mock
-    private Węzeł początkowy;
-    @Mock
     private Węzeł końcowy;
     @Mock
     private KolejkaZdarzeńLista kolekjaZdarzeń;
@@ -43,9 +41,8 @@ public class WyciągTesty
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = mock(KolejkaNaWyciąg.class);
         ArgumentCaptor<OdjazdKrzesełka> porywaczOdjazduKrzesełka = ArgumentCaptor.forClass(OdjazdKrzesełka.class);
-        Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 30, 3, 500, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        Wyciąg wyciąg = new Wyciąg(końcowy, 30, 3, 500, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
 
-        verify(początkowy).dodajWyciąg(wyciąg);
         assertEquals(wyciąg.id(), 0);
         assertEquals(wyciąg.końcowy(), końcowy);
         verify(kolekjaZdarzeń).dodajZdarzenie(porywaczOdjazduKrzesełka.capture());
@@ -62,9 +59,8 @@ public class WyciągTesty
     public void testujWybierzPołączenie()
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = spy(new KolejkaNaWyciąg());
-        Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        Wyciąg wyciąg = new Wyciąg(końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
         verify(kolekjaZdarzeń).dodajZdarzenie(any(OdjazdKrzesełka.class));
-        verify(początkowy).dodajWyciąg(wyciąg);
 
         ArgumentCaptor<WejścieDoKolejki> porywaczWejściaDoKolejki = ArgumentCaptor.forClass(WejścieDoKolejki.class);
 
@@ -84,9 +80,8 @@ public class WyciągTesty
     public void testujPrzyjmijZKolejki()
     {
         KolejkaNaWyciąg kolejkaNaWyciąg = spy(KolejkaNaWyciąg.class);
-        Wyciąg wyciąg = new Wyciąg(początkowy, końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
+        Wyciąg wyciąg = new Wyciąg(końcowy, 1, 4, 60, kolekjaZdarzeń, kolejkaNaWyciąg, 0);
         verify(kolekjaZdarzeń).dodajZdarzenie(any(OdjazdKrzesełka.class));
-        verify(początkowy).dodajWyciąg(wyciąg);
 
         kolejkaNaWyciąg.dodaj(sportowiec);
         verify(kolejkaNaWyciąg).dodaj(sportowiec);
@@ -115,6 +110,6 @@ public class WyciągTesty
     @AfterEach
     public void poWszystkich()
     {
-        verifyNoMoreInteractions(początkowy, końcowy, kolekjaZdarzeń, sportowiec);
+        verifyNoMoreInteractions(końcowy, kolekjaZdarzeń, sportowiec);
     }
 }

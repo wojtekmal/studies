@@ -1,19 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: sportowiec.SportowiecTesty
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.076 s <<< FAILURE! -- in sportowiec.SportowiecTesty
-sportowiec.SportowiecTesty.testujWybórMniejZużytejTrasy -- Time elapsed: 0.068 s <<< FAILURE!
-Wanted but not invoked:
-trasa.wybierzPołączenie(
-    10:00:00,
-    sportowiec.Sportowiec@4f449e8f
-);
--> at połączenie.Trasa.wybierzPołączenie(Trasa.java:55)
-Actually, there were zero interactions with this mock.
-
-	at połączenie.Trasa.wybierzPołączenie(Trasa.java:55)
-	at sportowiec.SportowiecTesty.testujWybórMniejZużytejTrasy(SportowiecTesty.java:57)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.050 s -- in sportowiec.SportowiecTesty

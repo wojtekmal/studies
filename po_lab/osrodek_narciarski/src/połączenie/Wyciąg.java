@@ -40,11 +40,11 @@ public class Wyciąg extends Połączenie
         dodajKrzesełko(godzinaOdjazdu);
     }
 
-    public Wyciąg(Węzeł początkowy, Węzeł końcowy, int odstępCzasowy,
-        int rozmiarKrzesła, int czasPrzejazdu, KolejkaZdarzeń kolejkaZdarzeń,
+    public Wyciąg(Węzeł końcowy, int odstępCzasowy, int rozmiarKrzesła,
+        int czasPrzejazdu, KolejkaZdarzeń kolejkaZdarzeń,
         KolejkaNaWyciąg kolejkaNaWyciąg, int id)
     {
-        super(początkowy, końcowy, kolejkaZdarzeń, id);
+        super(końcowy, kolejkaZdarzeń, id);
         
         this.odstępCzasowy = odstępCzasowy;
         this.rozmiarKrzesła = rozmiarKrzesła;
@@ -53,8 +53,6 @@ public class Wyciąg extends Połączenie
         this.kolejkaNaWyciąg = kolejkaNaWyciąg;
 
         dodajKrzesełko(new Godzina("09:00:00"));
-
-        początkowy.dodajWyciąg(this);
     }
 
     public void przyjmijZKolejki(Godzina godzina)

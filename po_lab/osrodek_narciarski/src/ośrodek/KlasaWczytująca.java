@@ -63,9 +63,10 @@ public class KlasaWczytująca
             Węzeł końcowy = węzły[idKońcowego];
             KolejkaNaWyciąg kolejkaNaWyciąg = new KolejkaNaWyciąg();
 
-            wyciągi[i] = new Wyciąg(początkowy, końcowy, odstępCzasowy,
-                rozmiarKrzesła, czasPrzejazdu, kolejkaZdarzeń, kolejkaNaWyciąg,
-                i);
+            wyciągi[i] = new Wyciąg(końcowy, odstępCzasowy, rozmiarKrzesła, 
+                czasPrzejazdu, kolejkaZdarzeń, kolejkaNaWyciąg, i);
+            
+            początkowy.dodajWyciąg(wyciągi[i]);
         }
 
         scannerWejścia.nextLine();
@@ -93,8 +94,10 @@ public class KlasaWczytująca
             Węzeł początkowy = węzły[idPoczątkowego];
             Węzeł końcowy = węzły[idKońcowego];
 
-            trasy[i] = new Trasa(początkowy, końcowy, poziom, czasPrzejazdu,
+            trasy[i] = new Trasa(końcowy, poziom, czasPrzejazdu,
                 bazowaAtrakcyjność, odporność, kolejkaZdarzeń, i);
+            
+            początkowy.dodajTrasę(trasy[i]);
         }
 
         scannerWejścia.nextLine();

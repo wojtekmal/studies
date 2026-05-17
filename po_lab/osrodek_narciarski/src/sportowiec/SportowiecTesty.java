@@ -2,6 +2,7 @@ package sportowiec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -43,18 +44,32 @@ public class SportowiecTesty
         Węzeł węzeł1 = new Węzeł(0, 0, 0, false, 1);
 
         KolejkaZdarzeń kolekjaZdarzeń = mock(KolejkaZdarzeńLista.class);
-        Trasa mniejZużyta = spy(new Trasa(węzeł, węzeł1, 0, 0, 0, 0.5, kolekjaZdarzeń, 0));
-        Trasa bardziejZużyta = spy(new Trasa(węzeł, węzeł1, 0, 0, 0, 0.5, kolekjaZdarzeń, 0));
+        Trasa mniejZużyta = spy(new Trasa(węzeł1, 0, 0, 0, 0.5, kolekjaZdarzeń, 0));
+        Trasa bardziejZużyta = spy(new Trasa(węzeł1, 0, 0, 0, 0.5, kolekjaZdarzeń, 0));
+
+        węzeł.dodajTrasę(mniejZużyta);
+        węzeł.dodajTrasę(bardziejZużyta);
         System.out.println(mniejZużyta);
         System.out.println(bardziejZużyta);
 
-        bardziejZużyta.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
+        Godzina dziewiąta = new Godzina("09:00:00");
+        bardziejZużyta.wybierzPołączenie(dziewiąta, sportowiec);
+        verify(bardziejZużyta).wybierzPołączenie(dziewiąta, sportowiec);
         assertEquals(bardziejZużyta.liczbaPrzejazdów(), 1);
 
         Godzina dziesiąta = new Godzina("10:00:00");
         sportowiec.przyjedźDo(węzeł, dziesiąta);
 
         verify(mniejZużyta).wybierzPołączenie(dziesiąta, sportowiec);
+
+        verify(mniejZużyta, atLeast(0)).bazowaAtrakcyjność();
+        verify(mniejZużyta, atLeast(0)).liczbaPrzejazdów();
+        verify(mniejZużyta, atLeast(0)).odporność();
+        verify(mniejZużyta, atLeast(0)).poziom();
+        verify(bardziejZużyta, atLeast(0)).bazowaAtrakcyjność();
+        verify(bardziejZużyta, atLeast(0)).liczbaPrzejazdów();
+        verify(bardziejZużyta, atLeast(0)).odporność();
+        verify(bardziejZużyta, atLeast(0)).poziom();
         verifyNoMoreInteractions(mniejZużyta, bardziejZużyta);
     }
 }

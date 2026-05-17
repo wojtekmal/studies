@@ -39,7 +39,6 @@ public class Węzeł
         trasy = noweTrasy;
 
         trasy[trasy.length - 1] = trasa;
-        System.out.println(Arrays.toString(trasy));
     }
 
     public void dodajWyciąg(Wyciąg wyciąg)

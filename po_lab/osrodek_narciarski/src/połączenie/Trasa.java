@@ -14,20 +14,17 @@ public class Trasa extends Połączenie
     private double bazowaAtrakcyjność;
     private double odporność;
 
-    public Trasa(Węzeł początkowy, Węzeł końcowy, int poziom, int czasPrzejazdu,
+    public Trasa(Węzeł końcowy, int poziom, int czasPrzejazdu,
         double bazowaAtrakcyjność, double odporność,
         KolejkaZdarzeń kolejkaZdarzeń, int id)
     {
-        super(początkowy, końcowy, kolejkaZdarzeń, id);
+        super(końcowy, kolejkaZdarzeń, id);
         
         this.poziom = poziom;
         this.czasPrzejazdu = czasPrzejazdu;
         this. bazowaAtrakcyjność = bazowaAtrakcyjność;
         this.odporność = odporność;
         this.liczbaPrzejazdów = 0;
-
-        System.out.println(this);
-        początkowy.dodajTrasę(this);
     }
 
     public int poziom()

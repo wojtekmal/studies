@@ -7,17 +7,14 @@ import zdarzenie.Godzina;
 
 abstract public class Połączenie
 {
-    protected Węzeł początkowy;
     protected Węzeł końcowy;
     protected int id;
 
     protected KolejkaZdarzeń kolejkaZdarzeń;
     protected int liczbaPrzejazdów;
 
-    public Połączenie(Węzeł początkowy, Węzeł końcowy,
-        KolejkaZdarzeń kolejkaZdarzeń, int id)
+    public Połączenie(Węzeł końcowy, KolejkaZdarzeń kolejkaZdarzeń, int id)
     {
-        this.początkowy = początkowy;
         this.końcowy = końcowy;
         this.id = id;
         this.kolejkaZdarzeń = kolejkaZdarzeń;
