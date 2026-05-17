@@ -1,5 +1,6 @@
 package ośrodek;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 import połączenie.Trasa;
@@ -82,6 +83,7 @@ public class KlasaWczytująca
         for (int i = 0; i < liczbaTras; i++)
         {
             scannerLinii = new Scanner(scannerWejścia.nextLine());
+            scannerLinii.useLocale(Locale.US);
 
             int idPoczątkowego = scannerLinii.nextInt();
             int idKońcowego = scannerLinii.nextInt();
@@ -114,12 +116,17 @@ public class KlasaWczytująca
         for (int i = 0; i < liczbaGrup; i++)
         {
             scannerLinii = new Scanner(scannerWejścia.nextLine());
+            // Trzeba ustawić na wczytywanie angielskiego, żeby wczytywanie
+            // kropek działało na studentsie.
+            scannerLinii.useLocale(Locale.US);
+
             int rozmiarGrupy = scannerLinii.nextInt();
             int poziom = scannerLinii.nextInt();
             double spontaniczność = scannerLinii.nextDouble();
             boolean czyŚledzić = scannerLinii.hasNext();
 
             scannerLinii = new Scanner(scannerWejścia.nextLine());
+            scannerLinii.useLocale(Locale.US);
             double odwaga = scannerLinii.nextDouble();
             double wybredność = scannerLinii.nextDouble();
 
