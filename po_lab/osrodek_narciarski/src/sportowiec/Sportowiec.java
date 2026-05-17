@@ -148,6 +148,8 @@ public class Sportowiec
             wybranePołączenie = najlepszePołączenie(trasy, wyciągi);
         }
 
+        System.out.println(wybranePołączenie);
+
         wybranePołączenie.wybierzPołączenie(godzina, this);
     }
 

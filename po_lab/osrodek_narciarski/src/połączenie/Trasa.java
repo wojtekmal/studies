@@ -26,6 +26,7 @@ public class Trasa extends Połączenie
         this.odporność = odporność;
         this.liczbaPrzejazdów = 0;
 
+        System.out.println(this);
         początkowy.dodajTrasę(this);
     }
 

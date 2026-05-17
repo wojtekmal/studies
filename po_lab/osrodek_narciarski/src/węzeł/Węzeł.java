@@ -1,5 +1,7 @@
 package węzeł;
 
+import java.util.Arrays;
+
 import połączenie.Trasa;
 import połączenie.Wyciąg;
 
@@ -37,6 +39,7 @@ public class Węzeł
         trasy = noweTrasy;
 
         trasy[trasy.length - 1] = trasa;
+        System.out.println(Arrays.toString(trasy));
     }
 
     public void dodajWyciąg(Wyciąg wyciąg)

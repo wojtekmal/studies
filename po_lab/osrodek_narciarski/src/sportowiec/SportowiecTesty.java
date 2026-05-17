@@ -45,16 +45,16 @@ public class SportowiecTesty
         KolejkaZdarzeń kolekjaZdarzeń = mock(KolejkaZdarzeńLista.class);
         Trasa mniejZużyta = spy(new Trasa(węzeł, węzeł1, 0, 0, 0, 0.5, kolekjaZdarzeń, 0));
         Trasa bardziejZużyta = spy(new Trasa(węzeł, węzeł1, 0, 0, 0, 0.5, kolekjaZdarzeń, 0));
+        System.out.println(mniejZużyta);
+        System.out.println(bardziejZużyta);
 
         bardziejZużyta.wybierzPołączenie(new Godzina("09:00:00"), sportowiec);
         assertEquals(bardziejZużyta.liczbaPrzejazdów(), 1);
 
-        sportowiec.przyjedźDo(węzeł, new Godzina("10:00:00"));
+        Godzina dziesiąta = new Godzina("10:00:00");
+        sportowiec.przyjedźDo(węzeł, dziesiąta);
 
-        OdjazdTrasą odjazd = porywaczOdjazdu.getValue();
-        OdjazdTrasą oczekiwanyOdjazd = new OdjazdTrasą(new Godzina("10:00:00"), sportowiec, mniejZużyta);
-
-        assertEquals(odjazd, oczekiwanyOdjazd);
-        verifyNoMoreInteractions(kolekjaZdarzeń);
+        verify(mniejZużyta).wybierzPołączenie(dziesiąta, sportowiec);
+        verifyNoMoreInteractions(mniejZużyta, bardziejZużyta);
     }
 }
