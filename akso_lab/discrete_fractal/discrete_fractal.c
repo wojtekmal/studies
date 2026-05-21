@@ -23,7 +23,9 @@ char* exchange_strings[128];
 
 void dfs(char symbol, int height)
 {
-    if (height == 0)
+    //printf("symbol: %c\n", symbol);
+    
+    if (height == 0 || exchange_strings[symbol] == nullptr)
     {
         putchar(symbol);
         return;
@@ -45,17 +47,23 @@ int main(int argument_count, char** arguments)
     if (conversion_result != 0) return 1;
 
     char* start_string = nullptr;
-    getline(&start_string, nullptr, stdin);
+    size_t dummy;
+    int start_size = getline(&start_string, &dummy, stdin);
 
-    char* exchange_string;
+    int exchange_size;
+    char* exchange_string = nullptr;
 
-    while (getline(&exchange_string, nullptr, stdin) != -1)
+    while ((exchange_size = getline(&exchange_string, &dummy, stdin)) != -1)
     {
+        exchange_string[exchange_size - 1] = 0;
         exchange_strings[exchange_string[0]] = exchange_string + 1;
+        exchange_string = nullptr;
     }
 
-    for (uint64_t i = 0; start_string[i] != 0; i++)
+    for (uint64_t i = 0; i < start_size - 1; i++)
     {
         dfs(start_string[i], n);
     }
+
+    puts("");
 }
