@@ -1,0 +1,6 @@
+Child: my pid is 1061682, my parent's pid is 1061681.
+    PID TTY          TIME CMD
+1058529 pts/0    00:00:00 bash
+1061681 pts/0    00:00:00 exec
+1061682 pts/0    00:00:00 ps
+Parent: my pid is 1061681, my child's pid is 1061682.

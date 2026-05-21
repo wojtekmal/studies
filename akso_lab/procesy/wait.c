@@ -23,6 +23,7 @@ int main()
         printf("Parent: fork returned %d.\n", pid);
 
         // Wait for child.
+        sleep(20);
         pid_t child_pid = wait(NULL);
         if (child_pid == -1) {
             fprintf(stderr, "Error in the first wait (%d; %s)\n", errno, strerror(errno));

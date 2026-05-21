@@ -17,6 +17,7 @@ int main()
         printf("Child: my pid is %d, my parent's pid is %d.\n", getpid(), getppid());
 
         // Replace the current process image to execute the "ps" command.
+        fflush(stdout);
         execlp("ps", "ps", NULL);
         fprintf(stderr, "Error in execlp (%d; %s)\n", errno, strerror(errno));
         return 1;
