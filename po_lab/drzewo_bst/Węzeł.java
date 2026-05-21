@@ -7,4 +7,12 @@ public abstract class Węzeł<T>
     public abstract int rozmiar();
 
     public abstract int wysokość();
+
+    public abstract T suma(Class<T> typ);
+
+    public abstract void drukujWLinii();
+
+    public abstract void drukujDrzewo(int wcięcie, int przesunięcie);
+
+    public abstract T klucz();
 }
