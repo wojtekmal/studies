@@ -108,17 +108,16 @@ int main(int argument_count, char** arguments)
 
     bool eof_reached = false;
 
-    char* start_string = nullptr;
+    char* start_string;
     int read_start_result = read_string(&start_string);
     if (read_start_result == 1) return 1;
     else if (read_start_result == 2) eof_reached = true;
 
-    int exchange_size;
-    char* exchange_string = nullptr;
-
-    while ((exchange_size = getline(&exchange_string, &dummy, stdin)) != -1)
+    while (true)
     {
-        exchange_string[exchange_size - 1] = 0;
+        char* exchange_string;
+        int read_exchange_result = read_string(&exchange_string);
+
         exchange_strings[exchange_string[0]] = exchange_string + 1;
         exchange_string = nullptr;
     }
