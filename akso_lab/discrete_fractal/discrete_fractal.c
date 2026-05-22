@@ -24,6 +24,7 @@ int convert_to_int(char* n_string, uint32_t* n)
 #define BUFFER_SIZE 4096
 char buffer[BUFFER_SIZE];
 int buffer_pos = 0;
+int end_of_buffer = 0;
 
 int read_string(char** result_string)
 {
@@ -32,13 +33,12 @@ int read_string(char** result_string)
     if (result_string == nullptr) return 1;
 
     int result_size = 0;
-    int end_of_buffer = 0;
 
     while (true)
     {
         if (buffer_pos == end_of_buffer)
         {
-            ssize_t read_result = read(0, buffer, BUFFER_SIZE - buffer_pos);
+            ssize_t read_result = read(0, buffer + buffer_pos, BUFFER_SIZE - buffer_pos);
             
             if (read_result == -1)
             {
@@ -57,6 +57,7 @@ int read_string(char** result_string)
         {
             *result_string = realloc(*result_string, allocation_size << 1);
             if (result_string == nullptr) return 1;
+            allocation_size <<= 1;
         }
 
         if (buffer[buffer_pos] == '\n')
@@ -106,7 +107,7 @@ void free_exchange_strings()
 {
     for (int i = 0; i < 128; i++)
     {
-        if (exchange_strings[i] != nullptr) free(exchange_strings[i]);
+        if (exchange_strings[i] != nullptr) free(exchange_strings[i] - 1);
     }
 }
 
@@ -151,6 +152,7 @@ int main(int argument_count, char** arguments)
                 return 1;
             }
 
+            // TODO: sprawdzać czy już ta litera była.
             exchange_strings[exchange_string[0]] = exchange_string + 1;
         }
     }
