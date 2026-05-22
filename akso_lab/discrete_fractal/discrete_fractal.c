@@ -20,6 +20,27 @@ int convert_to_int(char* n_string, uint32_t* n)
     return 0;
 }
 
+const int BUFFER_SIZE = 4096;
+char buffer[BUFFER_SIZE];
+int buffer_pos = 0;
+
+int read_string(char** pointer_to_set)
+{
+    size_t allocation_size = 1;
+    *pointer_to_set = malloc(allocation_size);
+
+    while (true)
+    {
+        if (buffer_pos == 0)
+        {
+
+        }
+        realloc(*pointer_to_set, allocation_size << 1);
+        ssize_t read_result = read(0, *pointer_to_set + allocation_size, allocation_size);
+
+    }
+}
+
 char* exchange_strings[128];
 
 void dfs(char symbol, int height)
@@ -35,19 +56,6 @@ void dfs(char symbol, int height)
     for (int i = 0; exchange_strings[symbol][i] != 0; i++)
     {
         dfs(exchange_strings[symbol][i], height - 1);
-    }
-}
-
-int read_string(char** pointer_to_set)
-{
-    size_t allocation_size = 1;
-    *pointer_to_set = malloc(allocation_size);
-
-    while (true)
-    {
-        realloc(*pointer_to_set, allocation_size << 1);
-        ssize_t read_result = read(0, *pointer_to_set + allocation_size, allocation_size);
-
     }
 }
 
