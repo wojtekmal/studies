@@ -24,20 +24,58 @@ const int BUFFER_SIZE = 4096;
 char buffer[BUFFER_SIZE];
 int buffer_pos = 0;
 
-int read_string(char** pointer_to_set)
+int read_string(char** result_string)
 {
     size_t allocation_size = 1;
-    *pointer_to_set = malloc(allocation_size);
+    *result_string = malloc(allocation_size);
+    if (result_string == nullptr) return 1;
+
+    int result_size = 0;
+    int eof_pos = BUFFER_SIZE;
 
     while (true)
     {
         if (buffer_pos == 0)
         {
+            ssize_t read_result = read(0, buffer, BUFFER_SIZE);
+            
+            if (read_result == -1)
+            {
+                free(*result_string);
+                return 1;
+            }
 
+            eof_pos = read_result;
         }
-        realloc(*pointer_to_set, allocation_size << 1);
-        ssize_t read_result = read(0, *pointer_to_set + allocation_size, allocation_size);
 
+        if (result_size == allocation_size)
+        {
+            *result_string = realloc(*result_string, allocation_size << 1);
+            if (result_string == nullptr) return 1;
+        }
+
+        if (buffer_pos == eof_pos)
+        {
+            (*result_string)[result_size] = 0;
+            return 2;
+        }
+        else if (buffer[buffer_pos] == '\n')
+        {
+            (*result_string)[result_size] = 0;
+            buffer_pos = (buffer_pos + 1) % BUFFER_SIZE;
+            return 0;
+        }
+        else if (buffer[buffer_pos] < 33 || buffer[buffer_pos] > 126)
+        {
+            free(*result_string);
+            return 1;
+        }
+        else
+        {
+            (*result_string)[result_size] = buffer[buffer_pos];
+            buffer_pos = (buffer_pos + 1) % BUFFER_SIZE;
+            result_size++;
+        }
     }
 }
 
@@ -68,9 +106,12 @@ int main(int argument_count, char** arguments)
     int conversion_result = convert_to_int(n_string, &n);
     if (conversion_result != 0) return 1;
 
+    bool eof_reached = false;
+
     char* start_string = nullptr;
-    size_t dummy;
-    int start_size = getline(&start_string, &dummy, stdin);
+    int read_start_result = read_string(&start_string);
+    if (read_start_result == 1) return 1;
+    else if (read_start_result == 2) eof_reached = true;
 
     int exchange_size;
     char* exchange_string = nullptr;
