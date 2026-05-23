@@ -80,6 +80,31 @@ int read_string(char** result_string)
     }
 }
 
+char write_buffer[BUFFER_SIZE];
+int write_buffer_pos = 0;
+
+int flush_write_buffer()
+{
+    int write_result = write(1, write_buffer, write_buffer_pos);
+    if (write_result == -1) return 1;
+
+    write_buffer_pos = 0;
+}
+
+int buffer_write(char c)
+{
+    write_buffer[write_buffer_pos] = c;
+    write_buffer_pos++;
+
+    if (write_buffer_pos == BUFFER_SIZE)
+    {
+        int flush_buffer_result = flush_write_buffer();
+        if (flush_buffer_result == 1) return 1;
+    }
+
+    return 0;
+}
+
 char* exchange_strings[128];
 
 int dfs(char symbol, int height)
@@ -88,7 +113,7 @@ int dfs(char symbol, int height)
     
     if (height == 0 || exchange_strings[symbol] == nullptr)
     {
-        int write_symbol_result = write(1, &symbol, 1);
+        int write_symbol_result = buffer_write(symbol);
         if (write_symbol_result == -1) return 1;
         else return 0;
     }
@@ -172,10 +197,11 @@ int main(int argument_count, char** arguments)
     free(start_string);
     free_exchange_strings();
     
-    char* line_feed = "\n";
-    int write_line_feed_result = write(1, line_feed, 1);
-    
-    if (write_line_feed_result == -1) return 1;
+    int write_line_feed_result = buffer_write('\n');
+    if (write_line_feed_result == 1) return 1;
+
+    int flush_result = flush_write_buffer();
+    if (flush_result == 1) return 1;
 
     return 0;
 }
