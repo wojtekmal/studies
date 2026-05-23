@@ -89,6 +89,7 @@ int flush_write_buffer()
     if (write_result == -1) return 1;
 
     write_buffer_pos = 0;
+    return 0;
 }
 
 int buffer_write(char c)
@@ -114,8 +115,7 @@ int dfs(char symbol, int height)
     if (height == 0 || exchange_strings[symbol] == nullptr)
     {
         int write_symbol_result = buffer_write(symbol);
-        if (write_symbol_result == -1) return 1;
-        else return 0;
+        return write_symbol_result;
     }
 
     for (int i = 0; exchange_strings[symbol][i] != 0; i++)
@@ -178,6 +178,7 @@ int main(int argument_count, char** arguments)
             }
 
             // TODO: sprawdzać czy już ta litera była.
+            // TODO: zrobić int64_t tam gdzie powinno być.
             exchange_strings[exchange_string[0]] = exchange_string + 1;
         }
     }
