@@ -80,24 +80,21 @@ int read_string(char** result_string)
     }
 }
 
-char write_buffer[BUFFER_SIZE];
-int write_buffer_pos = 0;
-
 int flush_write_buffer()
 {
-    int write_result = write(1, write_buffer, write_buffer_pos);
+    int write_result = write(1, buffer, buffer_pos);
     if (write_result == -1) return 1;
 
-    write_buffer_pos = 0;
+    buffer_pos = 0;
     return 0;
 }
 
 int buffer_write(char c)
 {
-    write_buffer[write_buffer_pos] = c;
-    write_buffer_pos++;
+    buffer[buffer_pos] = c;
+    buffer_pos++;
 
-    if (write_buffer_pos == BUFFER_SIZE)
+    if (buffer_pos == BUFFER_SIZE)
     {
         int flush_buffer_result = flush_write_buffer();
         if (flush_buffer_result == 1) return 1;
@@ -108,17 +105,15 @@ int buffer_write(char c)
 
 char* exchange_strings[128];
 
-int dfs(char symbol, int height)
+int dfs(char symbol, uint32_t height)
 {
-    //printf("symbol: %c\n", symbol);
-    
     if (height == 0 || exchange_strings[symbol] == nullptr)
     {
         int write_symbol_result = buffer_write(symbol);
         return write_symbol_result;
     }
 
-    for (int i = 0; exchange_strings[symbol][i] != 0; i++)
+    for (uint64_t i = 0; exchange_strings[symbol][i] != 0; i++)
     {
         int dfs_result = dfs(exchange_strings[symbol][i], height - 1);
 
@@ -170,16 +165,17 @@ int main(int argument_count, char** arguments)
         }
         else
         {
-            if (exchange_string[0] == 0)
+            char exchanged = exchange_string[0];
+            
+            if (exchanged == 0 || exchange_strings[exchanged] != 0)
             {
                 free(start_string);
+                free(exchange_string);
                 free_exchange_strings();
                 return 1;
             }
 
-            // TODO: sprawdzać czy już ta litera była.
-            // TODO: zrobić int64_t tam gdzie powinno być.
-            exchange_strings[exchange_string[0]] = exchange_string + 1;
+            exchange_strings[exchanged] = exchange_string + 1;
         }
     }
 
