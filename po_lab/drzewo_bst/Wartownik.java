@@ -1,6 +1,6 @@
-public class Wartownik<T> extends Węzeł<T>
+public class Wartownik<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbstrakcyjny<T>
 {
-    public void drukujDrzewo() {}
+    public void drukujDrzewo(int wcięcie, int przesunięcie) {}
 
     public void drukujWLinii() {}
 
@@ -9,8 +9,23 @@ public class Wartownik<T> extends Węzeł<T>
         return 0;
     }
 
-    public Węzeł<T> wstaw(T klucz)
+    public WęzełAbstrakcyjny<T> wstaw(T klucz)
     {
-        
+        return new Węzeł<T>(klucz);
+    }
+
+    public T klucz()
+    {
+        return null;
+    }
+
+    public WęzełAbstrakcyjny<T> znajdź(T klucz)
+    {
+        return null;
+    }
+
+    public T suma(Class<T> typ)
+    {
+        return typ.getDeclaredConstructor().newInstance();
     }
 }

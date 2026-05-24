@@ -1,7 +1,7 @@
 public class DrzewoBST<T extends Comparable<T> & Dodawalny<T>>
 {
     private Wartownik<T> wartownik;
-    private Węzeł<T> korzeń;
+    private WęzełAbstrakcyjny<T> korzeń;
 
     public DrzewoBST()
     {
