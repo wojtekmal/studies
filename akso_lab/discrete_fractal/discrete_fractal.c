@@ -179,6 +179,8 @@ int main(int argument_count, char** arguments)
         }
     }
 
+    buffer_pos = 0;
+
     for (uint64_t i = 0; start_string[i] != 0; i++)
     {
         int dfs_result = dfs(start_string[i], n);
