@@ -15,4 +15,14 @@ do
     fi
 done
 
-for n in '' ' ' "
+for n in '' ' ' 'a' 'A' '-1' '4294967296' '10000000000000000000'
+do
+    echo "Testowanie błędnego n = $n."
+    echo "" | $1 $n > /dev/null
+
+    if [ $? -ne 1 ]
+    then
+        echo "Program powinien zwrócić 1, a zwrócił $?"
+        break
+    fi
+done
