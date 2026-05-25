@@ -161,6 +161,14 @@ int main(int argument_count, char** arguments)
 
         if (read_exchange_result == 2)
         {
+            if (exchange_string[0] != 0)
+            {
+                free(start_string);
+                free(exchange_string);
+                free_exchange_strings();
+                return 1;
+            }
+            
             eof_reached = true;
         }
         else

@@ -1,4 +1,6 @@
-public abstract class WęzełAbstrakcyjny<T>
+import java.lang.reflect.InvocationTargetException;
+
+public abstract class WęzełAbstrakcyjny<T extends Comparable<T> & Dodawalny<T>>
 {
     public abstract WęzełAbstrakcyjny<T> wstaw(T klucz);
 
@@ -8,7 +10,7 @@ public abstract class WęzełAbstrakcyjny<T>
 
     public abstract int wysokość();
 
-    public abstract T suma(Class<T> typ);
+    public abstract T suma(Class<T> typ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     public abstract void drukujWLinii();
 

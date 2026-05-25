@@ -1,3 +1,5 @@
+import java.lang.reflect.InvocationTargetException;
+
 public class Wartownik<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbstrakcyjny<T>
 {
     public void drukujDrzewo(int wcięcie, int przesunięcie) {}
@@ -7,6 +9,11 @@ public class Wartownik<T extends Comparable<T> & Dodawalny<T>> extends WęzełAb
     public int rozmiar()
     {
         return 0;
+    }
+
+    @Override
+    public int wysokość() {
+        return -1;
     }
 
     public WęzełAbstrakcyjny<T> wstaw(T klucz)
@@ -24,7 +31,7 @@ public class Wartownik<T extends Comparable<T> & Dodawalny<T>> extends WęzełAb
         return null;
     }
 
-    public T suma(Class<T> typ)
+    public T suma(Class<T> typ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException
     {
         return typ.getDeclaredConstructor().newInstance();
     }
