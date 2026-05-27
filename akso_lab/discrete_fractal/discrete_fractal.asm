@@ -116,6 +116,11 @@ after_read_n_loop:
     ; so that the mechanism for reading new input into the buffer is activated.
     mov r10, rsi
 
+    ; rdi will hold a pointer to the current position of the string we are
+    ; copying over. We initialize it with the current break pointer, because we
+    ; will store the strings that we are reading on the heap.
+    mov rdi, r8
+
     ; Clear DF for the string operations we will do.
     cld
 
@@ -130,16 +135,17 @@ after_read_n_loop:
 
 read_strings_loop:
 
-    ; Save the pointer to the start of the string (current break pointer) in r9.
-    ; Also set r12 to the start of the string, because it will remember the
-    ; current position of a string that we want to copy into from the buffer.
-    mov r12, r8
-    mov r9, r8
+    ; Save the pointer to the start of the string (stored in rdi) in r9.
+    mov r9, rdi
 
-    ; Strings are read in parts that are BUFFER_LEN wide and then iterated over
+    ; Input is read in parts that are BUFFER_LEN wide and then iterated over
     ; character by character.
 
 read_string_loop:
+
+    ; Save the value of rdi in r12, because rdi needs to be overridden in order
+    ; to do syscalls.
+    mov r12, rdi
 
     ; Check if the pointer to the current position in the buffer is equal to the
     ; past-the-end of the string that was read with sys_read. If yes, then
@@ -177,9 +183,10 @@ read_string_loop:
 
 after_call_sys_read:
 
-    ; Check if the pointer to the string we are copying into is equal to the
-    ; current break pointer. If yes, then we have to move the break pointer in
-    ; order to make space for the string that we're copying from the buffer.
+    ; Check if the pointer to the current position of the string we are copying
+    ; into (currently stored in r12) is equal to the current break pointer. If
+    ; yes, then we have to move the break pointer in order to make space for the
+    ; string that we're copying from the buffer.
     cmp r12, r8
     jne after_move_brk
 
@@ -200,8 +207,8 @@ after_call_sys_read:
 after_move_brk:
 
     ; We are ready for checking and copying individual characters from the
-    ; buffer into the string. We set rdi to the start of the string we are
-    ; copying into.
+    ; buffer into the string. We restore rdi with the pointer to the current
+    ; position in the string we're copying over.
     mov rdi, r12
     
     ; Load the current character in the buffer pointed to by rsi into al.
@@ -211,18 +218,6 @@ after_move_brk:
     ; where a null byte is appended to the string.
     cmp al, '\n'
     je after_read_string_loop
-
-    ; If it's a newline, then we want to append a null byte to the string and
-    ; end the loop.
-
-    ; Set al to 0 (null byte) and append it to the string.
-    xor al, al
-    stosb
-
-    ; Exit the inner loop.
-    jmp after_read_string_loop
-
-after_read_newline:
 
     ; If it's not a newline, then we have to check if it's a valid character.
 
@@ -236,6 +231,39 @@ after_read_newline:
     cmp al, '~'
     ja free_and_exit_error
 
+    ; If the character is correct, we append it to the string.
+    stosb
+
+    ; Continue the loop.
+    jmp read_string_loop
+
 after_read_string_loop:
+
+    ; The last character in the string was a new line. We want to append a null
+    ; byte to the string to signify its end. To do this, we set al to 0 (null
+    ; byte) and append it to the string.
+    xor al, al
+    stosb
+
+    ; Now we have the pointer to the null-terminated string in r9. We have to
+    ; save this pointer in the expansion table. We store the first character
+    ; (the character that is expanded) in al.
+    mov al, [r9]
+
+    ; Remember: the first string is special, and a flag is stored in bl. We
+    ; check if it's the first string. If not, we jump to the part that deals
+    ; with the following (non-initial) strings.
+    test bl, bl
+    jne after_initial_string
+
+    ; If it's the initial string, then we set al (which stores the expanded
+    ; character) to the space character.
+    mov al, ' '
+
+    ; The non-initial strings are stored in the expansion table as a pointer to
+    ; the first character of the expansion, so the second character of the
+    ; string. We want to have one logic sequence for all strings, 
+
+after_initial_string:
 
 after_read_strings_loop:
