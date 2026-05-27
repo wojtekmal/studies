@@ -241,8 +241,9 @@ after_read_string_loop:
 
     ; The last character in the string was a new line. We want to append a null
     ; byte to the string to signify its end. To do this, we set al to 0 (null
-    ; byte) and append it to the string.
-    xor al, al
+    ; byte) and append it to the string. Note that we are zeroing rax, which
+    ; useful later.
+    xor eax, eax
     stosb
 
     ; Now we have the pointer to the null-terminated string in r9. We have to
@@ -262,8 +263,32 @@ after_read_string_loop:
 
     ; The non-initial strings are stored in the expansion table as a pointer to
     ; the first character of the expansion, so the second character of the
-    ; string. We want to have one logic sequence for all strings, 
+    ; string. We want to have one logic sequence for all strings, so we
+    ; decrement r9 in order to make up for how we later set the value in the
+    ; expansion table to r9 + 1.
+    dec r9
+
+    ; Reset the bl flag to remember that the initial string has been read.
+    xor bl, bl
 
 after_initial_string:
 
+    ; If it's not the initial string, we set the expansions at position al to
+    ; r9 + 1. First we increment r9 so that it points to the first character of
+    ; the expansion string.
+    inc r9
+
+    ; We store the pointer to the buffer in rbx and add the offset represented
+    ; by al.
+    lea rbx, [rel buffer]
+    add rbx, rax
+
+    ; Now we move the pointer held in r9 into buffer + al.
+    mov [rbx], r9
+
+    ; Repeat the loop.
+    jmp read_strings_loop
+
 after_read_strings_loop:
+
+    ; We read all the strings, but we still have to check if the last character
