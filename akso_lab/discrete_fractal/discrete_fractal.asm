@@ -15,6 +15,10 @@ NULLPTR equ 0
 
 MOVE_BRK_BLOCK_LEN equ 4096
 
+section .data
+
+space_and_null: db ' ', '\0'
+
 section .bss
 
 ; buffer is used for buffering input and output.
@@ -273,6 +277,13 @@ after_read_string_loop:
 
 after_initial_string:
 
+    ; It's possible that the non-initial strings given in the input are empty.
+    ; We check for this by making sure that the first character, which is stored
+    ; in al, is not null. Note that this also works if we just read the initial
+    ; string, because in that case al holds ' '.
+    test al, al
+    je free_and_exit_error
+
     ; If it's not the initial string, we set the expansions at position al to
     ; r9 + 1. First we increment r9 so that it points to the first character of
     ; the expansion string.
@@ -292,3 +303,45 @@ after_initial_string:
 after_read_strings_loop:
 
     ; We read all the strings, but we still have to check if the last character
+    ; was a newline. Convenietly, the pointer to the last character is held in
+    ; r12 because it is transfered there right before the only place where we
+    ; exit read_strings_loop. The algorithm converts newlines into null bytes
+    ; to signify the end of strings, so we have to check if the character
+    ; pointed to by r12 is a null byte.
+    cmp [r12], 0
+    jne free_and_exit_error
+
+    ; Now we write the output. This is done with a dfs, where a character calls 
+    ; dfs for each character in it's expansion, unless the recursion depth is n,
+    ; in which case the character writes its expansion to the output.
+
+    ; More specifically, dfs works like this:
+    ; 1. Before dfs, the pointer to the character that is to be expanded is
+    ; placed in rsi and the depth of the recursion is placed in rcx.
+    ; 2. The characters pointed to by rsi are iterated over until a null byte is
+    ; found.
+    ; 3. For each character we save the value of rsi on the stack.
+    ; 4a. If the recursion depth is equal to n, then for each character we
+    ; append it to the buffer (the flushing of the buffer is described later).
+    ; 4b. Otherwise for each character we save the value of rsi on the stack,
+    ; call dfs and pop rsi from the stack.
+    ; 5. If the recursion depth is not 0, then we jump to the part of the parent
+    ; dfs where the child was called in order to give the logic flow back to the
+    ; parent dfs.
+
+    ; Initialize rsi with the pointer to space_and_null, which holds " \0", and
+    ; rcx to 0, because we start with recursion depth 0.
+    lea rsi, [rel space_and_null]
+    xor ecx, ecx
+
+dfs:
+
+character_loop:
+
+    ; Put the current character into al.
+    lodsb
+
+    cmp rcx, rbp
+    jne after_write
+
+write:
