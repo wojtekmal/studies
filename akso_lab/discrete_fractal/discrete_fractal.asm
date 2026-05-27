@@ -163,7 +163,7 @@ read_string_loop:
     xor eax, eax
     xor edi, edi
     lea rsi, [rel buffer]
-    mov rdx, BUFFER_LEN
+    mov edx, BUFFER_LEN
     syscall
 
     ; Check the return value of read, which is stored in rax and represented as
@@ -320,28 +320,90 @@ after_read_strings_loop:
     ; placed in rsi and the depth of the recursion is placed in rcx.
     ; 2. The characters pointed to by rsi are iterated over until a null byte is
     ; found.
-    ; 3. For each character we save the value of rsi on the stack.
-    ; 4a. If the recursion depth is equal to n, then for each character we
-    ; append it to the buffer (the flushing of the buffer is described later).
-    ; 4b. Otherwise for each character we save the value of rsi on the stack,
-    ; call dfs and pop rsi from the stack.
-    ; 5. If the recursion depth is not 0, then we jump to the part of the parent
+    ; 3. If the recursion depth is not 0, then we jump to the part of the parent
     ; dfs where the child was called in order to give the logic flow back to the
     ; parent dfs.
+
+    ; Individual characters of the extension string are processed as such:
+    ; 1. Save the value of rsi (pointer to the character) on the stack.
+    ; 2a. If the recursion depth is equal to n, then for each character we
+    ; append it to the buffer (the flushing of the buffer is described later).
+    ; 2b. Otherwise we save the value of rsi on the stack,
+    ; call dfs and pop rsi from the stack.
+    ; 3. Pop rsi from the stack.
 
     ; Initialize rsi with the pointer to space_and_null, which holds " \0", and
     ; rcx to 0, because we start with recursion depth 0.
     lea rsi, [rel space_and_null]
     xor ecx, ecx
 
+    ; Initialize rbx, which will hold the current position in the buffer, to the
+    ; start of the buffer.
+    lea rbx, [rel buffer]
+
 dfs:
 
 character_loop:
 
-    ; Put the current character into al.
+    ; Put the current character into al and move rsi (the pointer to the current
+    ; character).
     lodsb
 
+    ; Save the pointer to the next character on the stack.
+    push rsi
+
+    ; If the recursion depth (rcx) isn't equal to n, then skip the write part.
     cmp rcx, rbp
     jne after_write
 
 write:
+    ; Write the current character into the current position in the buffer (held
+    ; in rbx) and increment this position.
+    mov [rbx], al
+    inc rbx
+
+    ; Temporarily decrease rbx by the length of the buffer because we will be
+    ; checking if rbx points to the end of the buffer (so if it's equal to the
+    ; start of the buffer after we decrease it, then that means we reached the
+    ; end of the buffer).
+    sub rbx, BUFFER_LEN
+
+    ; Check if we reached the end of the buffer. If not, then skip over the part
+    ; where the buffer is flushed.
+    cmp rbx, [rel buffer]
+    jne after_flush_buffer
+
+flush_buffer:
+
+    ; Convenietly, rbx already points to the start of the buffer after we
+    ; prepared for the comparison. We do a syscall with rax = SYS_WRITE,
+    ; rdi = FD_WRITE, rsi = rbx (start of the buffer), rdx = BUFFER_LEN.
+    mov rax, SYS_WRITE
+    mov rdi, FD_WRITE
+    mov rsi, rbx
+    mov edx, BUFFER_LEN
+    syscall
+
+    ; Now rax holds the return value of sys_write. sys_write returns either an
+    ; error, which is negative, or the number of characters written. We can
+    ; check if the write was correct by checking if exactly BUFFER_LEN
+    ; characters were written.
+    cmp rax, BUFFER_LEN
+    jne free_and_exit_error
+
+after_flush_buffer:
+
+    ; Restore rbx so that it points to the next character by adding what we
+    ; subtracted.
+    add rbx, BUFFER_LEN
+
+    ; Reminder: this is the case where the recursion depth is equal to n. After
+    ; writing the character, we need to skip past the code that is supposed to
+    ; execute if the recursion depth is not equal to n.
+    jmp after_call_child_dfs
+
+after_write:
+
+    ; This is the case were the recursion depth is not equal to n. In that case
+    ; we need to a dfs with the expansion of the current character. Note that
+    ; the current character is stored in al.
