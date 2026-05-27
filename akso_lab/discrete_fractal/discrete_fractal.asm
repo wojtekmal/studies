@@ -15,9 +15,13 @@ NULLPTR equ 0
 
 MOVE_BRK_BLOCK_LEN equ 4096
 
+ERROR_CODE equ 1
+
 section .data
 
 space_and_null: db ' ', '\0'
+
+newline: db '\n'
 
 section .bss
 
@@ -44,7 +48,7 @@ section .text
     ; Check that there are exactly 2 arguments: the program name and n. If not,
     ; then jump to the end of the program, where memory is freed and the program
     ; exits with an error.
-    cmp [rsp], 2
+    cmp QWORD [rsp], 2
     jne free_and_exit_error
 
     ; Store the pointer to the first byte of the second argument in rbx.
@@ -317,7 +321,7 @@ after_read_strings_loop:
 
     ; More specifically, dfs works like this:
     ; 1. Before dfs, the pointer to the character that is to be expanded is
-    ; placed in rsi and the depth of the recursion is placed in rcx.
+    ; placed in rsi and the depth of the recursion is placed in ecx.
     ; 2. The characters pointed to by rsi are iterated over until a null byte is
     ; found.
     ; 3. If the recursion depth is not 0, then we jump to the part of the parent
@@ -341,6 +345,10 @@ after_read_strings_loop:
     ; start of the buffer.
     lea rbx, [rel buffer]
 
+    ; Set rdi to FD_WRITE, because we will only be using it as a syscall
+    ; argument.
+    mov edi, FD_WRITE
+
 dfs:
 
 character_loop:
@@ -349,14 +357,21 @@ character_loop:
     ; character).
     lodsb
 
+    ; If the current character is a null byte, exit character_loop.
+    test al, al
+    je after_character_loop
+
     ; Save the pointer to the next character on the stack.
     push rsi
 
-    ; If the recursion depth (rcx) isn't equal to n, then skip the write part.
-    cmp rcx, rbp
+    ; If the recursion depth (ecx) isn't equal to n, then skip the write part.
+    cmp ecx, ebp
     jne after_write
 
 write:
+    ; Set rax to 0. This will be needed later on.
+    xor eax, eax
+
     ; Write the current character into the current position in the buffer (held
     ; in rbx) and increment this position.
     mov [rbx], al
@@ -378,8 +393,7 @@ flush_buffer:
     ; Convenietly, rbx already points to the start of the buffer after we
     ; prepared for the comparison. We do a syscall with rax = SYS_WRITE,
     ; rdi = FD_WRITE, rsi = rbx (start of the buffer), rdx = BUFFER_LEN.
-    mov rax, SYS_WRITE
-    mov rdi, FD_WRITE
+    mov eax, SYS_WRITE
     mov rsi, rbx
     mov edx, BUFFER_LEN
     syscall
@@ -407,3 +421,61 @@ after_write:
     ; This is the case were the recursion depth is not equal to n. In that case
     ; we need to a dfs with the expansion of the current character. Note that
     ; the current character is stored in al.
+
+    ; Set rsi to the value expected by the child dfs, which is a pointer to the
+    ; expansion string of the current character, which is stored in expansions
+    ; at offset al. Note that the value held in rax is equal to that held in al,
+    ; because earlier we zeroed rax.
+    lea rsi, [rel buffer]
+    add rsi, rax
+
+    ; Set ecx (which represents the recursion depth) to the value expected by
+    ; the child dfs by incrementing it.
+    inc ecx
+
+    ; Do a child dfs.
+    jmp dfs
+
+after_call_child_dfs:
+
+    ; Restore rsi to the pointer to the next character.
+    pop rsi
+
+after_character_loop:
+
+    ; If the recursion depth isn't 0, we return to the parent.
+    test ecx, ecx
+    jne after_call_child_dfs
+
+after_dfs:
+
+    ; After writing the result string to output, we have to write a newline. We
+    ; do a syscall with rax = SYS_WRITE, rdi = FD_WRITE, rsi set to newline,
+    ; which holds '\n' and rdx = 1 (write one character).
+    mov eax, SYS_WRITE
+    mov edi, FD_WRITE
+    mov rsi, [rel newline]
+    mov edx, 1
+    syscall
+
+    ; Zero rdi. This will be needed in a moment.
+    xor edi, edi
+
+    ; rax holds the return value of sys_write. If it's not equal to the number
+    ; of characters that were supposed to be written, which is 1, then there was
+    ; an error. Otherwise we skip over to the part where the program is exited
+    ; without an error, because this is the last place where an error may occur.
+    cmp rax, 1
+    je after_free_and_exit_error
+
+free_and_exit_error:
+    
+    ; Set edi to the return value of the program, which is ERROR_CODE.
+    mov edi, ERROR_CODE
+
+after_free_and_exit_error:
+
+    ; Now rdi is set to the return code of out program (it was zeroed and set to
+    ; ERROR_CODE in the event of an error). We do a syscall with rax = SYS_EXIT.
+    mov eax, SYS_EXIT
+    syscall
