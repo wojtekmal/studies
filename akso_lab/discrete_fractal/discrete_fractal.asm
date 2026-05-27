@@ -1,3 +1,5 @@
+global _start
+
 SYS_READ equ 0
 SYS_WRITE equ 1
 SYS_BRK equ 12
@@ -17,6 +19,8 @@ MOVE_BRK_BLOCK_LEN equ 4096
 
 ERROR_CODE equ 1
 
+NEWLINE_CHAR equ 0x10
+
 section .data
 
 space_and_null: db ' ', '\0'
@@ -33,6 +37,8 @@ buffer: resb 4096
 expansions: resb 128
 
 section .text
+
+_start:
 
     ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
     ; of whether it succeeds, returns the current break pointer. This means that
@@ -224,7 +230,7 @@ after_move_brk:
 
     ; First check if the character is a new line. If it is, then exit the loop,
     ; where a null byte is appended to the string.
-    cmp al, '\n'
+    cmp al, NEWLINE_CHAR
     je after_read_string_loop
 
     ; If it's not a newline, then we have to check if it's a valid character.
@@ -312,7 +318,7 @@ after_read_strings_loop:
     ; exit read_strings_loop. The algorithm converts newlines into null bytes
     ; to signify the end of strings, so we have to check if the character
     ; pointed to by r12 is a null byte.
-    cmp [r12], 0
+    cmp BYTE [r12], 0
     jne free_and_exit_error
 
     ; Now we write the output. This is done with a dfs, where a character calls 
