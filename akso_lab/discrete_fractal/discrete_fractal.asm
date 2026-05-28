@@ -19,13 +19,11 @@ MOVE_BRK_BLOCK_LEN equ 4096
 
 ERROR_CODE equ 1
 
-NEWLINE_CHAR equ 0x10
-
 section .data
 
-space_and_null: db ' ', '\0'
+space_and_null: db ` \0`
 
-newline: db '\n'
+newline: db `\n`
 
 section .bss
 
@@ -230,7 +228,7 @@ after_move_brk:
 
     ; First check if the character is a new line. If it is, then exit the loop,
     ; where a null byte is appended to the string.
-    cmp al, NEWLINE_CHAR
+    cmp al, `\n`
     je after_read_string_loop
 
     ; If it's not a newline, then we have to check if it's a valid character.
@@ -267,9 +265,10 @@ after_read_string_loop:
 
     ; Remember: the first string is special, and a flag is stored in bl. We
     ; check if it's the first string. If not, we jump to the part that deals
-    ; with the following (non-initial) strings.
+    ; with the following (non-initial) strings. It's a non-initial string if
+    ; bl = INITIAL_STRING_READ = 0.
     test bl, bl
-    jne after_initial_string
+    je after_initial_string
 
     ; If it's the initial string, then we set al (which stores the expanded
     ; character) to the space character.
@@ -299,25 +298,32 @@ after_initial_string:
     ; the expansion string.
     inc r9
 
-    ; We store the pointer to the buffer in rbx and add the offset represented
+    ; We store the pointer to the buffer in r12 and add the offset represented
     ; by al.
-    lea rbx, [rel buffer]
-    add rbx, rax
+    lea r12, [rel buffer]
+    add r12, rax
 
     ; Now we move the pointer held in r9 into buffer + al.
-    mov [rbx], r9
+    mov [r12], r9
 
     ; Repeat the loop.
     jmp read_strings_loop
 
 after_read_strings_loop:
 
-    ; We read all the strings, but we still have to check if the last character
-    ; was a newline. Convenietly, the pointer to the last character is held in
-    ; r12 because it is transfered there right before the only place where we
-    ; exit read_strings_loop. The algorithm converts newlines into null bytes
-    ; to signify the end of strings, so we have to check if the character
-    ; pointed to by r12 is a null byte.
+    ; We read all the strings, but we still have to check two things: that at
+    ; least one character was read and that it was a newline. We can check if at
+    ; least one character was read by checking bl, which holds a flag
+    ; representing whether at least one string was read. We wan to check if
+    ; bl != INITIAL_STRING_READ = 0.
+    test bl, bl
+    jne free_and_exit_error
+
+    ; Convenietly, the pointer to the last character is held in r12 because it
+    ; is transfered there right before the only place where we exit
+    ; read_strings_loop. The algorithm converts newlines into null bytes to
+    ; signify the end of strings, so we have to check if the character pointed
+    ; to by r12 is a null byte.
     cmp BYTE [r12], 0
     jne free_and_exit_error
 
