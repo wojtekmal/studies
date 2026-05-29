@@ -21,7 +21,7 @@ ERROR_CODE equ 1
 
 section .data
 
-space_and_null: db ` \0`
+space_newline_null: db ` \n\0`
 
 newline: db `\n`
 
@@ -426,7 +426,7 @@ after_flush_buffer:
     ; Reminder: this is the case where the recursion depth is equal to n. After
     ; writing the character, we need to skip past the code that is supposed to
     ; execute if the recursion depth is not equal to n.
-    jmp after_call_child_dfs
+    jmp after_case_recursion_depth_is_n
 
 after_write:
 
@@ -453,6 +453,11 @@ after_call_child_dfs:
     ; Restore rsi to the pointer to the next character.
     pop rsi
 
+    ; Do another iteration of the loop of the characters in the expansion.
+    jmp character_loop
+
+after_case_recursion_depth_is_n:
+
 after_character_loop:
 
     ; If the recursion depth isn't 0, we return to the parent.
@@ -466,7 +471,7 @@ after_dfs:
     ; which holds '\n' and rdx = 1 (write one character).
     mov eax, SYS_WRITE
     mov edi, FD_WRITE
-    mov rsi, [rel newline]
+    lea rsi, [rel newline]
     mov edx, 1
     syscall
 
