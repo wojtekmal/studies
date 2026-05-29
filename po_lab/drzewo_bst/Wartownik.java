@@ -2,7 +2,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class Wartownik<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbstrakcyjny<T>
 {
-    public void drukujDrzewo(int wcięcie, int przesunięcie) {}
+    public void drukujDrzewo(int wcięcie) {}
 
     public void drukujWLinii() {}
 

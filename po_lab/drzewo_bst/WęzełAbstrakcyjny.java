@@ -10,11 +10,11 @@ public abstract class WęzełAbstrakcyjny<T extends Comparable<T> & Dodawalny<T>
 
     public abstract int wysokość();
 
-    public abstract T suma(Class<T> typ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
+    public abstract Dodawalny<T> suma(Class<T> typ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     public abstract void drukujWLinii();
 
-    public abstract void drukujDrzewo(int wcięcie, int przesunięcie);
+    public abstract void drukujDrzewo(int wcięcie);
 
     public abstract T klucz();
 }
