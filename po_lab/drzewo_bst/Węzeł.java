@@ -18,11 +18,11 @@ public class Węzeł<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbst
     {
         if (klucz.compareTo(this.klucz) <= 0)
         {
-            lewy = lewy.wstaw(klucz);
+            lewy = lewy.wstaw(klucz, wartownik);
         }
         else
         {
-            prawy = prawy.wstaw(klucz);
+            prawy = prawy.wstaw(klucz, wartownik);
         }
 
         return this;
@@ -84,5 +84,10 @@ public class Węzeł<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbst
     @Override
     public T klucz() {
         return klucz;
+    }
+
+    public String toString()
+    {
+        return "Węzeł z wartością " + klucz.toString();
     }
 }

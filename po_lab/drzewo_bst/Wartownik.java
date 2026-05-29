@@ -16,9 +16,9 @@ public class Wartownik<T extends Comparable<T> & Dodawalny<T>> extends WęzełAb
         return 0;
     }
 
-    public WęzełAbstrakcyjny<T> wstaw(T klucz)
+    public WęzełAbstrakcyjny<T> wstaw(T klucz, Wartownik<T> wartownik)
     {
-        return new Węzeł<T>(klucz);
+        return new Węzeł<T>(klucz, wartownik);
     }
 
     public T klucz()

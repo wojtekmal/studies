@@ -19,11 +19,7 @@ MOVE_BRK_BLOCK_LEN equ 4096
 
 ERROR_CODE equ 1
 
-section .data
-
-space_newline_null: db ` \n\0`
-
-newline: db `\n`
+POINTER_SIZE equ 8
 
 section .bss
 
@@ -33,6 +29,10 @@ buffer: resb 4096
 ; expansions remembers what each character expands into. Note that expansions is
 ; zero initialized, which is used later in the program.
 expansions: resb 128
+
+section .data
+
+space_newline_null: db ` \n\0`
 
 section .text
 
@@ -298,13 +298,12 @@ after_initial_string:
     ; the expansion string.
     inc r9
 
-    ; We store the pointer to the buffer in r12 and add the offset represented
-    ; by al.
-    lea r12, [rel buffer]
-    add r12, rax
+    ; We store the pointer to the expansions table in r12.
+    lea r12, [rel expansions]
 
-    ; Now we move the pointer held in r9 into buffer + al.
-    mov [r12], r9
+    ; Now we move the pointer held in r9 into expansions at position al
+    ; (reminder: al holds the ascii code of the current character).
+    mov [r12 + POINTER_SIZE * rax], r9
 
     ; Repeat the loop.
     jmp read_strings_loop
@@ -348,22 +347,38 @@ after_read_strings_loop:
     ; call dfs and pop rsi from the stack.
     ; 3. Pop rsi from the stack.
 
-    ; Initialize rsi with the pointer to space_and_null, which holds " \0", and
-    ; rcx to 0, because we start with recursion depth 0.
-    lea rsi, [rel space_and_null]
+    ; Initialize rsi with the pointer to space_newline_null, which holds
+    ; " \n\0", and rcx to 0, because we start with recursion depth 0.
+    lea rsi, [rel space_newline_null]
     xor ecx, ecx
 
-    ; Initialize rbx, which will hold the current position in the buffer, to the
+    ; Initialize rdx, which will hold the current position in the buffer, to the
     ; start of the buffer.
-    lea rbx, [rel buffer]
+    lea rdx, [rel buffer]
 
     ; Set rdi to FD_WRITE, because we will only be using it as a syscall
     ; argument.
     mov edi, FD_WRITE
 
+    ; We want to set the expansion of a newline character to a newline
+    ; character, so that when we start with the string " \n\0" (held in
+    ; space_newline_null), the dfs will expand the space into the final string,
+    ; the newline into a newline (also after n recursion steps) and end on the
+    ; null character. Conveniently, we already have the correct expansion string
+    ; for the newline character stored in memory: at space_newline_null + 1.
+    
+    ; We store the pointer to "\n\0" in rax.
+    lea rax, [rel space_newline_null + 1]
+
+    ; We set the expansion table entry of '\n' to the pointer held in rax.
+    mov [rel expansions + POINTER_SIZE * `\n`], rax
+
 dfs:
 
 character_loop:
+
+    ; Set rax to 0. This will be needed later on.
+    xor eax, eax
 
     ; Put the current character into al and move rsi (the pointer to the current
     ; character).
@@ -381,47 +396,20 @@ character_loop:
     jne after_write
 
 write:
-    ; Set rax to 0. This will be needed later on.
-    xor eax, eax
 
     ; Write the current character into the current position in the buffer (held
-    ; in rbx) and increment this position.
-    mov [rbx], al
-    inc rbx
+    ; in rdx) and increment this position.
+    mov [rdx], al
+    inc rdx
 
-    ; Temporarily decrease rbx by the length of the buffer because we will be
-    ; checking if rbx points to the end of the buffer (so if it's equal to the
-    ; start of the buffer after we decrease it, then that means we reached the
-    ; end of the buffer).
-    sub rbx, BUFFER_LEN
+    ; Check if we reached the end of the buffer.
+    cmp rdx, [rel buffer + BUFFER_LEN]
+    jne after_call_flush
 
-    ; Check if we reached the end of the buffer. If not, then skip over the part
-    ; where the buffer is flushed.
-    cmp rbx, [rel buffer]
-    jne after_flush_buffer
+    ; Flush the buffer.
+    call flush_buffer
 
-flush_buffer:
-
-    ; Convenietly, rbx already points to the start of the buffer after we
-    ; prepared for the comparison. We do a syscall with rax = SYS_WRITE,
-    ; rdi = FD_WRITE, rsi = rbx (start of the buffer), rdx = BUFFER_LEN.
-    mov eax, SYS_WRITE
-    mov rsi, rbx
-    mov edx, BUFFER_LEN
-    syscall
-
-    ; Now rax holds the return value of sys_write. sys_write returns either an
-    ; error, which is negative, or the number of characters written. We can
-    ; check if the write was correct by checking if exactly BUFFER_LEN
-    ; characters were written.
-    cmp rax, BUFFER_LEN
-    jne free_and_exit_error
-
-after_flush_buffer:
-
-    ; Restore rbx so that it points to the next character by adding what we
-    ; subtracted.
-    add rbx, BUFFER_LEN
+after_call_flush:
 
     ; Reminder: this is the case where the recursion depth is equal to n. After
     ; writing the character, we need to skip past the code that is supposed to
@@ -437,9 +425,11 @@ after_write:
     ; Set rsi to the value expected by the child dfs, which is a pointer to the
     ; expansion string of the current character, which is stored in expansions
     ; at offset al. Note that the value held in rax is equal to that held in al,
-    ; because earlier we zeroed rax.
-    lea rsi, [rel buffer]
-    add rsi, rax
+    ; because earlier we zeroed rax. Note that rsi + rax is a position in the
+    ; expansions table, so we want to set rsi to the pointer that is held in the
+    ; expansions table (so not rsi += 8 * rax, but rsi = *(rsi + 8 * rax)).
+    lea rsi, [rel expansions]
+    mov rsi, [rsi + POINTER_SIZE * rax]
 
     ; Set ecx (which represents the recursion depth) to the value expected by
     ; the child dfs by incrementing it.
@@ -452,6 +442,9 @@ after_call_child_dfs:
 
     ; Restore rsi to the pointer to the next character.
     pop rsi
+
+    ; Restore ecx to the current recursion depth.
+    dec ecx
 
     ; Do another iteration of the loop of the characters in the expansion.
     jmp character_loop
@@ -466,28 +459,18 @@ after_character_loop:
 
 after_dfs:
 
-    ; After writing the result string to output, we have to write a newline. We
-    ; do a syscall with rax = SYS_WRITE, rdi = FD_WRITE, rsi set to newline,
-    ; which holds '\n' and rdx = 1 (write one character).
-    mov eax, SYS_WRITE
-    mov edi, FD_WRITE
-    lea rsi, [rel newline]
-    mov edx, 1
-    syscall
+    ; Flush the buffer one last time.
+    call flush_buffer
 
     ; Zero rdi. This will be needed in a moment.
     xor edi, edi
 
-    ; rax holds the return value of sys_write. If it's not equal to the number
-    ; of characters that were supposed to be written, which is 1, then there was
-    ; an error. Otherwise we skip over to the part where the program is exited
-    ; without an error, because this is the last place where an error may occur.
-    cmp rax, 1
-    je after_free_and_exit_error
+    ; There was no error, so we skip the return error part.
+    jmp after_free_and_exit_error
 
 free_and_exit_error:
     
-    ; Set edi to the return value of the program, which is ERROR_CODE.
+    ; Set edi to the value we want to return in the event of an error.
     mov edi, ERROR_CODE
 
 after_free_and_exit_error:
@@ -496,3 +479,32 @@ after_free_and_exit_error:
     ; ERROR_CODE in the event of an error). We do a syscall with rax = SYS_EXIT.
     mov eax, SYS_EXIT
     syscall
+
+    
+    ; Here we have the flush_buffer helper function.
+
+flush_buffer:
+
+    ; rdx holds the past-the-end of the buffer's contents.
+    
+    ; We do a syscall with rax = SYS_WRITE, rdi = FD_WRITE, rsi = rbx (start of
+    ; the buffer), and rdx set to the length of the buffer, which is the current
+    ; past-the-end minus the start of the buffer (which is moved to rsi in the
+    ; code below). Reminder: rdi is already set to FD_WRITE.
+    mov eax, SYS_WRITE
+    lea rsi, [rel buffer]
+    sub rdx, rsi
+    syscall
+
+    ; Now rax holds the return value of sys_write. sys_write returns either an
+    ; error, which is negative, or the number of characters written. We can
+    ; check if the write was correct by checking if exactly BUFFER_LEN
+    ; characters were written.
+    cmp rax, rdx
+    jne free_and_exit_error
+
+    ; We set rdx to the new past-the-end of the buffer's contents, which is the
+    ; start of the buffer.
+    lea rdx, [rel buffer]
+
+    ret

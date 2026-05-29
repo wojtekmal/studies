@@ -16,5 +16,20 @@ public class Main
         System.out.println("Znajdź 21: " + bst.znajdź(new WInteger(21)));
         System.out.println("Znajdź 0: " + bst.znajdź(new WInteger(0)));
         System.out.println("Znajdź 5: " + bst.znajdź(new WInteger(5)));
+
+        DrzewoBST<WString> bstNapisów = new DrzewoBST<WString>();
+
+        String[] doDrzewaNapisy = {"abc", "Ala ma kota", "67"};
+
+        for (String napis : doDrzewaNapisy) bstNapisów.wstaw(new WString(napis));
+
+        bstNapisów.drukujWLinii();
+        bstNapisów.drukujDrzewo(3);  // 3 to wielkość wcięcia na jednym poziomie
+        System.out.println("Rozmiar: " + bstNapisów.rozmiar());
+        System.out.println("Wysokość: " + bstNapisów.wysokość());
+        System.out.println("Suma: " + bstNapisów.suma(WString.class));
+        System.out.println("Znajdź \"a\": " + bstNapisów.znajdź(new WString("a")));
+        System.out.println("Znajdź \"67\": " + bstNapisów.znajdź(new WString("67")));
+        System.out.println("Znajdź \"ala ma kota\": " + bstNapisów.znajdź(new WString("ala ma kota")));
     }
 }

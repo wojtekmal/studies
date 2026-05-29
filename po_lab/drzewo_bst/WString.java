@@ -18,8 +18,9 @@ public class WString implements Dodawalny<WString>, Comparable<WString>
     }
 
     @Override
-    public int compareTo(WString wString) {
-        return 0;
+    public int compareTo(WString inny)
+    {
+        return wartość.compareTo(inny.wartość);
     }
 
     public String toString()
