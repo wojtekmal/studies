@@ -6,13 +6,15 @@ public class Węzeł<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbst
     private WęzełAbstrakcyjny<T> lewy;
     private WęzełAbstrakcyjny<T> prawy;
 
-    public Węzeł(T klucz)
+    public Węzeł(T klucz, Wartownik<T> wartownik)
     {
         this.klucz = klucz;
+        this.lewy = wartownik;
+        this.prawy = wartownik;
     }
 
     @Override
-    public WęzełAbstrakcyjny<T> wstaw(T klucz)
+    public WęzełAbstrakcyjny<T> wstaw(T klucz, Wartownik<T> wartownik)
     {
         if (klucz.compareTo(this.klucz) <= 0)
         {

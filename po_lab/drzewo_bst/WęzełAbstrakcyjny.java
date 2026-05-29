@@ -2,7 +2,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public abstract class WęzełAbstrakcyjny<T extends Comparable<T> & Dodawalny<T>>
 {
-    public abstract WęzełAbstrakcyjny<T> wstaw(T klucz);
+    public abstract WęzełAbstrakcyjny<T> wstaw(T klucz, Wartownik<T> wartownik);
 
     public abstract Węzeł<T> znajdź(T klucz);
 

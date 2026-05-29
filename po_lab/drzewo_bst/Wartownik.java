@@ -13,7 +13,7 @@ public class Wartownik<T extends Comparable<T> & Dodawalny<T>> extends WęzełAb
 
     @Override
     public int wysokość() {
-        return -1;
+        return 0;
     }
 
     public WęzełAbstrakcyjny<T> wstaw(T klucz)

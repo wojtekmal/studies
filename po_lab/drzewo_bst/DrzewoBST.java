@@ -13,7 +13,7 @@ public class DrzewoBST<T extends Comparable<T> & Dodawalny<T>>
 
     public void wstaw(T nowy)
     {
-        korzeń.wstaw(nowy);
+        korzeń = korzeń.wstaw(nowy);
     }
 
     public Węzeł<T> znajdź(T klucz)

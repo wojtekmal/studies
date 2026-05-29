@@ -1,4 +1,4 @@
 public interface Dodawalny<T>
 {
-    public T dodaj(Dodawalny<T> inny);
+    public T dodaj(T inny);
 }
