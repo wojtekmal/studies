@@ -27,7 +27,7 @@ public class Węzeł<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbst
     }
 
     @Override
-    public WęzełAbstrakcyjny<T> znajdź(T klucz)
+    public Węzeł<T> znajdź(T klucz)
     {
         int wynikPorównania = klucz.compareTo(this.klucz);
 
@@ -58,7 +58,7 @@ public class Węzeł<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbst
     }
 
     @Override
-    public Dodawalny<T> suma(Class<T> typ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException
+    public T suma(Class<T> typ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException
     {
         return lewy.suma(typ).dodaj(klucz).dodaj(prawy.suma(typ));
     }
@@ -72,11 +72,11 @@ public class Węzeł<T extends Comparable<T> & Dodawalny<T>> extends WęzełAbst
     }
 
     @Override
-    public void drukujDrzewo(int wcięcie)
+    public void drukujDrzewo(int rozmiarWcięcia, int przesunięcie)
     {
-        prawy.drukujDrzewo(wcięcie + 4);
-        System.out.println(" ".repeat(wcięcie) + klucz);
-        lewy.drukujDrzewo(wcięcie + 4);
+        prawy.drukujDrzewo(rozmiarWcięcia, przesunięcie + rozmiarWcięcia);
+        System.out.println(" ".repeat(przesunięcie) + klucz);
+        lewy.drukujDrzewo(rozmiarWcięcia, przesunięcie + rozmiarWcięcia);
     }
 
     @Override

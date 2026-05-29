@@ -4,17 +4,17 @@ public abstract class WęzełAbstrakcyjny<T extends Comparable<T> & Dodawalny<T>
 {
     public abstract WęzełAbstrakcyjny<T> wstaw(T klucz);
 
-    public abstract WęzełAbstrakcyjny<T> znajdź(T klucz);
+    public abstract Węzeł<T> znajdź(T klucz);
 
     public abstract int rozmiar();
 
     public abstract int wysokość();
 
-    public abstract Dodawalny<T> suma(Class<T> typ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
+    public abstract T suma(Class<T> typ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     public abstract void drukujWLinii();
 
-    public abstract void drukujDrzewo(int wcięcie);
+    public abstract void drukujDrzewo(int rozmiarWcięcia, int przesunięcie);
 
     public abstract T klucz();
 }
