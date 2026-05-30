@@ -1,4 +1,5 @@
 ; TODO: check if the expansion for a certain character already exists.
+; TODO: rdi instead of rdx in dfs.
 global _start
 
 SYS_READ equ 0
@@ -102,12 +103,12 @@ read_n_loop:
     ; Multiply n by 10 and check for overflows. Note that eax holds an unsigned
     ; 32-bit representation of n, so we use mul. Reminder: ebp holds 10.
     mul ebp
-    jo free_and_exit_error
+    jc free_and_exit_error
 
     ; Add ecx (which holds the digit in it's lowest 8 bits) to eax and check for
-    ; overflows.
+    ; unsigned overflows.
     add eax, ecx
-    jo free_and_exit_error
+    jc free_and_exit_error
 
     ; TODO: do the checks for overflows simultaenously by using adx.
 
@@ -294,12 +295,20 @@ after_initial_string:
     ; string.
     inc r9
 
-    ; We store the pointer to the expansions table in r12.
+    ; We store the pointer to the expansions table in r12 and then shift it to
+    ; point to the entry for the character held in al.
     lea r12, [rel expansions]
+    lea r12, [r12 + POINTER_SIZE * rax]
 
-    ; Now we move the pointer held in r9 into expansions at position al
-    ; (reminder: al holds the ascii code of the current character).
-    mov [r12 + POINTER_SIZE * rax], r9
+    ; We check if there is already an expansion for the character held in al. If
+    ; there is, then we end with an error. Reminder: expansions holds entries
+    ; that are POINTER_SIZE, which is QWORD.
+    cmp QWORD [r12], 0
+    jne free_and_exit_error
+
+    ; Now we move the pointer to the start of the string we read (held in r9)
+    ; into the entry for the character held in al in the expansions table.
+    mov [r12], r9
 
 after_non_initial_string:
 
@@ -311,17 +320,17 @@ after_read_strings_loop:
     ; We read all the strings, but we still have to check two things: that at
     ; least one character was read and that it was a newline. We can check if at
     ; least one character was read by checking bl, which holds a flag
-    ; representing whether at least one string was read. We wan to check if
+    ; representing whether at least one string was read. We want to check if
     ; bl != INITIAL_STRING_READ = 0.
     test bl, bl
     jne free_and_exit_error
 
-    ; Convenietly, the pointer to the last character is held in r12 because it
-    ; is transfered there right before the only place where we exit
-    ; read_strings_loop. The algorithm converts newlines into null bytes to
-    ; signify the end of strings, so we have to check if the character pointed
-    ; to by r12 is a null byte.
-    cmp BYTE [r12], 0
+    ; Convenietly, the pointer to the byte after the last character is held in
+    ; r12 because it is transfered there right before the only place where we
+    ; exit read_strings_loop. The algorithm converts newlines into null bytes to
+    ; signify the end of strings, so we have to check if the character before
+    ; the one pointed to by r12 is a null byte.
+    cmp BYTE [r12 - 1], 0
     jne free_and_exit_error
 
     ; Now we write the output. This is done with a dfs, where a character calls 
@@ -427,16 +436,16 @@ after_write:
 
 after_call_child_dfs:
 
-    ; Restore rsi to the pointer to the next character.
-    pop rsi
-
     ; Restore ecx to the current recursion depth.
     dec ecx
 
 after_case_recursion_depth_is_not_n:
 
-    ; Do another iteration of the loop of the characters in the expansion,
-    ; regardless of which case we have: depth n or not n.
+    ; Restore rsi to the pointer to the next character, regardless of which case
+    ; we have: depth n or not n.
+    pop rsi
+
+    ; Do another iteration of the loop of the characters in the expansion.
     jmp character_loop
 
 after_character_loop:
