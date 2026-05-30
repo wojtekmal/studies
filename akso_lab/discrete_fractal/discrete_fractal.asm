@@ -401,7 +401,7 @@ after_call_flush:
     ; Reminder: this is the case where the recursion depth is equal to n. After
     ; writing the character, we need to skip past the code that is supposed to
     ; execute if the recursion depth is not equal to n.
-    jmp after_case_recursion_depth_is_n
+    jmp after_case_recursion_depth_is_not_n
 
 after_write:
 
@@ -433,10 +433,11 @@ after_call_child_dfs:
     ; Restore ecx to the current recursion depth.
     dec ecx
 
-    ; Do another iteration of the loop of the characters in the expansion.
-    jmp character_loop
+after_case_recursion_depth_is_not_n:
 
-after_case_recursion_depth_is_n:
+    ; Do another iteration of the loop of the characters in the expansion,
+    ; regardless of which case we have: depth n or not n.
+    jmp character_loop
 
 after_character_loop:
 
