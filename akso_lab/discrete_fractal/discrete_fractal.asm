@@ -1,3 +1,4 @@
+; TODO: check if the expansion for a certain character already exists.
 global _start
 
 SYS_READ equ 0
@@ -32,7 +33,7 @@ expansions: resb 128
 
 section .data
 
-space_newline_null: db ` \n\0`
+space_null: db ` \0`
 
 section .text
 
@@ -186,6 +187,7 @@ read_string_loop:
     ; loop (read_strings_loop).
     je after_read_strings_loop
 
+    ; TODO: change this to lea r10, [rsi + rax].
     ; Otherwise rax holds a positive integer representing the length of the
     ; non-empty string we just read. In that case we want to store the
     ; past-the-end pointer of that string in r10. This pointer is the sum of
@@ -258,11 +260,6 @@ after_read_string_loop:
     xor eax, eax
     stosb
 
-    ; Now we have the pointer to the null-terminated string in r9. We have to
-    ; save this pointer in the expansion table. We store the first character
-    ; (the character that is expanded) in al.
-    mov al, [r9]
-
     ; Remember: the first string is special, and a flag is stored in bl. We
     ; check if it's the first string. If not, we jump to the part that deals
     ; with the following (non-initial) strings. It's a non-initial string if
@@ -270,21 +267,21 @@ after_read_string_loop:
     test bl, bl
     je after_initial_string
 
-    ; If it's the initial string, then we set al (which stores the expanded
-    ; character) to the space character.
-    mov al, ' '
-
-    ; The non-initial strings are stored in the expansion table as a pointer to
-    ; the first character of the expansion, so the second character of the
-    ; string. We want to have one logic sequence for all strings, so we
-    ; decrement r9 in order to make up for how we later set the value in the
-    ; expansion table to r9 + 1.
-    dec r9
+    ; Store the pointer to the initial string in r13.
+    mov r13, r9
 
     ; Reset the bl flag to remember that the initial string has been read.
     xor bl, bl
 
+    ; Skip the part where we deal with non-initial strings.
+    jmp after_non_initial_string
+
 after_initial_string:
+
+    ; We have the pointer to the null-terminated string in r9. We have to
+    ; save this pointer in the expansion table. We store the first character
+    ; (the character that is expanded) in al.
+    mov al, [r9]
 
     ; It's possible that the non-initial strings given in the input are empty.
     ; We check for this by making sure that the first character, which is stored
@@ -293,9 +290,8 @@ after_initial_string:
     test al, al
     je free_and_exit_error
 
-    ; If it's not the initial string, we set the expansions at position al to
-    ; r9 + 1. First we increment r9 so that it points to the first character of
-    ; the expansion string.
+    ; We increment r9 so that it points to the first character of the expansion
+    ; string.
     inc r9
 
     ; We store the pointer to the expansions table in r12.
@@ -304,6 +300,8 @@ after_initial_string:
     ; Now we move the pointer held in r9 into expansions at position al
     ; (reminder: al holds the ascii code of the current character).
     mov [r12 + POINTER_SIZE * rax], r9
+
+after_non_initial_string:
 
     ; Repeat the loop.
     jmp read_strings_loop
@@ -347,9 +345,11 @@ after_read_strings_loop:
     ; call dfs and pop rsi from the stack.
     ; 3. Pop rsi from the stack.
 
-    ; Initialize rsi with the pointer to space_newline_null, which holds
-    ; " \n\0", and rcx to 0, because we start with recursion depth 0.
-    lea rsi, [rel space_newline_null]
+    ; Initialize rsi, which will point to the current character of the dfs,
+    ; with the pointer to the initial string. Reminder: it is stored in r13.
+    mov rsi, r13
+
+    ; Initialize rcx to 0, because we start with recursion depth 0.
     xor ecx, ecx
 
     ; Initialize rdx, which will hold the current position in the buffer, to the
@@ -359,19 +359,6 @@ after_read_strings_loop:
     ; Set rdi to FD_WRITE, because we will only be using it as a syscall
     ; argument.
     mov edi, FD_WRITE
-
-    ; We want to set the expansion of a newline character to a newline
-    ; character, so that when we start with the string " \n\0" (held in
-    ; space_newline_null), the dfs will expand the space into the final string,
-    ; the newline into a newline (also after n recursion steps) and end on the
-    ; null character. Conveniently, we already have the correct expansion string
-    ; for the newline character stored in memory: at space_newline_null + 1.
-    
-    ; We store the pointer to "\n\0" in rax.
-    lea rax, [rel space_newline_null + 1]
-
-    ; We set the expansion table entry of '\n' to the pointer held in rax.
-    mov [rel expansions + POINTER_SIZE * `\n`], rax
 
 dfs:
 
@@ -458,6 +445,13 @@ after_character_loop:
     jne after_call_child_dfs
 
 after_dfs:
+
+    ; Add a newline to the buffer. Reminder: rdx points to the current position
+    ; (past-the-end of the contents) of the buffer.
+    mov BYTE [rdx], `\n`
+
+    ; Increment rdx because we added a character to the buffer.
+    inc rdx
 
     ; Flush the buffer one last time.
     call flush_buffer
