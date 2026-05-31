@@ -1,4 +1,3 @@
-; TODO: check if the expansion for a certain character already exists.
 ; TODO: rdi instead of rdx in dfs.
 global _start
 
@@ -84,18 +83,18 @@ read_n_loop:
     test cl, cl
     je after_read_n_loop
 
-    ; Check if cl holds a valid digit. We do this by comparing it to '0' and
-    ; '9'. Here cl is treated as a 8-bit unsigned number.
-    cmp cl, '0'
-    jb free_and_exit_error
-    cmp cl, '9'
-    ja free_and_exit_error
-
-    ; For convenience we subtract '0' from cl, so that cl stores the value
-    ; represented by the digit, not the ascii encoding of the digit.
+    ; We subtract '0' from cl, so that cl stores the value represented by the
+    ; digit, not the ascii encoding of the digit.
     sub cl, '0'
 
-    ; TODO: use jcxz and first subtract '0', then check if it's a digit.
+    ; Check if cl holds a valid digit, meaning that when treated as a 8-bit
+    ; unsigned number, it is not above 9.
+    cmp cl, 9
+    ja free_and_exit_error
+
+    ; TODO: swap the usage of rbp and rbx, use bit shifts instead of mul, use
+    ; rbx instead of ebx and multiple overflow checks when reading n, use al and
+    ; rsi for reading characters in the loop.
 
     ; We accumulate in eax in two steps: first we multiply eax by 10, then we
     ; add the digit stored in cl. Both steps require checking for overflows.
@@ -106,11 +105,12 @@ read_n_loop:
     jc free_and_exit_error
 
     ; Add ecx (which holds the digit in it's lowest 8 bits) to eax and check for
-    ; unsigned overflows.
+    ; unsigned overflows. Note that we have to check the carry flag, not the
+    ; overflow flag.
     add eax, ecx
     jc free_and_exit_error
 
-    ; TODO: do the checks for overflows simultaenously by using adx.
+    ; TODO: do the checks for overflows simultaenously.
 
     ; Increment rbx and repeat the loop.
     inc rbx
@@ -188,13 +188,11 @@ read_string_loop:
     ; loop (read_strings_loop).
     je after_read_strings_loop
 
-    ; TODO: change this to lea r10, [rsi + rax].
     ; Otherwise rax holds a positive integer representing the length of the
     ; non-empty string we just read. In that case we want to store the
     ; past-the-end pointer of that string in r10. This pointer is the sum of
     ; rsi and rax, because rsi currently points to the start of the buffer.
-    mov r10, rsi
-    add r10, rax
+    lea r10, [rsi + rax]
 
 after_call_sys_read:
 
