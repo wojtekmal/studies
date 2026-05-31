@@ -9,7 +9,7 @@ SYS_EXIT equ 60
 FD_READ equ 0
 FD_WRITE equ 1
 
-BUFFER_LEN equ 4096
+BUFFER_LEN equ 1
 
 INITIAL_STRING_NOT_READ equ 1
 INITIAL_STRING_READ equ 0
@@ -25,7 +25,7 @@ POINTER_SIZE equ 8
 section .bss
 
 ; buffer is used for buffering input and output.
-buffer: resb 4096
+buffer: resb BUFFER_LEN
 
 ; expansions remembers what each character expands into. Note that expansions is
 ; zero initialized, which is used later in the program.
