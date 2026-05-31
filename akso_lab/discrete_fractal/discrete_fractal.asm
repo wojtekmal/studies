@@ -16,7 +16,7 @@ INITIAL_STRING_READ equ 0
 
 NULLPTR equ 0
 
-MOVE_BRK_BLOCK_LEN equ 4096
+MOVE_BRK_BLOCK_LEN equ 1
 
 ERROR_CODE equ 1
 
@@ -28,7 +28,8 @@ section .bss
 buffer: resb BUFFER_LEN
 
 ; expansions remembers what each character expands into. Note that expansions is
-; zero initialized, which is used later in the program.
+; zero initialized, which is used later in the program. We have 1 entry for each
+; ascii character (so 128 in total) but only positions '!' through '~' are used.
 expansions: resb 128
 
 section .data
@@ -356,8 +357,8 @@ after_read_strings_loop:
     ; with the pointer to the initial string. Reminder: it is stored in r13.
     mov rsi, r13
 
-    ; Initialize rcx to 0, because we start with recursion depth 0.
-    xor ecx, ecx
+    ; Initialize rbx to 0, because we start with recursion depth 0.
+    xor ebx, ebx
 
     ; Initialize rdx, which will hold the current position in the buffer, to the
     ; start of the buffer.
@@ -385,8 +386,8 @@ character_loop:
     ; Save the pointer to the next character on the stack.
     push rsi
 
-    ; If the recursion depth (ecx) isn't equal to n, then skip the write part.
-    cmp ecx, ebp
+    ; If the recursion depth (ebx) isn't equal to n, then skip the write part.
+    cmp ebx, ebp
     jne after_write
 
 write:
@@ -397,7 +398,8 @@ write:
     inc rdx
 
     ; Check if we reached the end of the buffer.
-    cmp rdx, [rel buffer + BUFFER_LEN]
+    lea r13, [rel buffer + BUFFER_LEN]
+    cmp rdx, r13
     jne after_call_flush
 
     ; Flush the buffer.
@@ -425,17 +427,17 @@ after_write:
     lea rsi, [rel expansions]
     mov rsi, [rsi + POINTER_SIZE * rax]
 
-    ; Set ecx (which represents the recursion depth) to the value expected by
+    ; Set ebx (which represents the recursion depth) to the value expected by
     ; the child dfs by incrementing it.
-    inc ecx
+    inc ebx
 
     ; Do a child dfs.
     jmp dfs
 
 after_call_child_dfs:
 
-    ; Restore ecx to the current recursion depth.
-    dec ecx
+    ; Restore ebx to the current recursion depth.
+    dec ebx
 
 after_case_recursion_depth_is_not_n:
 
@@ -449,7 +451,7 @@ after_case_recursion_depth_is_not_n:
 after_character_loop:
 
     ; If the recursion depth isn't 0, we return to the parent.
-    test ecx, ecx
+    test ebx, ebx
     jne after_call_child_dfs
 
 after_dfs:
