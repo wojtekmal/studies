@@ -9,14 +9,14 @@ SYS_EXIT equ 60
 FD_READ equ 0
 FD_WRITE equ 1
 
-BUFFER_LEN equ 1
+BUFFER_LEN equ 4096
 
 INITIAL_STRING_NOT_READ equ 1
 INITIAL_STRING_READ equ 0
 
 NULLPTR equ 0
 
-MOVE_BRK_BLOCK_LEN equ 1
+MOVE_BRK_BLOCK_LEN equ 4096
 
 ERROR_CODE equ 1
 
@@ -386,38 +386,6 @@ character_loop:
     ; Save the pointer to the next character on the stack.
     push rsi
 
-    ; If the recursion depth (ebx) isn't equal to n, then skip the write part.
-    cmp ebx, ebp
-    jne after_write
-
-write:
-
-    ; Write the current character into the current position in the buffer (held
-    ; in rdx) and increment this position.
-    mov [rdx], al
-    inc rdx
-
-    ; Check if we reached the end of the buffer.
-    lea r13, [rel buffer + BUFFER_LEN]
-    cmp rdx, r13
-    jne after_call_flush
-
-    ; Flush the buffer.
-    call flush_buffer
-
-after_call_flush:
-
-    ; Reminder: this is the case where the recursion depth is equal to n. After
-    ; writing the character, we need to skip past the code that is supposed to
-    ; execute if the recursion depth is not equal to n.
-    jmp after_case_recursion_depth_is_not_n
-
-after_write:
-
-    ; This is the case were the recursion depth is not equal to n. In that case
-    ; we need to a dfs with the expansion of the current character. Note that
-    ; the current character is stored in al.
-
     ; Set rsi to the value expected by the child dfs, which is a pointer to the
     ; expansion string of the current character, which is stored in expansions
     ; at offset al. Note that the value held in rax is equal to that held in al,
@@ -426,6 +394,23 @@ after_write:
     ; expansions table (so not rsi += 8 * rax, but rsi = *(rsi + 8 * rax)).
     lea rsi, [rel expansions]
     mov rsi, [rsi + POINTER_SIZE * rax]
+
+    ; If the recursion depth (ebx) is equal to n, then write the character.
+    cmp ebx, ebp
+    je write
+
+    ; If the entry for al in the expansion table that we just put into rsi is a
+    ; nullptr (equal to 0), then write the character, because this means that
+    ; this character doesn't have an entry in the expansion table.
+    test rsi, rsi
+    je write
+
+expand:
+
+    ; This is the case where the character is supposed to be expanded. In that
+    ; case we need to a dfs with the expansion of the current character. Note
+    ; that the current character is stored in al. We already have rsi set to the
+    ; value expected by the child dfs.
 
     ; Set ebx (which represents the recursion depth) to the value expected by
     ; the child dfs by incrementing it.
@@ -439,10 +424,32 @@ after_call_child_dfs:
     ; Restore ebx to the current recursion depth.
     dec ebx
 
-after_case_recursion_depth_is_not_n:
+    ; Reminder: this is the case where we expand the character. After doing
+    ; that, we need to skip past the code that is supposed to execute if the
+    ; character is supposed to be expanded.
+    jmp after_write
+
+after_expand:
+
+write:
+
+    ; Write the current character into the current position in the buffer (held
+    ; in rdx) and increment this position.
+    mov [rdx], al
+    inc rdx
+
+    ; Check if we reached the end of the buffer.
+    lea r13, [rel buffer + BUFFER_LEN]
+    cmp rdx, r13
+    jne after_write
+
+    ; Flush the buffer.
+    call flush_buffer
+
+after_write:
 
     ; Restore rsi to the pointer to the next character, regardless of which case
-    ; we have: depth n or not n.
+    ; we have: writing the character or expanding it.
     pop rsi
 
     ; Do another iteration of the loop of the characters in the expansion.

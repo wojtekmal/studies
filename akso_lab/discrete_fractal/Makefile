@@ -4,3 +4,7 @@ discrete_fractal_c: discrete_fractal.c
 discrete_fractal: discrete_fractal.asm
 	nasm -f elf64 -w+all -w+error -w-unknown-warning -w-reloc-rel -o discrete_fractal.o discrete_fractal.asm -g
 	ld -pie -I /lib64/ld-linux-x86-64.so.2 --fatal-warnings -o discrete_fractal discrete_fractal.o -g
+
+generowanie_testow_poprawnosci: generowanie_testow_poprawnosci.cpp
+	g++ -o generowanie_testow_poprawnosci generowanie_testow_poprawnosci.cpp -Wall -O3
+	./generowanie_testow_poprawnosci

@@ -11,8 +11,9 @@ void wygeneruj_male_testy(mt19937 rng)
         // n od 0 do 4.
         uint32_t n = rng() % 5;
 
-        string nazwa_pliku_wejscia = "id_" + to_string(i) + "n_" + to_string(n) + ".in";
-        ofstream plik(male_testy_katalog + "/" + nazwa_pliku_wejscia);
+        string nazwa_pliku_wejscia = "id_" + to_string(i) + "_n_" + to_string(n) + ".in";
+        string sciezka_do_pliku_wejscia = male_testy_katalog + "/" + nazwa_pliku_wejscia;
+        ofstream plik(sciezka_do_pliku_wejscia);
 
         // Losujemy liczbę znaków (od 1 do 5) oraz znaki (może wyjść mniej jeśli
         // się przypadkiem powtórzą).
@@ -54,7 +55,14 @@ void wygeneruj_male_testy(mt19937 rng)
             plik << "\n";
         }
 
+        plik.close();
+
         string nazwa_pliku_wyjscia = "id_" + to_string(i) + ".out";
+        string sciezka_do_pliku_wyjscia = male_testy_katalog + "/" + nazwa_pliku_wyjscia;
+        string komenda = "./discrete_fractal " + to_string(n) + " < " + 
+            sciezka_do_pliku_wejscia + " > " + sciezka_do_pliku_wyjscia;
+        
+        system(komenda.c_str());
     }
 }
 
