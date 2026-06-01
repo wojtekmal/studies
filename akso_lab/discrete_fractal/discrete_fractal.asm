@@ -119,6 +119,10 @@ read_n_loop:
 
 after_read_n_loop:
 
+    ; Check if at least one digit was read by checking if rbx moved.
+    cmp rbx, [rsp + 16]
+    je free_and_exit_error
+
     ; We move n to ebp.
     mov ebp, eax
 
