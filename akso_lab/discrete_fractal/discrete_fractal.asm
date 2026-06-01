@@ -52,63 +52,77 @@ _start:
     cmp QWORD [rsp], 2
     jne free_and_exit_error
 
-    ; Store the pointer to the first byte of the second argument in rsi.
-    mov rsi, [rsp + 16]
+    ; Store the pointer to the first byte of the second argument in rbx.
+    mov rbx, [rsp + 16]
 
-    ; Now rsi points to the first digit of n. We will accumulate the unsigned
-    ; 32-bit value of n in ebx. For each digit, we:
+    ; Now rbx points to the first digit of n. We will accumulate the unsigned
+    ; 32-bit value of n in eax. For each digit, we:
     ; 1. Breaking the loop if we found a null byte.
     ; 2. Check if it's a digit.
-    ; 3. Accumulate in ebx and check if there was an overflow.
+    ; 3. Accumulate in eax and check if there was an overflow.
+    ; 4. Increment rbx and repeat.
 
-    ; Start with zeroing rax and rbx, because they will be used to store the
-    ; current digit and n, respectively. We can't just zero al, which is enough
-    ; to hold the current digit, because later we need to add the digit to rbx.
-    ; Although n fits in 32 bits, we use rbx in order to check for overflows.
+    ; Start with zeroing eax and ecx, because they will be used to store n and
+    ; the current digit, respectively.
     xor eax, eax
-    xor ebx, ebx
+    xor ecx, ecx
+
+    ; mul needs the second factor to be in a register. We will be multiplying by
+    ; 10, so we store 10 in ebp (we won't need the initial value of rbp).
+    mov ebp, 10
 
 read_n_loop:
-    ; Store the ascii code of the digit (one byte) in al and move rsi so that
-    ; it points to the next digit.
-    lodsb
+    ; Store the digit (one byte) in cl.
+    mov cl, [rbx]
 
     ; Check if it's a null byte. If yes, then break the loop.
-    test al, al
+    test cl, cl
     je after_read_n_loop
 
-    ; We subtract '0' from al, so that al stores the value represented by the
+    ; We subtract '0' from cl, so that cl stores the value represented by the
     ; digit, not the ascii encoding of the digit.
-    sub al, '0'
+    sub cl, '0'
 
-    ; Check if al holds a valid digit, meaning that when treated as a 8-bit
+    ; Check if cl holds a valid digit, meaning that when treated as a 8-bit
     ; unsigned number, it is not above 9.
-    cmp al, 9
+    cmp cl, 9
     ja free_and_exit_error
 
     ; TODO: swap the usage of rbp and rbx, use bit shifts instead of mul, use
     ; rbx instead of ebx and multiple overflow checks when reading n, use al and
     ; rsi for reading characters in the loop.
 
-    shl rbx, 1
-    lea rbx, [rbx + 4 * rbx]
+    ; We accumulate in eax in two steps: first we multiply eax by 10, then we
+    ; add the digit stored in cl. Both steps require checking for overflows.
 
-    add rbx, rax
+    ; Multiply n by 10 and check for overflows. Note that eax holds an unsigned
+    ; 32-bit representation of n, so we use mul. Reminder: ebp holds 10.
+    mul ebp
+    jc free_and_exit_error
 
-    mov rcx, rbx
-    shr rcx, 32
-    jnz free_and_exit_error
+    ; Add ecx (which holds the digit in it's lowest 8 bits) to eax and check for
+    ; unsigned overflows. Note that we have to check the carry flag, not the
+    ; overflow flag.
+    add eax, ecx
+    jc free_and_exit_error
 
+    ; TODO: do the checks for overflows simultaenously.
+
+    ; Increment rbx and repeat the loop.
+    inc rbx
     jmp read_n_loop
 
 after_read_n_loop:
 
-    ; Check if at least one digit was read by checking if rsi moved.
-    cmp rsi, [rsp + 16]
+    ; Check if at least one digit was read by checking if rbx moved.
+    cmp rbx, [rsp + 16]
     je free_and_exit_error
 
-    ; bpl will hold a flag signifying whether the initial string has been read.
-    mov bpl, INITIAL_STRING_NOT_READ
+    ; We move n to ebp.
+    mov ebp, eax
+
+    ; bl will hold a flag signifying whether the initial string has been read.
+    mov bl, INITIAL_STRING_NOT_READ
 
     ; rsi will hold a pointer to the current position in the buffer. r10 will
     ; hold a pointer to the end of the read string, which is usually the end of
@@ -120,9 +134,6 @@ after_read_n_loop:
     ; copying over. We initialize it with the current break pointer, because we
     ; will store the strings that we are reading on the heap.
     mov rdi, r8
-
-    ; Clear DF for the string operations we will do.
-    cld
 
     ; We read the strings in a loop. For each string we:
     ; 1. Read the string and check it's correctness.
@@ -245,18 +256,18 @@ after_read_string_loop:
     xor eax, eax
     stosb
 
-    ; Remember: the first string is special, and a flag is stored in bpl. We
+    ; Remember: the first string is special, and a flag is stored in bl. We
     ; check if it's the first string. If not, we jump to the part that deals
     ; with the following (non-initial) strings. It's a non-initial string if
-    ; bpl = INITIAL_STRING_READ = 0.
-    test bpl, bpl
+    ; bl = INITIAL_STRING_READ = 0.
+    test bl, bl
     je after_initial_string
 
     ; Store the pointer to the initial string in r13.
     mov r13, r9
 
-    ; Reset the bpl flag to remember that the initial string has been read.
-    xor bpl, bpl
+    ; Reset the bl flag to remember that the initial string has been read.
+    xor bl, bl
 
     ; Skip the part where we deal with non-initial strings.
     jmp after_non_initial_string
@@ -303,10 +314,10 @@ after_read_strings_loop:
 
     ; We read all the strings, but we still have to check two things: that at
     ; least one character was read and that it was a newline. We can check if at
-    ; least one character was read by checking bpl, which holds a flag
+    ; least one character was read by checking bl, which holds a flag
     ; representing whether at least one string was read. We want to check if
-    ; bpl != INITIAL_STRING_READ = 0.
-    test bpl, bpl
+    ; bl != INITIAL_STRING_READ = 0.
+    test bl, bl
     jne free_and_exit_error
 
     ; Convenietly, the pointer to the byte after the last character is held in
@@ -342,8 +353,8 @@ after_read_strings_loop:
     ; with the pointer to the initial string. Reminder: it is stored in r13.
     mov rsi, r13
 
-    ; Initialize rbp to 0, because we start with recursion depth 0.
-    xor ebp, ebp
+    ; Initialize rbx to 0, because we start with recursion depth 0.
+    xor ebx, ebx
 
     ; Initialize rdi, which will hold the current position in the buffer, to the
     ; start of the buffer.
@@ -376,8 +387,8 @@ character_loop:
     lea rsi, [rel expansions]
     mov rsi, [rsi + POINTER_SIZE * rax]
 
-    ; If the recursion depth (ebp) is equal to n, then write the character.
-    cmp ebp, ebp
+    ; If the recursion depth (ebx) is equal to n, then write the character.
+    cmp ebx, ebp
     je write
 
     ; If the entry for al in the expansion table that we just put into rsi is a
@@ -393,17 +404,17 @@ expand:
     ; that the current character is stored in al. We already have rsi set to the
     ; value expected by the child dfs.
 
-    ; Set ebp (which represents the recursion depth) to the value expected by
+    ; Set ebx (which represents the recursion depth) to the value expected by
     ; the child dfs by incrementing it.
-    inc ebp
+    inc ebx
 
     ; Do a child dfs.
     jmp dfs
 
 after_call_child_dfs:
 
-    ; Restore ebp to the current recursion depth.
-    dec ebp
+    ; Restore ebx to the current recursion depth.
+    dec ebx
 
     ; Reminder: this is the case where we expand the character. After doing
     ; that, we need to skip past the code that is supposed to execute if the
@@ -438,7 +449,7 @@ after_write:
 after_character_loop:
 
     ; If the recursion depth isn't 0, we return to the parent.
-    test ebp, ebp
+    test ebx, ebx
     jne after_call_child_dfs
 
 after_dfs:
