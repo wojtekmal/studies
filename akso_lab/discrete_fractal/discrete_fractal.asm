@@ -35,17 +35,6 @@ section .text
 
 _start:
 
-    ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
-    ; of whether it succeeds, returns the current break pointer. This means that
-    ; we can tell it to set brk to nullptr and it will silently fail and return
-    ; the current brk in rax.
-    mov eax, SYS_BRK
-    xor edi, edi
-    syscall
-
-    ; r8 will hold the brk throughout the program. Now we save the initial brk.
-    mov r8, rax
-
     ; Check that there are exactly 2 arguments: the program name and n. If not,
     ; then jump to the end of the program, where memory is freed and the program
     ; exits with an error.
@@ -88,10 +77,6 @@ read_n_loop:
     cmp cl, 9
     ja free_and_exit_error
 
-    ; TODO: swap the usage of rbp and rbx, use bit shifts instead of mul, use
-    ; rbx instead of ebx and multiple overflow checks when reading n, use al and
-    ; rsi for reading characters in the loop.
-
     ; We accumulate in eax in two steps: first we multiply eax by 10, then we
     ; add the digit stored in cl. Both steps require checking for overflows.
 
@@ -106,8 +91,6 @@ read_n_loop:
     add eax, ecx
     jc free_and_exit_error
 
-    ; TODO: do the checks for overflows simultaenously.
-
     ; Increment rbx and repeat the loop.
     inc rbx
     jmp read_n_loop
@@ -120,6 +103,21 @@ after_read_n_loop:
 
     ; We move n to ebp.
     mov ebp, eax
+
+    ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
+    ; of whether it succeeds, returns the current break pointer. This means that
+    ; we can tell it to set brk to nullptr and it will silently fail and return
+    ; the current brk in rax.
+    mov eax, SYS_BRK
+    xor edi, edi
+    syscall
+
+    ; We reserve n * POINTER_SIZE bytes on the heap by moving the break pointer
+    ; by that amount. This will be needed in the dfs.
+
+    ; First we set rdi to the new break pointer. This is the initial brk (held 
+    ; in rax) plus n (held in rbp) times POINTER_SIZE.
+    lea rdi, []
 
     ; bl will hold a flag signifying whether the initial string has been read.
     mov bl, INITIAL_STRING_NOT_READ
@@ -349,6 +347,11 @@ after_read_strings_loop:
     ; call dfs and pop rsi from the stack.
     ; 3. Pop rsi from the stack.
 
+    ; Allocate n * POINTER_SIZE bytes for the artificial stack, in order to
+    ; store the pointers to the current characters from different levels of the
+    ; dfs. We do this by shifting moving the break pointer. Reminder: r12
+    ; currently holds the byte that
+
     ; Initialize rsi, which will point to the current character of the dfs,
     ; with the pointer to the initial string. Reminder: it is stored in r13.
     mov rsi, r13
@@ -430,8 +433,8 @@ write:
     stosb
 
     ; Check if we reached the end of the buffer.
-    lea r13, [rel buffer + BUFFER_LEN]
-    cmp rdi, r13
+    lea rdx, [rel buffer + BUFFER_LEN]
+    cmp rdi, rdx
     jne after_write
 
     ; Flush the buffer.
