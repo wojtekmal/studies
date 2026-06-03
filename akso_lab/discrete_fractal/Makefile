@@ -2,8 +2,8 @@ discrete_fractal_c: discrete_fractal.c
 	gcc -o discrete_fractal_c discrete_fractal.c -std=gnu23 -Wall -O3
 
 discrete_fractal: discrete_fractal.asm
-	nasm -f elf64 -w+all -w+error -w-unknown-warning -w-reloc-rel -o discrete_fractal.o discrete_fractal.asm -g
-	ld -pie -I /lib64/ld-linux-x86-64.so.2 --fatal-warnings -o discrete_fractal discrete_fractal.o -g
+	nasm -f elf64 -w+all -w+error -w-unknown-warning -w-reloc-rel -o discrete_fractal.o discrete_fractal.asm
+	ld -pie -I /lib64/ld-linux-x86-64.so.2 --fatal-warnings -o discrete_fractal discrete_fractal.o
 
 generowanie_testow_poprawnosci: generowanie_testow_poprawnosci.cpp
 	g++ -o generowanie_testow_poprawnosci generowanie_testow_poprawnosci.cpp -Wall -O3

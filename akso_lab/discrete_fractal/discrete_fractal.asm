@@ -1,6 +1,5 @@
 global _start
 
-SYS_READ equ 0
 SYS_WRITE equ 1
 SYS_BRK equ 12
 SYS_EXIT equ 60
@@ -41,8 +40,8 @@ _start:
     cmp QWORD [rsp], 2
     jne free_and_exit_error
 
-    ; Store the pointer to the first byte of the second argument in rbx.
-    mov rbx, [rsp + 16]
+    ; Store the pointer to the first byte of the second argument in rsi.
+    mov rsi, [rsp + 16]
 
     ; Now rbx points to the first digit of n. We will accumulate the unsigned
     ; 32-bit value of n in eax. For each digit, we:
@@ -51,65 +50,64 @@ _start:
     ; 3. Accumulate in eax and check if there was an overflow.
     ; 4. Increment rbx and repeat.
 
-    ; Start with zeroing eax and ecx, because they will be used to store n and
-    ; the current digit, respectively.
+    ; Start with zeroing rax and rbx, because they will be used to store the
+    ; current digit and n, respectively.
     xor eax, eax
-    xor ecx, ecx
-
-    ; mul needs the second factor to be in a register. We will be multiplying by
-    ; 10, so we store 10 in ebp (we won't need the initial value of rbp).
-    mov ebp, 10
+    xor ebx, ebx
 
 read_n_loop:
-    ; Store the digit (one byte) in cl.
-    mov cl, [rbx]
+    ; Store the digit (one byte) in al.
+    lodsb
 
     ; Check if it's a null byte. If yes, then break the loop.
-    test cl, cl
+    test al, al
     je after_read_n_loop
 
-    ; We subtract '0' from cl, so that cl stores the value represented by the
+    ; We subtract '0' from al, so that al stores the value represented by the
     ; digit, not the ascii encoding of the digit.
-    sub cl, '0'
+    sub al, '0'
 
-    ; Check if cl holds a valid digit, meaning that when treated as a 8-bit
+    ; Check if al holds a valid digit, meaning that when treated as a 8-bit
     ; unsigned number, it is not above 9.
-    cmp cl, 9
+    cmp al, 9
     ja free_and_exit_error
 
     ; We accumulate in eax in two steps: first we multiply eax by 10, then we
-    ; add the digit stored in cl. Both steps require checking for overflows.
+    ; add the digit stored in al. Both steps require checking for overflows.
 
     ; Multiply n by 10 and check for overflows. Note that eax holds an unsigned
     ; 32-bit representation of n, so we use mul. Reminder: ebp holds 10.
-    mul ebp
-    jc free_and_exit_error
+    imul rbx, 10
 
     ; Add ecx (which holds the digit in it's lowest 8 bits) to eax and check for
     ; unsigned overflows. Note that we have to check the carry flag, not the
     ; overflow flag.
-    add eax, ecx
-    jc free_and_exit_error
+    add rbx, rax
 
-    ; Increment rbx and repeat the loop.
-    inc rbx
+    ; Check if ebx overflowed.
+    mov rcx, rbx
+    shr rcx, 32
+    jnz free_and_exit_error
+
+    ; Repeat the loop.
     jmp read_n_loop
 
 after_read_n_loop:
 
-    ; Check if at least one digit was read by checking if rbx moved.
-    cmp rbx, [rsp + 16]
+    ; Check if at least one digit was read by checking if rsi moved by at least
+    ; two characters: the trailing null byte and something else. It's simpler
+    ; to decrement rsi for this check.
+    dec rsi
+    cmp rsi, [rsp + 16]
     je free_and_exit_error
-
-    ; Temporarily store n in ebx.
-    mov ebx, eax
 
     ; TODO: change this to using the fact that brk starts at the end of dfs.
     ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
     ; of whether it succeeds, returns the current break pointer. This means that
     ; we can tell it to set brk to nullptr and it will silently fail and return
-    ; the current brk in rax.
-    mov eax, SYS_BRK
+    ; the current brk in rax. Note that the higher bits of rax where zeroed
+    ; earlier.
+    mov al, SYS_BRK
     xor edi, edi
     syscall
 
@@ -121,8 +119,9 @@ after_read_n_loop:
     mov r14, rax
 
     ; We set rdi to the new break pointer. This is the initial brk (held 
-    ; in rax) plus n (held in rbx) times POINTER_SIZE.
-    lea rdi, [rax + POINTER_SIZE * rbx]
+    ; in rax) plus n + 1 times POINTER_SIZE. Note that rbx holds n, so we can
+    ; do initial brk + POINTER_SIZE * n + POINTER_SIZE
+    lea rdi, [rax + POINTER_SIZE * rbx + POINTER_SIZE]
 
     ; Now with rdi set, we do a syscall with rax = SYS_BRK.
     mov eax, SYS_BRK
