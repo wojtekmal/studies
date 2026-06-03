@@ -101,13 +101,15 @@ after_read_n_loop:
     cmp rbx, [rsp + 16]
     je free_and_exit_error
 
+    ; Temporarily store n in ebx.
+    mov ebx, eax
+
     ; TODO: change this to using the fact that brk starts at the end of dfs.
     ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
     ; of whether it succeeds, returns the current break pointer. This means that
     ; we can tell it to set brk to nullptr and it will silently fail and return
-    ; the current brk in rax. Note that the higher bits of rax are where zeroed
-    ; when we read n.
-    mov al, SYS_BRK
+    ; the current brk in rax.
+    mov eax, SYS_BRK
     xor edi, edi
     syscall
 
@@ -119,8 +121,8 @@ after_read_n_loop:
     mov r14, rax
 
     ; We set rdi to the new break pointer. This is the initial brk (held 
-    ; in rax) plus n (held in rbp) times POINTER_SIZE.
-    lea rdi, [rax + POINTER_SIZE * rbp]
+    ; in rax) plus n (held in rbx) times POINTER_SIZE.
+    lea rdi, [rax + POINTER_SIZE * rbx]
 
     ; Now with rdi set, we do a syscall with rax = SYS_BRK.
     mov eax, SYS_BRK
@@ -390,7 +392,7 @@ character_loop:
     ; Save the pointer to the next character (held in rsi) on the artificial
     ; stack. Reminder: rbx points to the top of the stack.
     mov [rbx], rsi
-    inc rbx
+    add rbx, POINTER_SIZE
 
     ; Set rsi to the value expected by the child dfs, which is a pointer to the
     ; expansion string of the current character, which is stored in expansions
@@ -452,7 +454,7 @@ after_write:
     ; we have: writing the character or expanding it. We do this by popping a
     ; value from the artificial stack. Reminder: rbx points to the top of the
     ; stack.
-    dec rbx
+    sub rbx, POINTER_SIZE
     mov rsi, [rbx]
 
     ; Do another iteration of the loop of the characters in the expansion.
