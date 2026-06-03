@@ -9,6 +9,7 @@ FD_READ equ 0
 FD_WRITE equ 1
 
 BUFFER_LEN equ 4096
+BUFFER_LEN_DIVIDED_BY_256 equ 16
 
 INITIAL_STRING_NOT_READ equ 1
 INITIAL_STRING_READ equ 0
@@ -33,16 +34,20 @@ expansions: resb 128
 
 section .text
 
+jump_to_exit_error:
+    jmp free_and_exit_error
+
 _start:
 
     lea r13, [rel buffer]
+    lea rbp, [rel expansions]
 
     ; Check that there are exactly 2 arguments: the program name and n. If not,
     ; then jump to the end of the program, where memory is freed and the program
     ; exits with an error.
     pop rax
     cmp rax, 2
-    jne free_and_exit_error
+    jne jump_to_exit_error
 
     pop rax
 
@@ -60,7 +65,7 @@ _start:
     ; current digit and n, respectively.
     xor eax, eax
     xor ebx, ebx
-    mov dl, 1
+    cdq
 
 read_n_loop:
     ; Store the digit (one byte) in al.
@@ -70,7 +75,7 @@ read_n_loop:
     test al, al
     je after_read_n_loop
 
-    dec dl
+    mov dh, BUFFER_LEN_DIVIDED_BY_256
 
     ; We subtract '0' from al, so that al stores the value represented by the
     ; digit, not the ascii encoding of the digit.
@@ -79,7 +84,7 @@ read_n_loop:
     ; Check if al holds a valid digit, meaning that when treated as a 8-bit
     ; unsigned number, it is not above 9.
     cmp al, 9
-    ja free_and_exit_error
+    ja jump_to_exit_error
 
     ; We accumulate in eax in two steps: first we multiply eax by 10, then we
     ; add the digit stored in al. Both steps require checking for overflows.
@@ -96,7 +101,7 @@ read_n_loop:
     ; Check if ebx overflowed.
     mov rcx, rbx
     shr rcx, 32
-    jnz free_and_exit_error
+    jnz jump_to_exit_error
 
     ; Repeat the loop.
     jmp read_n_loop
@@ -106,8 +111,8 @@ after_read_n_loop:
     ; Check if at least one digit was read by checking if rsi moved by at least
     ; two characters: the trailing null byte and something else. It's simpler
     ; to decrement rsi for this check.
-    test dl, dl
-    jnz free_and_exit_error
+    test dh, dh
+    jz jump_to_exit_error
 
     ; TODO: change this to using the fact that brk starts at the end of dfs.
     ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
@@ -139,7 +144,7 @@ after_read_n_loop:
     ; We check that the new break pointer (stored in rax) is what we expected
     ; (still stored in rdi).
     cmp rax, rdi
-    jne free_and_exit_error
+    jne jump_to_exit_error
 
     ; We store the current break pointer in r8. r8 will move along with the
     ; break pointer throughout the program. We also store it in r15. r15 will
@@ -167,8 +172,6 @@ after_read_n_loop:
     ; 4. After the loop, make sure that the last string is an empty string (to 
     ; make sure that there was an end-of-line after the last expansion
     ; instruction).
-
-    mov dh, 16
 
 read_strings_loop:
 
@@ -226,7 +229,7 @@ after_call_sys_read:
     jne after_move_brk
 
     ; We have to move brk. We set r8 to the new break pointer.
-    add r8, MOVE_BRK_BLOCK_LEN
+    add r8, rdx
 
     ; We do a syscall with rax = SYS_BRK, and rdi set to the new break pointer,
     ; which is held in r8.
@@ -315,8 +318,7 @@ after_initial_string:
 
     ; We store the pointer to the expansions table in r12 and then shift it to
     ; point to the entry for the character held in al.
-    lea r12, [rel expansions]
-    lea r12, [r12 + POINTER_SIZE * rax]
+    lea r12, [rbp + POINTER_SIZE * rax]
 
     ; We check if there is already an expansion for the character held in al. If
     ; there is, then we end with an error. Reminder: expansions holds entries
@@ -336,8 +338,13 @@ after_non_initial_string:
 after_read_strings_loop:
 
 
-    ; There was no error, so we skip the return error part.
-    jmp after_free_and_exit_error
+    ; We read all the strings, but we still have to check two things: that at
+    ; least one character was read and that it was a newline. We can check if at
+    ; least one character was read by checking bl, which holds a flag
+    ; representing whether at least one string was read. We want to check if
+    ; bl != INITIAL_STRING_READ = 0.
+    test bl, bl
+    je after_free_and_exit_error
 
 free_and_exit_error:
     
@@ -347,14 +354,6 @@ free_and_exit_error:
     jmp exit
 
 after_free_and_exit_error:
-
-    ; We read all the strings, but we still have to check two things: that at
-    ; least one character was read and that it was a newline. We can check if at
-    ; least one character was read by checking bl, which holds a flag
-    ; representing whether at least one string was read. We want to check if
-    ; bl != INITIAL_STRING_READ = 0.
-    test bl, bl
-    jne free_and_exit_error
 
     ; Convenietly, the pointer to the byte after the last character is held in
     ; r12 because it is transfered there right before the only place where we
@@ -423,8 +422,7 @@ character_loop:
     ; because earlier we zeroed rax. Note that rsi + rax is a position in the
     ; expansions table, so we want to set rsi to the pointer that is held in the
     ; expansions table (so not rsi += 8 * rax, but rsi = *(rsi + 8 * rax)).
-    lea rsi, [rel expansions]
-    mov rsi, [rsi + POINTER_SIZE * rax]
+    mov rsi, [rbp + POINTER_SIZE * rax]
 
     ; If the recursion depth is equal to n, or equivelantly rbx, which holds a
     ; pointer to the top of the stack, points to the end of the block of memory
