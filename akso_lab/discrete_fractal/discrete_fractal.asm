@@ -34,47 +34,73 @@ expansions: resb 128
 
 section .text
 
+    ; Unfortunately, jumping more than 128 bytes either way turns a 2 byte jump
+    ; opcode into a 5 byte opcode. We jump to exit_error many times, and not all
+    ; jumps to that place are in the range for a 2 byte opcode, so we add a
+    ; single label with a jump to exit_error. Now every place where we want to
+    ; jump to exit_error is either within range of or jump_to_exit_error
+    ; exit_error. These will be jumped to whenever we want to exit with an
+    ; error.
 jump_to_exit_error:
-    jmp free_and_exit_error
+    jmp exit_error
 
 _start:
 
-    lea r13, [rel buffer]
+    ; We have some spare registers: rbp, r11, r13. r11 is modified by syscalls,
+    ; but rbp and r13 are safe. This means that we can use them for holding
+    ; values that would otherwise be calculated many times. We chose to use
+    ; them for holding the rip-relative addresses of the expansions and buffer
+    ; arrays.
     lea rbp, [rel expansions]
+    lea r13, [rel buffer]
 
     ; Check that there are exactly 2 arguments: the program name and n. If not,
     ; then jump to the end of the program, where memory is freed and the program
-    ; exits with an error.
+    ; exits with an error. The number of arguments is pointed to by rsp. This
+    ; means that we can pop the value (rax was chosen arbitrarily).
     pop rax
     cmp rax, 2
     jne jump_to_exit_error
 
+    ; We pop into an arbitrary 8 byte register in order to move rsp by 8. This
+    ; could have been add rsp, 8, except that that would have a longer opcode.
+    ; We do this in order to move rsp to the pointer to the second argument of
+    ; the program.
     pop rax
 
-    ; Store the pointer to the first byte of the second argument in rsi.
+    ; Store the pointer to the first byte of the second argument in rsi. We just
+    ; moved rsp, so now all we have to do is pop into rsi.
     pop rsi
 
-    ; Now rbx points to the first digit of n. We will accumulate the unsigned
-    ; 32-bit value of n in eax. For each digit, we:
+    ; Now rsi points to the first digit of n. We will accumulate the unsigned
+    ; 64-bit value of n in rbx. For each digit, we:
     ; 1. Breaking the loop if we found a null byte.
     ; 2. Check if it's a digit.
-    ; 3. Accumulate in eax and check if there was an overflow.
-    ; 4. Increment rbx and repeat.
+    ; 3. Accumulate in rbx.
+    ; 4. Check if there was an overflow.
 
     ; Start with zeroing rax and rbx, because they will be used to store the
-    ; current digit and n, respectively.
+    ; current digit and n, respectively. We also zero rdx, which will be used
+    ; to hold a flag representing whether there was at least one character in
+    ; the decimal representation of n. For reasons that will become clear later,
+    ; this flag is 0 when no characters are found and BUFFER_LEN when at least
+    ; one character is found. After zeroing eax we can sign-extend eax into 64
+    ; bits, which zeroes edx and is one by shorter than xor edx, edx.
     xor eax, eax
     xor ebx, ebx
     cdq
 
 read_n_loop:
-    ; Store the digit (one byte) in al.
+    ; Store the digit (one byte) in al and move rsi forward.
     lodsb
 
     ; Check if it's a null byte. If yes, then break the loop.
     test al, al
     je after_read_n_loop
 
+    ; Set the flag (rdx) to BUFFER_LEN. Note that rdx is zero, and
+    ; BUFFER_LEN happens to be a multiple of 256 that happens to fit in dx, so
+    ; we only have to change dh.
     mov dh, BUFFER_LEN_DIVIDED_BY_256
 
     ; We subtract '0' from al, so that al stores the value represented by the
@@ -82,23 +108,28 @@ read_n_loop:
     sub al, '0'
 
     ; Check if al holds a valid digit, meaning that when treated as a 8-bit
-    ; unsigned number, it is not above 9.
+    ; unsigned number, it is not above 9. Note that we don't have to check if
+    ; the ascii encoding was below that of 0, because those values were wrapped
+    ; around when we subtracted '0'.
     cmp al, 9
     ja jump_to_exit_error
 
-    ; We accumulate in eax in two steps: first we multiply eax by 10, then we
-    ; add the digit stored in al. Both steps require checking for overflows.
+    ; We accumulate in rbx: first we multiply it by 10, then we add the digit
+    ; stored in al.
 
-    ; Multiply n by 10 and check for overflows. Note that eax holds an unsigned
-    ; 32-bit representation of n, so we use mul. Reminder: ebp holds 10.
+    ; Multiply n by 10. Note that the valid values of n fit in the first 32 bits
+    ; of rbx, so we can use imul and not worry about signdness because we are
+    ; using a 64 bit register for holding n. We use imul instead of mul because
+    ; mul doesn't have a 2 argument variant.
     imul rbx, 10
 
-    ; Add ecx (which holds the digit in it's lowest 8 bits) to eax and check for
-    ; unsigned overflows. Note that we have to check the carry flag, not the
-    ; overflow flag.
+    ; Add rax (which holds the digit in it's lowest 8 bits) to rbx.
     add rbx, rax
 
-    ; Check if ebx overflowed.
+    ; Check if there was an overflow by checking if the value held in rbx fits
+    ; in the first 32 bits. We do this by copying the current value of n into
+    ; an auxiliary register, shifting that register 32 bits to the right (which
+    ; leaves only the high bits), and checking if it's 0.
     mov rcx, rbx
     shr rcx, 32
     jnz jump_to_exit_error
@@ -108,9 +139,9 @@ read_n_loop:
 
 after_read_n_loop:
 
-    ; Check if at least one digit was read by checking if rsi moved by at least
-    ; two characters: the trailing null byte and something else. It's simpler
-    ; to decrement rsi for this check.
+    ; Check if at least one digit was read by checking the flag. Note that its
+    ; enough to check dh, because the only possible values of the flag (rdx) are
+    ; 0 and BUFFER_LEN, which happens to have bits set in dh.
     test dh, dh
     jz jump_to_exit_error
 
@@ -206,7 +237,7 @@ read_string_loop:
     test rax, rax
 
     ; If it's less than 0, then there was an error.
-    jl free_and_exit_error
+    jl exit_error
 
     ; If it's equal to 0, then sys_read gave us and empty string, which means
     ; that the end of the input has been reached and we can terminate the outer
@@ -241,7 +272,7 @@ after_call_sys_read:
     ; Now we have the new break pointer in rax. We check if it's equal to the
     ; break pointer we were expecting. If not, we treat it as a memory error.
     cmp rax, r8
-    jne free_and_exit_error
+    jne exit_error
 
 after_move_brk:
 
@@ -263,12 +294,12 @@ after_move_brk:
     ; Check if the current character is above or equal to the first valid
     ; character, '!'.
     cmp al, '!'
-    jb free_and_exit_error
+    jb exit_error
 
     ; Check if the current character is below or equal to the last valid
     ; character, '~'.
     cmp al, '~'
-    ja free_and_exit_error
+    ja exit_error
 
     ; If the character is correct, we append it to the string.
     stosb
@@ -310,7 +341,7 @@ after_initial_string:
     ; in al, is not null. Note that this also works if we just read the initial
     ; string, because in that case al holds ' '.
     test al, al
-    je free_and_exit_error
+    je exit_error
 
     ; We increment r9 so that it points to the first character of the expansion
     ; string.
@@ -323,12 +354,9 @@ after_initial_string:
     ; We check if there is already an expansion for the character held in al. If
     ; there is, then we end with an error. Reminder: expansions holds entries
     ; that are POINTER_SIZE, which is QWORD.
-    cmp QWORD [r12], 0
-    jne free_and_exit_error
-
-    ; Now we move the pointer to the start of the string we read (held in r9)
-    ; into the entry for the character held in al in the expansions table.
-    mov [r12], r9
+    xchg [r12], r9
+    test r9, r9
+    jnz exit_error
 
 after_non_initial_string:
 
@@ -344,16 +372,16 @@ after_read_strings_loop:
     ; representing whether at least one string was read. We want to check if
     ; bl != INITIAL_STRING_READ = 0.
     test bl, bl
-    je after_free_and_exit_error
+    je after_exit_error
 
-free_and_exit_error:
+exit_error:
     
     ; Set edi to the value we want to return in the event of an error.
     xor edi, edi
     inc edi
     jmp exit
 
-after_free_and_exit_error:
+after_exit_error:
 
     ; Convenietly, the pointer to the byte after the last character is held in
     ; r12 because it is transfered there right before the only place where we
@@ -361,7 +389,7 @@ after_free_and_exit_error:
     ; signify the end of strings, so we have to check if the character before
     ; the one pointed to by r12 is a null byte.
     cmp BYTE [r12 - 1], 0
-    jne free_and_exit_error
+    jne exit_error
 
     ; Now we write the output. This is done with a dfs, where a character calls 
     ; dfs for each character in it's expansion, unless the recursion depth is n,
@@ -535,7 +563,7 @@ flush_buffer:
     ; check if the write was correct by checking if exactly BUFFER_LEN
     ; characters were written.
     cmp rax, rdx
-    jne free_and_exit_error
+    jne exit_error
 
     ; We set rdx to the new past-the-end of the buffer's contents, which is the
     ; start of the buffer.
