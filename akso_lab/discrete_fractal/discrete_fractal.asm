@@ -107,17 +107,34 @@ after_read_n_loop:
     ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
     ; of whether it succeeds, returns the current break pointer. This means that
     ; we can tell it to set brk to nullptr and it will silently fail and return
-    ; the current brk in rax.
-    mov eax, SYS_BRK
+    ; the current brk in rax. Note that the higher bits of rax are where zeroed
+    ; when we read n.
+    mov al, SYS_BRK
     xor edi, edi
     syscall
 
     ; We reserve n * POINTER_SIZE bytes on the heap by moving the break pointer
     ; by that amount. This will be needed in the dfs.
 
-    ; First we set rdi to the new break pointer. This is the initial brk (held 
+    ; We save the start of the block we are reserving in r14.
+
+
+    ; We set rdi to the new break pointer. This is the initial brk (held 
     ; in rax) plus n (held in rbp) times POINTER_SIZE.
-    lea rdi, []
+    lea rdi, [rax + POINTER_SIZE * rbp]
+
+    ; Now with rdi set, we do a syscall with rax = SYS_BRK.
+    mov eax, SYS_BRK
+    syscall
+
+    ; We check that the new break pointer (stored in rax) is what we expected
+    ; (still stored in rdi).
+    cmp rax, rdi
+    jne free_and_exit_error
+
+    ; We store the current break pointer in r8. It will be stored here
+    ; throughout the program.
+    mov r8, rax
 
     ; bl will hold a flag signifying whether the initial string has been read.
     mov bl, INITIAL_STRING_NOT_READ
@@ -129,9 +146,7 @@ after_read_n_loop:
     mov r10, rsi
 
     ; rdi will hold a pointer to the current position of the string we are
-    ; copying over. We initialize it with the current break pointer, because we
-    ; will store the strings that we are reading on the heap.
-    mov rdi, r8
+    ; copying over. Note that it already holds the current break pointer.
 
     ; We read the strings in a loop. For each string we:
     ; 1. Read the string and check it's correctness.
@@ -261,9 +276,6 @@ after_read_string_loop:
     test bl, bl
     je after_initial_string
 
-    ; Store the pointer to the initial string in r13.
-    mov r13, r9
-
     ; Reset the bl flag to remember that the initial string has been read.
     xor bl, bl
 
@@ -353,8 +365,8 @@ after_read_strings_loop:
     ; currently holds the byte that
 
     ; Initialize rsi, which will point to the current character of the dfs,
-    ; with the pointer to the initial string. Reminder: it is stored in r13.
-    mov rsi, r13
+    ; with the pointer to the initial string. Reminder: it is stored in r15.
+    mov rsi, r15
 
     ; Initialize rbx to 0, because we start with recursion depth 0.
     xor ebx, ebx
