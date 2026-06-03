@@ -48,7 +48,6 @@ _start:
 
     ; Store the pointer to the first byte of the second argument in rsi.
     pop rsi
-    mov rdi, rsi
 
     ; Now rbx points to the first digit of n. We will accumulate the unsigned
     ; 32-bit value of n in eax. For each digit, we:
@@ -61,6 +60,7 @@ _start:
     ; current digit and n, respectively.
     xor eax, eax
     xor ebx, ebx
+    mov dl, 1
 
 read_n_loop:
     ; Store the digit (one byte) in al.
@@ -69,6 +69,8 @@ read_n_loop:
     ; Check if it's a null byte. If yes, then break the loop.
     test al, al
     je after_read_n_loop
+
+    dec dl
 
     ; We subtract '0' from al, so that al stores the value represented by the
     ; digit, not the ascii encoding of the digit.
@@ -104,9 +106,8 @@ after_read_n_loop:
     ; Check if at least one digit was read by checking if rsi moved by at least
     ; two characters: the trailing null byte and something else. It's simpler
     ; to decrement rsi for this check.
-    dec rsi
-    cmp rsi, rdi
-    je free_and_exit_error
+    test dl, dl
+    jnz free_and_exit_error
 
     ; TODO: change this to using the fact that brk starts at the end of dfs.
     ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
@@ -131,7 +132,8 @@ after_read_n_loop:
     lea rdi, [rax + POINTER_SIZE * rbx + POINTER_SIZE]
 
     ; Now with rdi set, we do a syscall with rax = SYS_BRK.
-    mov eax, SYS_BRK
+    xor eax, eax
+    mov al, SYS_BRK
     syscall
 
     ; We check that the new break pointer (stored in rax) is what we expected
@@ -166,6 +168,8 @@ after_read_n_loop:
     ; make sure that there was an end-of-line after the last expansion
     ; instruction).
 
+    mov dh, 16
+
 read_strings_loop:
 
     ; Save the pointer to the start of the string (stored in rdi) in r9.
@@ -192,7 +196,6 @@ read_string_loop:
     xor eax, eax
     xor edi, edi
     mov rsi, r13
-    mov edx, BUFFER_LEN
     syscall
 
     ; Check the return value of read, which is stored in rax and represented as
@@ -227,7 +230,8 @@ after_call_sys_read:
 
     ; We do a syscall with rax = SYS_BRK, and rdi set to the new break pointer,
     ; which is held in r8.
-    mov eax, SYS_BRK
+    xor eax, eax
+    mov al, SYS_BRK
     mov rdi, r8
     syscall
 
@@ -504,7 +508,8 @@ exit:
 
     ; Now rdi is set to the return code of out program (it was zeroed and set to
     ; ERROR_CODE in the event of an error). We do a syscall with rax = SYS_EXIT.
-    mov eax, SYS_EXIT
+    xor eax, eax
+    mov al, SYS_EXIT
     syscall
 
     
@@ -518,7 +523,8 @@ flush_buffer:
     ; the buffer), and rdx set to the length of the buffer, which is the current
     ; past-the-end minus the start of the buffer (which is moved to rsi in the
     ; code below). Reminder: rdi is already set to FD_WRITE.
-    mov eax, SYS_WRITE
+    xor eax, eax
+    mov al, SYS_WRITE
     mov rsi, r13
     mov rdx, rdi
     sub rdx, rsi
