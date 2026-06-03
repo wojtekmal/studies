@@ -40,11 +40,15 @@ _start:
     ; Check that there are exactly 2 arguments: the program name and n. If not,
     ; then jump to the end of the program, where memory is freed and the program
     ; exits with an error.
-    cmp QWORD [rsp], 2
+    pop rax
+    cmp rax, 2
     jne free_and_exit_error
 
+    pop rax
+
     ; Store the pointer to the first byte of the second argument in rsi.
-    mov rsi, [rsp + 16]
+    pop rsi
+    mov rdi, rsi
 
     ; Now rbx points to the first digit of n. We will accumulate the unsigned
     ; 32-bit value of n in eax. For each digit, we:
@@ -101,7 +105,7 @@ after_read_n_loop:
     ; two characters: the trailing null byte and something else. It's simpler
     ; to decrement rsi for this check.
     dec rsi
-    cmp rsi, [rsp + 16]
+    cmp rsi, rdi
     je free_and_exit_error
 
     ; TODO: change this to using the fact that brk starts at the end of dfs.
@@ -327,6 +331,19 @@ after_non_initial_string:
 
 after_read_strings_loop:
 
+
+    ; There was no error, so we skip the return error part.
+    jmp after_free_and_exit_error
+
+free_and_exit_error:
+    
+    ; Set edi to the value we want to return in the event of an error.
+    xor edi, edi
+    inc edi
+    jmp exit
+
+after_free_and_exit_error:
+
     ; We read all the strings, but we still have to check two things: that at
     ; least one character was read and that it was a newline. We can check if at
     ; least one character was read by checking bl, which holds a flag
@@ -483,15 +500,7 @@ after_dfs:
     ; Zero rdi. This will be needed in a moment.
     xor edi, edi
 
-    ; There was no error, so we skip the return error part.
-    jmp after_free_and_exit_error
-
-free_and_exit_error:
-    
-    ; Set edi to the value we want to return in the event of an error.
-    mov edi, ERROR_CODE
-
-after_free_and_exit_error:
+exit:
 
     ; Now rdi is set to the return code of out program (it was zeroed and set to
     ; ERROR_CODE in the event of an error). We do a syscall with rax = SYS_EXIT.
