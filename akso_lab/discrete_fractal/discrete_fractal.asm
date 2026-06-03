@@ -145,35 +145,42 @@ after_read_n_loop:
     test dh, dh
     jz jump_to_exit_error
 
-    ; TODO: change this to using the fact that brk starts at the end of dfs.
-    ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
+    ; There are two ways to find the current break pointer: calculate it as the
+    ; end of .bss, aligned to the page size, or what we chose to do, which is to
+    ; do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
     ; of whether it succeeds, returns the current break pointer. This means that
     ; we can tell it to set brk to nullptr and it will silently fail and return
     ; the current brk in rax. Note that the higher bits of rax where zeroed
-    ; earlier.
+    ; earlier, and SYS_BRK fits in 8 bits, so we can set al to SYS_BRK.
     mov al, SYS_BRK
     xor edi, edi
     syscall
 
-    ; We reserve n * POINTER_SIZE bytes on the heap by moving the break pointer
-    ; by that amount. This will be needed in the dfs.
+    ; We reserve (n + 1) * POINTER_SIZE bytes on the heap by moving the break
+    ; pointer by that amount. The reason why we are doing this will become clear
+    ; later.
 
     ; We save the start of the block we are reserving in r14. This is the
-    ; current break pointer (currently in rax).
+    ; current break pointer (currently in rax, because we just called sys_brk
+    ; with rdi = NULLPTR).
     mov r14, rax
 
-    ; We set rdi to the new break pointer. This is the initial brk (held 
-    ; in rax) plus n + 1 times POINTER_SIZE. Note that rbx holds n, so we can
-    ; do initial brk + POINTER_SIZE * n + POINTER_SIZE
+    ; We set rdi to the new break pointer. This is the initial brk (rax) plus
+    ; n + 1 times POINTER_SIZE. Note that rbx holds n, so its easier to do
+    ; brk + POINTER_SIZE * n + POINTER_SIZE instead of 
+    ; brk + POINTER_SIZE * (n + 1).
     lea rdi, [rax + POINTER_SIZE * rbx + POINTER_SIZE]
 
-    ; Now with rdi set, we do a syscall with rax = SYS_BRK.
+    ; Now with rdi set to the new break pointer, we do a syscall with
+    ; rax = SYS_BRK. Note that the opcode for what's below is one byte shorter
+    ; than the opcode for mov eax, SYS_BRK (which is still shorter than using
+    ; rax instead of eax).
     xor eax, eax
     mov al, SYS_BRK
     syscall
 
     ; We check that the new break pointer (stored in rax) is what we expected
-    ; (still stored in rdi).
+    ; (still stored in rdi - syscalls preserve the values of most registers).
     cmp rax, rdi
     jne jump_to_exit_error
 
@@ -187,22 +194,23 @@ after_read_n_loop:
     mov bl, INITIAL_STRING_NOT_READ
 
     ; rsi will hold a pointer to the current position in the buffer. r10 will
-    ; hold a pointer to the end of the read string, which is usually the end of
-    ; the buffer, but not always. Both have to be initialized to the same value,
-    ; so that the mechanism for reading new input into the buffer is activated.
+    ; hold a pointer to the end of the string we read into the buffer, which is
+    ; usually the end of the buffer, but not always. Both have to be initialized
+    ; to the same value, so that the mechanism for reading new input into the
+    ; buffer is activated.
     mov r10, rsi
 
     ; rdi will hold a pointer to the current position of the string we are
-    ; copying over. Note that it already holds the current break pointer.
+    ; copying over. Note that it already holds the current break pointer, which
+    ; is convenient because we will be putting the strings from the input onto
+    ; the heap, so rdi already points to where we will put the first character.
 
     ; We read the strings in a loop. For each string we:
-    ; 1. Read the string and check it's correctness.
-    ; 2a. If it's the first string, we save it as the expansion of 0x20 (space).
-    ; 2b. Otherwise we store it as the expansion of it's first character.
-    ; 3. Repeat the loop if it wasn't the last string.
-    ; 4. After the loop, make sure that the last string is an empty string (to 
-    ; make sure that there was an end-of-line after the last expansion
-    ; instruction).
+    ; 1. Read the string and check its correctness.
+    ; 2. Exit the loop if sys_read gives us 0 characters.
+    ; 3a. If it's the initial string, we zero the initial string flag (bl).
+    ; 3b. Otherwise we store it as the expansion of it's first character.
+    ; 4. Repeat the loop.
 
 read_strings_loop:
 
@@ -214,26 +222,28 @@ read_strings_loop:
 
 read_string_loop:
 
-    ; Save the value of rdi in r12, because rdi needs to be overridden in order
-    ; to do syscalls.
+    ; Save the value of rdi (pointer to the string we are reading) in r12,
+    ; because rdi needs to be overwritten in order to do syscalls.
     mov r12, rdi
 
-    ; Check if the pointer to the current position in the buffer is equal to the
-    ; past-the-end of the string that was read with sys_read. If yes, then
-    ; continue on to the part where new input is read. Otherwise skip ahead to
-    ; the part that checks the current character and copies it over.
+    ; Check if the pointer to the current position in the buffer (rsi) is equal
+    ; to the end of the buffered string (r10). If yes, then continue on to the
+    ; part where new input is read. Otherwise skip ahead to the part that checks
+    ; the current character and copies it over.
     cmp rsi, r10
     jne after_call_sys_read
 
     ; Do a syscall with rax = SYS_READ = 0, edi = FD_READ = 0, rsi set to the
-    ; start of the buffer and rdx = BUFFER_LEN.
+    ; start of the buffer (r13) and rdx = BUFFER_LEN. Note that rdx is already
+    ; set to BUFFER_LEN, because it was used as a flag and the only non-error
+    ; value of this flag was BUFFER_LEN.
     xor eax, eax
     xor edi, edi
     mov rsi, r13
     syscall
 
-    ; Check the return value of read, which is stored in rax and represented as
-    ; a 64-bit signed integer.
+    ; Check the return value of sys_read, which is stored in rax and represented
+    ; as a 64-bit signed integer.
     test rax, rax
 
     ; If it's less than 0, then there was an error.
@@ -245,32 +255,39 @@ read_string_loop:
     je after_read_strings_loop
 
     ; Otherwise rax holds a positive integer representing the length of the
-    ; non-empty string we just read. In that case we want to store the
-    ; past-the-end pointer of that string in r10. This pointer is the sum of
-    ; rsi and rax, because rsi currently points to the start of the buffer.
+    ; non-empty string we just read. In that case we want to store the pointer
+    ; to the end of that string in r10. This pointer is the sum of rsi (start of
+    ; the buffer) and rax (length of string that was read).
     lea r10, [rsi + rax]
 
 after_call_sys_read:
 
     ; Check if the pointer to the current position of the string we are copying
-    ; into (currently stored in r12) is equal to the current break pointer. If
-    ; yes, then we have to move the break pointer in order to make space for the
-    ; string that we're copying from the buffer.
+    ; into (currently stored in r12, because we are storing it here temporarily
+    ; instead of holding it in rdi) is equal to the current break pointer (r8).
+    ; If yes, then we have to move the break pointer in order to make space for
+    ; the string that we're copying from the buffer.
     cmp r12, r8
     jne after_move_brk
 
-    ; We have to move brk. We set r8 to the new break pointer.
+    ; We have to move the break pointer. The current value is stored in r8. We
+    ; set r8 to the new break pointer, which is the old value plus
+    ; MOVE_BRK_BLOCK_LEN. Note that MOVE_BRK_BLOCK_LEN = BUFFER_LEN and that
+    ; rdx holds BUFFER_LEN throughout the loop (because it was set to this value
+    ; as a flag when reading n), which means that in order to update r8, we can
+    ; just add rdx.
     add r8, rdx
 
     ; We do a syscall with rax = SYS_BRK, and rdi set to the new break pointer,
-    ; which is held in r8.
+    ; which is held in r8. As before, the below code is shorter than
+    ; mov eax, SYS_BRK.
     xor eax, eax
     mov al, SYS_BRK
     mov rdi, r8
     syscall
 
     ; Now we have the new break pointer in rax. We check if it's equal to the
-    ; break pointer we were expecting. If not, we treat it as a memory error.
+    ; break pointer we were expecting (r8). If not, we treat it as an OOM error.
     cmp rax, r8
     jne exit_error
 
@@ -278,58 +295,51 @@ after_move_brk:
 
     ; We are ready for checking and copying individual characters from the
     ; buffer into the string. We restore rdi with the pointer to the current
-    ; position in the string we're copying over.
+    ; position in the string that we're copying into (temporarily held in r12).
     mov rdi, r12
     
-    ; Load the current character in the buffer pointed to by rsi into al.
+    ; Load the current character in the buffer pointed to by rsi into al and
+    ; increment rsi.
     lodsb
 
-    ; First check if the character is a new line. If it is, then exit the loop,
-    ; where a null byte is appended to the string.
+    ; First check if the character is a newline. If it is, then exit the inner
+    ; loop, because this is the end of the string.
     cmp al, `\n`
     je after_read_string_loop
 
     ; If it's not a newline, then we have to check if it's a valid character.
 
-    ; Check if the current character is above or equal to the first valid
-    ; character, '!'.
+    ; Check if the current character is below the first valid character, '!'.
     cmp al, '!'
     jb exit_error
 
-    ; Check if the current character is below or equal to the last valid
-    ; character, '~'.
+    ; Check if the current character is above the last valid character, '~'.
     cmp al, '~'
     ja exit_error
 
-    ; If the character is correct, we append it to the string.
+    ; If the character is correct, we append it to the string. Note that rdi
+    ; points to the current end of the string, so after stosb it moves by one
+    ; byte and still points to the end of the string.
     stosb
 
-    ; Continue the loop.
+    ; Continue the inner loop.
     jmp read_string_loop
 
 after_read_string_loop:
 
     ; The last character in the string was a new line. We want to append a null
-    ; byte to the string to signify its end. To do this, we set al to 0 (null
-    ; byte) and append it to the string. Note that we are zeroing rax, which
-    ; useful later.
+    ; byte to the string (instead of a newline) to signify its end. To do this,
+    ; we set al to 0 (null byte) and append it to the end of the string (rdi).
+    ; Note that we are also zeroing rax, which is needed later.
     xor eax, eax
     stosb
 
     ; Remember: the first string is special, and a flag is stored in bl. We
     ; check if it's the first string. If not, we jump to the part that deals
-    ; with the following (non-initial) strings. It's a non-initial string if
+    ; with the non-initial strings. It's a non-initial string if
     ; bl = INITIAL_STRING_READ = 0.
     test bl, bl
-    je after_initial_string
-
-    ; Reset the bl flag to remember that the initial string has been read.
-    xor bl, bl
-
-    ; Skip the part where we deal with non-initial strings.
-    jmp after_non_initial_string
-
-after_initial_string:
+    jne after_non_initial_string
 
     ; We have the pointer to the null-terminated string in r9. We have to
     ; save this pointer in the expansion table. We store the first character
@@ -338,13 +348,12 @@ after_initial_string:
 
     ; It's possible that the non-initial strings given in the input are empty.
     ; We check for this by making sure that the first character, which is stored
-    ; in al, is not null. Note that this also works if we just read the initial
-    ; string, because in that case al holds ' '.
+    ; in al, is not a null byte.
     test al, al
     je exit_error
 
     ; We increment r9 so that it points to the first character of the expansion
-    ; string.
+    ; string (so the string we read, but not including the first character).
     inc r9
 
     ; We store the pointer to the expansions table in r12 and then shift it to
@@ -359,6 +368,10 @@ after_initial_string:
     jnz exit_error
 
 after_non_initial_string:
+
+    ; Set the bl flag to INITIAL_STRING_READ = 0 to remember that at least one
+    ; string has been read.
+    xor bl, bl
 
     ; Repeat the loop.
     jmp read_strings_loop
