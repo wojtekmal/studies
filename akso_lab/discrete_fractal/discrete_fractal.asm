@@ -101,9 +101,7 @@ after_read_n_loop:
     cmp rbx, [rsp + 16]
     je free_and_exit_error
 
-    ; We move n to ebp.
-    mov ebp, eax
-
+    ; TODO: change this to using the fact that brk starts at the end of dfs.
     ; Do a syscall with rax = SYS_BRK and rdi = NULLPTR = 0. sys_brk, regardless
     ; of whether it succeeds, returns the current break pointer. This means that
     ; we can tell it to set brk to nullptr and it will silently fail and return
@@ -116,8 +114,9 @@ after_read_n_loop:
     ; We reserve n * POINTER_SIZE bytes on the heap by moving the break pointer
     ; by that amount. This will be needed in the dfs.
 
-    ; We save the start of the block we are reserving in r14.
-
+    ; We save the start of the block we are reserving in r14. This is the
+    ; current break pointer (currently in rax).
+    mov r14, rax
 
     ; We set rdi to the new break pointer. This is the initial brk (held 
     ; in rax) plus n (held in rbp) times POINTER_SIZE.
@@ -132,9 +131,11 @@ after_read_n_loop:
     cmp rax, rdi
     jne free_and_exit_error
 
-    ; We store the current break pointer in r8. It will be stored here
-    ; throughout the program.
+    ; We store the current break pointer in r8. r8 will move along with the
+    ; break pointer throughout the program. We also store it in r15. r15 will
+    ; remember the end of the block we reserved.
     mov r8, rax
+    mov r15, rax
 
     ; bl will hold a flag signifying whether the initial string has been read.
     mov bl, INITIAL_STRING_NOT_READ
@@ -359,17 +360,13 @@ after_read_strings_loop:
     ; call dfs and pop rsi from the stack.
     ; 3. Pop rsi from the stack.
 
-    ; Allocate n * POINTER_SIZE bytes for the artificial stack, in order to
-    ; store the pointers to the current characters from different levels of the
-    ; dfs. We do this by shifting moving the break pointer. Reminder: r12
-    ; currently holds the byte that
-
     ; Initialize rsi, which will point to the current character of the dfs,
     ; with the pointer to the initial string. Reminder: it is stored in r15.
     mov rsi, r15
 
-    ; Initialize rbx to 0, because we start with recursion depth 0.
-    xor ebx, ebx
+    ; Initialize rbx to the start of the block of memory we reserved (r14) for
+    ; the dfs, because it will point to the top of the artificial stack.
+    mov rbx, r14
 
     ; Initialize rdi, which will hold the current position in the buffer, to the
     ; start of the buffer.
@@ -390,8 +387,10 @@ character_loop:
     test al, al
     je after_character_loop
 
-    ; Save the pointer to the next character on the stack.
-    push rsi
+    ; Save the pointer to the next character (held in rsi) on the artificial
+    ; stack. Reminder: rbx points to the top of the stack.
+    mov [rbx], rsi
+    inc rbx
 
     ; Set rsi to the value expected by the child dfs, which is a pointer to the
     ; expansion string of the current character, which is stored in expansions
@@ -402,8 +401,10 @@ character_loop:
     lea rsi, [rel expansions]
     mov rsi, [rsi + POINTER_SIZE * rax]
 
-    ; If the recursion depth (ebx) is equal to n, then write the character.
-    cmp ebx, ebp
+    ; If the recursion depth is equal to n, or equivelantly rbx, which holds a
+    ; pointer to the top of the stack, points to the end of the block of memory
+    ; reserved for the stack.
+    cmp rbx, r15
     je write
 
     ; If the entry for al in the expansion table that we just put into rsi is a
@@ -419,17 +420,10 @@ expand:
     ; that the current character is stored in al. We already have rsi set to the
     ; value expected by the child dfs.
 
-    ; Set ebx (which represents the recursion depth) to the value expected by
-    ; the child dfs by incrementing it.
-    inc ebx
-
     ; Do a child dfs.
     jmp dfs
 
 after_call_child_dfs:
-
-    ; Restore ebx to the current recursion depth.
-    dec ebx
 
     ; Reminder: this is the case where we expand the character. After doing
     ; that, we need to skip past the code that is supposed to execute if the
@@ -455,16 +449,21 @@ write:
 after_write:
 
     ; Restore rsi to the pointer to the next character, regardless of which case
-    ; we have: writing the character or expanding it.
-    pop rsi
+    ; we have: writing the character or expanding it. We do this by popping a
+    ; value from the artificial stack. Reminder: rbx points to the top of the
+    ; stack.
+    dec rbx
+    mov rsi, [rbx]
 
     ; Do another iteration of the loop of the characters in the expansion.
     jmp character_loop
 
 after_character_loop:
 
-    ; If the recursion depth isn't 0, we return to the parent.
-    test ebx, ebx
+    ; If the recursion depth isn't 0, we return to the parent. We check this by
+    ; checking if the top of the stack (rbx) is equal to the start of the memory
+    ; block reserved for the stack (r14).
+    cmp rbx, r14
     jne after_call_child_dfs
 
 after_dfs:
