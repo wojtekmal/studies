@@ -1,5 +1,6 @@
 global _start
 
+SYS_READ equ 0
 SYS_WRITE equ 1
 SYS_BRK equ 12
 SYS_EXIT equ 60
@@ -33,6 +34,8 @@ expansions: resb 128
 section .text
 
 _start:
+
+    lea r13, [rel buffer]
 
     ; Check that there are exactly 2 arguments: the program name and n. If not,
     ; then jump to the end of the program, where memory is freed and the program
@@ -184,7 +187,7 @@ read_string_loop:
     ; start of the buffer and rdx = BUFFER_LEN.
     xor eax, eax
     xor edi, edi
-    lea rsi, [rel buffer]
+    mov rsi, r13
     mov edx, BUFFER_LEN
     syscall
 
@@ -371,7 +374,7 @@ after_read_strings_loop:
 
     ; Initialize rdi, which will hold the current position in the buffer, to the
     ; start of the buffer.
-    lea rdi, [rel buffer]
+    mov rdi, r13
 
 dfs:
 
@@ -440,7 +443,7 @@ write:
     stosb
 
     ; Check if we reached the end of the buffer.
-    lea rdx, [rel buffer + BUFFER_LEN]
+    lea rdx, [r13 + BUFFER_LEN]
     cmp rdi, rdx
     jne after_write
 
@@ -507,10 +510,11 @@ flush_buffer:
     ; past-the-end minus the start of the buffer (which is moved to rsi in the
     ; code below). Reminder: rdi is already set to FD_WRITE.
     mov eax, SYS_WRITE
-    lea rsi, [rel buffer]
+    mov rsi, r13
     mov rdx, rdi
     sub rdx, rsi
-    mov rdi, FD_WRITE
+    xor edi, edi
+    inc edi
     syscall
 
     ; Now rax holds the return value of sys_write. sys_write returns either an
@@ -522,6 +526,6 @@ flush_buffer:
 
     ; We set rdx to the new past-the-end of the buffer's contents, which is the
     ; start of the buffer.
-    lea rdi, [rel buffer]
+    mov rdi, r13
 
     ret
