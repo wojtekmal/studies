@@ -18,6 +18,7 @@ NULLPTR equ 0
 
 MOVE_BRK_BLOCK_LEN equ 4096
 
+NO_ERROR_CODE equ 0
 ERROR_CODE equ 1
 
 POINTER_SIZE equ 8
@@ -33,16 +34,6 @@ buffer: resb BUFFER_LEN
 expansions: resb 128
 
 section .text
-
-    ; Unfortunately, jumping more than 128 bytes either way turns a 2 byte jump
-    ; opcode into a 5 byte opcode. We jump to exit_error many times, and not all
-    ; jumps to that place are in the range for a 2 byte opcode, so we add a
-    ; single label with a jump to exit_error. Now every place where we want to
-    ; jump to exit_error is either within range of or jump_to_exit_error
-    ; exit_error. These will be jumped to whenever we want to exit with an
-    ; error.
-jump_to_exit_error:
-    jmp exit_error
 
 _start:
 
@@ -181,8 +172,23 @@ after_read_n_loop:
 
     ; We check that the new break pointer (stored in rax) is what we expected
     ; (still stored in rdi - syscalls preserve the values of most registers).
+    ; If it is, then we skip the part that exits with an error.
     cmp rax, rdi
-    jne jump_to_exit_error
+    je after_jump_to_exit_error
+
+    ; Unfortunately, jumping more than 128 bytes either way turns a 2 byte jump
+    ; opcode into a 5 byte opcode. We jump to exit_error many times, and not all
+    ; jumps to that place are in the range for a 2 byte opcode, so we add a
+    ; single label with a jump to exit_error. Now every place where we want to
+    ; jump to exit_error is either within range of jump_to_exit_error or
+    ; exit_error. These will be jumped to whenever we want to exit with an
+    ; error. Also the instruction below is within a 128 byte range of exit
+    ; error, which saves another 3 bytes.
+jump_to_exit_error:
+
+    jmp exit_error
+
+after_jump_to_exit_error:
 
     ; We store the current break pointer in r8. r8 will move along with the
     ; break pointer throughout the program. We also store it in r15. r15 will
@@ -356,14 +362,21 @@ after_read_string_loop:
     ; string (so the string we read, but not including the first character).
     inc r9
 
-    ; We store the pointer to the expansions table in r12 and then shift it to
-    ; point to the entry for the character held in al.
+    ; We store the pointer to the expansions table (rbp) at offset equal to the
+    ; ascii code of the character we are expanding (al), in r12.
     lea r12, [rbp + POINTER_SIZE * rax]
 
-    ; We check if there is already an expansion for the character held in al. If
-    ; there is, then we end with an error. Reminder: expansions holds entries
-    ; that are POINTER_SIZE, which is QWORD.
+    ; We exchange the values of the entry for the expansion of the character
+    ; (pointed to by r12) and the pointer to the expansion string (r9). This
+    ; does two things. Firstly, it saves the pointer to the expansion of the
+    ; character in the expansions table. Secondly, it puts the old value of the
+    ; entry in the expansions table in r9.
     xchg [r12], r9
+
+    ; Since we have the old entry in r9, we can check if its equal to NULLPTR.
+    ; It should be, because otherwise the character already had an expansion
+    ; string (so there are two expansion strings for one character, in which
+    ; case we exit with an error).
     test r9, r9
     jnz exit_error
 
@@ -373,23 +386,30 @@ after_non_initial_string:
     ; string has been read.
     xor bl, bl
 
-    ; Repeat the loop.
+    ; Repeat the outer loop.
     jmp read_strings_loop
 
 after_read_strings_loop:
 
 
     ; We read all the strings, but we still have to check two things: that at
-    ; least one character was read and that it was a newline. We can check if at
-    ; least one character was read by checking bl, which holds a flag
-    ; representing whether at least one string was read. We want to check if
-    ; bl != INITIAL_STRING_READ = 0.
+    ; least one character was read and that the last one was a newline. We can
+    ; check if at least one character was read by checking bl, which holds a
+    ; flag representing whether at least one string was read. We want to check
+    ; if bl = INITIAL_STRING_READ = 0.
     test bl, bl
+
+    ; If bl = INITIAL_STRING_READ, then we skip the part that exits with an
+    ; error. This part is placed here for the same reason stated at the start of
+    ; the program: so that all places where we want to exit with an error are
+    ; within a 128 byte range of either jump_to_exit_error or exit_error.
     je after_exit_error
 
 exit_error:
     
-    ; Set edi to the value we want to return in the event of an error.
+    ; Set rdi to the value we want to return in the event of an error, which is
+    ; ERROR_CODE = 1. Note that the opcode of the instructions below is 1 byte
+    ; shoter than the opcode for mov edi, ERROR_CODE.
     xor edi, edi
     inc edi
     jmp exit
@@ -400,17 +420,26 @@ after_exit_error:
     ; r12 because it is transfered there right before the only place where we
     ; exit read_strings_loop. The algorithm converts newlines into null bytes to
     ; signify the end of strings, so we have to check if the character before
-    ; the one pointed to by r12 is a null byte.
+    ; the one pointed to by r12 is a null byte in order to check if the last
+    ; character was a newline.
     cmp BYTE [r12 - 1], 0
     jne exit_error
 
     ; Now we write the output. This is done with a dfs, where a character calls 
     ; dfs for each character in it's expansion, unless the recursion depth is n,
-    ; in which case the character writes its expansion to the output.
+    ; or it doesn't have an expansion, in which case the character writes its
+    ; expansion to the output. The pointers to the characters we are iterating
+    ; over in consecutive levels of the dfs are stored in consecutive places in
+    ; the block of memory of size (n + 1) * POINTER_SIZE we reserved at the
+    ; beginning. This block of memory is an artificial stack, sometimes called
+    ; simply "the stack". We don't use the regular stack (pointed to by rsp)
+    ; because we might do a recursion of depth n, which normally wouldn't fit
+    ; in the stack limit.
 
     ; More specifically, dfs works like this:
     ; 1. Before dfs, the pointer to the character that is to be expanded is
-    ; placed in rsi and the depth of the recursion is placed in ecx.
+    ; placed in rsi and the pointer to the position in the stack is placed in
+    ; rbx.
     ; 2. The characters pointed to by rsi are iterated over until a null byte is
     ; found.
     ; 3. If the recursion depth is not 0, then we jump to the part of the parent
@@ -419,22 +448,23 @@ after_exit_error:
 
     ; Individual characters of the extension string are processed as such:
     ; 1. Save the value of rsi (pointer to the character) on the stack.
-    ; 2a. If the recursion depth is equal to n, then for each character we
-    ; append it to the buffer (the flushing of the buffer is described later).
-    ; 2b. Otherwise we save the value of rsi on the stack,
-    ; call dfs and pop rsi from the stack.
+    ; 2a. If the recursion depth is equal to n or if there is no expansion, then
+    ; for each character we append it to the buffer (the flushing of the buffer
+    ; is described later).
+    ; 2b. Otherwise we save the value of rsi on the stack, call a child dfs and
+    ; pop rsi from the stack.
     ; 3. Pop rsi from the stack.
 
     ; Initialize rsi, which will point to the current character of the dfs,
-    ; with the pointer to the initial string. Reminder: it is stored in r15.
+    ; with the pointer to the initial string (r15).
     mov rsi, r15
 
     ; Initialize rbx to the start of the block of memory we reserved (r14) for
-    ; the dfs, because it will point to the top of the artificial stack.
+    ; the stack, because it will point to the top of the stack.
     mov rbx, r14
 
     ; Initialize rdi, which will hold the current position in the buffer, to the
-    ; start of the buffer.
+    ; start of the buffer (r13).
     mov rdi, r13
 
 dfs:
@@ -448,12 +478,14 @@ character_loop:
     ; character).
     lodsb
 
-    ; If the current character is a null byte, exit character_loop.
+    ; If the current character is a null byte, exit character_loop, because we
+    ; finished the string at the current level of the dfs.
     test al, al
     je after_character_loop
 
-    ; Save the pointer to the next character (held in rsi) on the artificial
-    ; stack. Reminder: rbx points to the top of the stack.
+    ; Save the pointer to the next character (rsi) on the stack. Reminder: rbx
+    ; points to the top of the stack, so we have to shift it so that it points
+    ; to the new top of the stack.
     mov [rbx], rsi
     add rbx, POINTER_SIZE
 
@@ -467,42 +499,49 @@ character_loop:
 
     ; If the recursion depth is equal to n, or equivelantly rbx, which holds a
     ; pointer to the top of the stack, points to the end of the block of memory
-    ; reserved for the stack.
+    ; reserved for the stack (r15), then we write the character.
     cmp rbx, r15
     je write
 
-    ; If the entry for al in the expansion table that we just put into rsi is a
-    ; nullptr (equal to 0), then write the character, because this means that
-    ; this character doesn't have an entry in the expansion table.
+    ; If the entry for the character in the expansion table that we just put
+    ; into rsi is a nullptr (equal to 0), then write the character, because
+    ; this means that this character doesn't have an entry in the expansion
+    ; table.
     test rsi, rsi
     je write
+
+    ; If we don't write the character, then we expand it.
 
 expand:
 
     ; This is the case where the character is supposed to be expanded. In that
     ; case we need to a dfs with the expansion of the current character. Note
-    ; that the current character is stored in al. We already have rsi set to the
-    ; value expected by the child dfs.
-
-    ; Do a child dfs.
+    ; that the current character is stored in al. We already have the pointer to
+    ; the character (rsi) and the top of the stack (rbx) set to the values
+    ; expected by the child dfs. We run a child dfs.
     jmp dfs
+
+    ; Leave a label so that the child dfs knows where to return.
 
 after_call_child_dfs:
 
     ; Reminder: this is the case where we expand the character. After doing
     ; that, we need to skip past the code that is supposed to execute if the
-    ; character is supposed to be expanded.
+    ; character is supposed to be written.
     jmp after_write
 
 after_expand:
 
 write:
 
-    ; Write the current character into the current position in the buffer (held
-    ; in rdi) and increment this position.
+    ; Write the current character (al) into the current position in the buffer
+    ; (rdi) and increment this position.
     stosb
 
-    ; Check if we reached the end of the buffer.
+    ; Check if we reached the end of the buffer, so if the end of the buffer's 
+    ; contents (rdi) is equal to the start of the buffer (r13) plus it's length.
+    ; Here rdx is chosen as an auxiliary register. If not, then skip
+    ; the call to flush_buffer.
     lea rdx, [r13 + BUFFER_LEN]
     cmp rdi, rdx
     jne after_write
@@ -514,8 +553,8 @@ after_write:
 
     ; Restore rsi to the pointer to the next character, regardless of which case
     ; we have: writing the character or expanding it. We do this by popping a
-    ; value from the artificial stack. Reminder: rbx points to the top of the
-    ; stack.
+    ; value from the stack. Reminder: rbx points to the top of the stack, so we
+    ; have to shift it back.
     sub rbx, POINTER_SIZE
     mov rsi, [rbx]
 
@@ -532,21 +571,24 @@ after_character_loop:
 
 after_dfs:
 
-    ; Add a newline to the buffer. Reminder: rdi points to the current position
-    ; (past-the-end of the contents) of the buffer.
+    ; Add a newline to the buffer. Reminder: rdi points to the end of the
+    ; contents of the buffer.
     mov al, `\n`
     stosb
 
     ; Flush the buffer one last time.
     call flush_buffer
 
-    ; Zero rdi. This will be needed in a moment.
+    ; Set rdi to NO_ERROR_CODE = 0, because there was no error and rdi holds the
+    ; return value when doing sys_exit.
     xor edi, edi
 
 exit:
 
-    ; Now rdi is set to the return code of out program (it was zeroed and set to
+    ; Now rdi is set to the return code of the program (it was zeroed and set to
     ; ERROR_CODE in the event of an error). We do a syscall with rax = SYS_EXIT.
+    ; As before, the below instructions have a shorter opcode than
+    ; mov eax, SYS_EXIT.
     xor eax, eax
     mov al, SYS_EXIT
     syscall
@@ -556,19 +598,28 @@ exit:
 
 flush_buffer:
 
-    ; rdx holds the past-the-end of the buffer's contents.
+    ; rdi holds the end of the buffer's contents.
     
-    ; We do a syscall with rax = SYS_WRITE, rdi = FD_WRITE, rsi = rbx (start of
-    ; the buffer), and rdx set to the length of the buffer, which is the current
-    ; past-the-end minus the start of the buffer (which is moved to rsi in the
-    ; code below). Reminder: rdi is already set to FD_WRITE.
+    ; We do a syscall with rax = SYS_WRITE, rdi = FD_WRITE, rsi set to the start
+    ; of the buffer (r13), and rdx set to the length of the buffer, which is the
+    ; current end of the contents minus the start of the buffer (which is moved
+    ; to rsi in the code below).
+    
+    ; Set eax to SYS_WRITE.
     xor eax, eax
     mov al, SYS_WRITE
+
+    ; Set rsi to the start of the buffer (r13).
     mov rsi, r13
+
+    ; Set rdx to rdi - rsi.
     mov rdx, rdi
     sub rdx, rsi
+
+    ; Set rdi to FD_WRITE = 1.
     xor edi, edi
     inc edi
+    
     syscall
 
     ; Now rax holds the return value of sys_write. sys_write returns either an
@@ -578,8 +629,8 @@ flush_buffer:
     cmp rax, rdx
     jne exit_error
 
-    ; We set rdx to the new past-the-end of the buffer's contents, which is the
-    ; start of the buffer.
+    ; We set rdi to the new past-the-end of the buffer's contents, which is the
+    ; start of the buffer (r13).
     mov rdi, r13
 
     ret
