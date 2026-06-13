@@ -51,7 +51,7 @@ public class Zbiór<E>
         return elty.contains(elt);
     }
 
-    public int rozmiar(E elt)
+    public int rozmiar()
     {
         return elty.size();
     }

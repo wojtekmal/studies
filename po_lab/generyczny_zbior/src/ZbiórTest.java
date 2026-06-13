@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ZbiórTest
@@ -7,7 +9,16 @@ class ZbiórTest
     @Test
     void testKonstruktorDomyślny()
     {
+        Zbiór<Integer> zbiór = new Zbiór<Integer>();
 
+        assertEquals(true, zbiór.czyPusty());
+        assertEquals(0, zbiór.rozmiar());
+    }
+
+    @Test
+    void testKonstruktorKolekcyjny()
+    {
+        Zbiór<Integer> zbiór = new Zbiór<Integer>(new ArrayList<Integer>())
     }
 
     @org.junit.jupiter.api.Test
