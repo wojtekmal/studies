@@ -22,7 +22,10 @@ public class Zbiór<E>
 
     public void wstaw(E elt)
     {
-        elty.add(elt);
+        if (!elty.contains(elt))
+        {
+            elty.add(elt);
+        }
     }
 
     public Zbiór(E... parametry)
@@ -99,7 +102,11 @@ public class Zbiór<E>
     @Override
     public boolean equals(Object obj)
     {
-        return elty.equals(obj);
+        if (!(obj instanceof Zbiór<?>)) return false;
+
+        Zbiór<?> zbiór = (Zbiór<?>) obj;
+
+        return ((Zbiór<?>) obj).czyZawiera()
     }
 
     @Override
