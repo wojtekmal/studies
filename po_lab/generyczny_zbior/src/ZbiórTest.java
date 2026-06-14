@@ -12,7 +12,7 @@ class ZbiórTest
     {
         Zbiór<Integer> zbiór = new Zbiór<Integer>();
 
-        assertEquals(true, zbiór.czyPusty());
+        assertTrue(zbiór.czyPusty());
         assertEquals(0, zbiór.rozmiar());
     }
 
@@ -23,17 +23,17 @@ class ZbiórTest
                 (new ArrayList<>(Arrays.asList(1, 2, 3, 3)));
 
         assertEquals(3, zbiór.rozmiar());
-        assertEquals(false, zbiór.czyPusty());
-        assertEquals(true, zbiór.czyZawiera(3));
-        assertEquals(false, zbiór.czyZawiera(4));
+        assertFalse(zbiór.czyPusty());
+        assertTrue(zbiór.czyZawiera(3));
+        assertFalse(zbiór.czyZawiera(4));
     }
 
     @Test
     void testKonstruktorParametryczny()
     {
-        Zbiór<Integer> zbiór = new Zbiór(3, 3, 3);
-        assertEquals(true, zbiór.czyZawiera(3));
-        assertEquals(false, zbiór.czyZawiera(2));
+        Zbiór<Integer> zbiór = new Zbiór<>(3, 3, 3);
+        assertTrue(zbiór.czyZawiera(3));
+        assertFalse(zbiór.czyZawiera(2));
         assertEquals(1, zbiór.rozmiar());
     }
 
@@ -54,24 +54,24 @@ class ZbiórTest
     void czyPusty()
     {
         Zbiór<String> zbiór = new Zbiór<>("abc");
-        assertEquals(false, zbiór.czyPusty());
+        assertFalse(zbiór.czyPusty());
 
         zbiór.usuń("Ala ma kota");
-        assertEquals(false, zbiór.czyPusty());
+        assertFalse(zbiór.czyPusty());
 
         zbiór.usuń("abc");
-        assertEquals(true, zbiór.czyPusty());
+        assertTrue(zbiór.czyPusty());
 
         zbiór.wstaw("67");
-        assertEquals(false, zbiór.czyPusty());
+        assertFalse(zbiór.czyPusty());
     }
 
     @org.junit.jupiter.api.Test
     void testCzyZawieraElt()
     {
         Zbiór<Integer> zbiór = new Zbiór<>(-1);
-        assertEquals(false, zbiór.czyZawiera(1));
-        assertEquals(true, zbiór.czyZawiera(-1));
+        assertFalse(zbiór.czyZawiera(1));
+        assertTrue(zbiór.czyZawiera(-1));
     }
 
     @org.junit.jupiter.api.Test
@@ -92,11 +92,11 @@ class ZbiórTest
     {
         Zbiór<Integer> zbiór = new Zbiór<>();
         zbiór.wstaw(5);
-        assertEquals(true, zbiór.czyZawiera(5));
+        assertTrue(zbiór.czyZawiera(5));
 
         zbiór.wstaw(5);
-        assertEquals(true, zbiór.czyZawiera(5));
-        assertEquals(false, zbiór.czyZawiera(0));
+        assertTrue(zbiór.czyZawiera(5));
+        assertFalse(zbiór.czyZawiera(0));
         assertEquals(1, zbiór.rozmiar());
 
         zbiór.wstaw(7);
@@ -114,7 +114,7 @@ class ZbiórTest
         assertEquals(1, zbiór.rozmiar());
 
         zbiór.usuń(0);
-        assertEquals(true, zbiór.czyPusty());
+        assertTrue(zbiór.czyPusty());
     }
 
     @org.junit.jupiter.api.Test
@@ -124,12 +124,20 @@ class ZbiórTest
         Zbiór<Object> zbiór2 = new Zbiór<>(1, "1", 0.0);
 
         zbiór1.suma(zbiór2);
-        assertEquals(zbiór1, new Zbiór<>(0, "", 1, "1", 0.0));
+        assertEquals(new Zbiór<>(0, "", 1, "1", 0.0), zbiór1);
     }
 
     @org.junit.jupiter.api.Test
     void różnica()
     {
+        Zbiór<Integer> zbiór1 = new Zbiór<>(0, 1, 2);
+        Zbiór<Integer> zbiór2 = new Zbiór<>(2, 3, 4);
+
+        zbiór1.różnica(zbiór2);
+        assertEquals(new Zbiór<>(0), zbiór1);
+
+        zbiór2.różnica(zbiór2);
+        assertEquals(new Zbiór<>(), zbiór2);
     }
 
     @org.junit.jupiter.api.Test

@@ -89,7 +89,7 @@ public class Zbiór<E>
         this.elty = tmp;
     }
 
-    public boolean czyZawiera(Zbiór<? extends E> inny)
+    public boolean czyZawiera(Zbiór<?> inny)
     {
         return elty.containsAll(inny.elty);
     }
@@ -104,14 +104,21 @@ public class Zbiór<E>
     {
         if (!(obj instanceof Zbiór<?>)) return false;
 
-        Zbiór<?> zbiór = (Zbiór<?>) obj;
+        Zbiór<? extends E> inny = (Zbiór<? extends E>) obj;
 
-        return ((Zbiór<?>) obj).czyZawiera()
+        return this.czyZawiera(inny) && inny.czyZawiera(this);
     }
 
     @Override
     public int hashCode()
     {
-        return elty.hashCode();
+        int sum = 0;
+
+        for (E elt : elty)
+        {
+            sum += elt.hashCode();
+        }
+
+        return sum;
     }
 }
