@@ -10,7 +10,7 @@ class ZbiórTest
     @Test
     void testKonstruktorDomyślny()
     {
-        Zbiór<Integer> zbiór = new Zbiór<Integer>();
+        Zbiór<Integer> zbiór = new Zbiór<>();
 
         assertTrue(zbiór.czyPusty());
         assertEquals(0, zbiór.rozmiar());
@@ -47,7 +47,7 @@ class ZbiórTest
 
         String wynikToString = zbiór.toString();
 
-        assertEquals("{1, 2}", wynikToString);
+        assertEquals("[1, 2]", wynikToString);
     }
 
     @org.junit.jupiter.api.Test
@@ -134,7 +134,7 @@ class ZbiórTest
         Zbiór<Integer> zbiór2 = new Zbiór<>(2, 3, 4);
 
         zbiór1.różnica(zbiór2);
-        assertEquals(new Zbiór<>(0), zbiór1);
+        assertEquals(new Zbiór<>(0, 1), zbiór1);
 
         zbiór2.różnica(zbiór2);
         assertEquals(new Zbiór<>(), zbiór2);
@@ -143,25 +143,58 @@ class ZbiórTest
     @org.junit.jupiter.api.Test
     void przecięcie()
     {
+        Zbiór<Integer> zbiór1 = new Zbiór<>(1, 2, 3);
+        Zbiór<Integer> zbiór2 = new Zbiór<>(0, 1);
+
+        zbiór1.przecięcie(zbiór2);
+        assertEquals(new Zbiór<Integer>(1), zbiór1);
+
+        zbiór2.usuń(1);
+        zbiór1.przecięcie(zbiór2);
+        assertEquals(new Zbiór<>(), zbiór1);
     }
 
     @org.junit.jupiter.api.Test
-    void testCzyZawiera()
+    void testCzyZawieraZbiór()
     {
+        Zbiór<Integer> zbiór1 = new Zbiór<>(1, 2, 3);
+        Zbiór<Integer> zbiór2 = new Zbiór<>(0, 1);
+        assertFalse(zbiór1.czyZawiera(zbiór2));
+
+        zbiór2.usuń(0);
+        assertTrue(zbiór1.czyZawiera(zbiór2));
     }
 
     @org.junit.jupiter.api.Test
     void czyZawartyW()
     {
+        Zbiór<Integer> zbiór1 = new Zbiór<>(1, 2);
+        Zbiór<Integer> zbiór2 = new Zbiór<>(0);
+        assertFalse(zbiór2.czyZawartyW(zbiór1));
+
+        zbiór2.usuń(0);
+        assertTrue(zbiór2.czyZawartyW(zbiór1));
     }
 
     @org.junit.jupiter.api.Test
     void testEquals()
     {
+        Zbiór<Integer> zbiór1 = new Zbiór<>(1, 2, 3);
+        Zbiór<Integer> zbiór2 = new Zbiór<>(2, 1, 3);
+        Zbiór<Double> zbiór3 = new Zbiór<>(1.0, 2.0, 3.0);
+
+        assertEquals(zbiór1, zbiór2);
+        assertNotEquals(zbiór1, zbiór3);
     }
 
     @org.junit.jupiter.api.Test
     void testHashCode()
     {
+        Zbiór<Integer> zbiór1 = new Zbiór<>(1, 2, 3);
+        Zbiór<Integer> zbiór2 = new Zbiór<>(2, 1, 3);
+        Zbiór<Double> zbiór3 = new Zbiór<>(1.0, 2.0, 3.0);
+
+        assertEquals(zbiór1.hashCode(), zbiór2.hashCode());
+        assertNotEquals(zbiór1.hashCode(), zbiór3.hashCode());
     }
 }
