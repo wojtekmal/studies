@@ -29,6 +29,9 @@ public class RozpoczecieZjazdu extends Zdarzenie {
     public Zdarzenie[] przetworz(Dziennik dziennik) {
         dziennik.dodajWpisZeSportowcem(moment, sportowiec, String.format("rozpoczyna zjazd %s", trasa.toString()));
 
+        sportowiec.przeliczZnudzenie(trasa);
+        sportowiec.zanotujPrzejazdTrasa(trasa);
+
         return new Zdarzenie[]{new DotarcieDoWezla(trasa.przemierz(moment), trasa, trasa.koniec(), sportowiec)};
     }
 

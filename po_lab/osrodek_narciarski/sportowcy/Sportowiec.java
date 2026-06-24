@@ -172,7 +172,7 @@ public abstract class Sportowiec {
     protected double lacznaAtrakcyjnosc(Trasa trasa) {
         return wagaTrudnosci * atrakcyjnoscPoziomuTrudnosci(trasa)
             + wagaNawierzchni * trasa.wyrownanieNawierzchni()
-            + wagaZnudzenia * atrakcyjnoscNowosci(trasa);
+            + wagaZnudzenia * (1 - znudzenia.get(trasa));
     }
 
     private double atrakcyjnoscPoziomuTrudnosci(Trasa trasa) {
@@ -207,6 +207,10 @@ public abstract class Sportowiec {
     }
 
     public void zanotujPrzejazdTrasa(Trasa trasa) {
+        zanotujOdwiedziny(trasa);
+    }
+
+    protected void zanotujOdwiedziny(Trasa trasa) {
         kiedyOdwiedzonoTrasy.put(trasa, liczbaPrzejechanychTras);
         liczbaPrzejechanychTras++;
     }
