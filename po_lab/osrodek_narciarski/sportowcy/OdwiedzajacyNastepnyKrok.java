@@ -1,6 +1,8 @@
 package osrodek_narciarski.sportowcy;
 
 import osrodek_narciarski.czas.Moment;
+import osrodek_narciarski.kolejkaZdarzen.zdarzenia.DolaczenieDoKolejki;
+import osrodek_narciarski.kolejkaZdarzen.zdarzenia.RozpoczecieZjazdu;
 import osrodek_narciarski.kolejkaZdarzen.zdarzenia.Zdarzenie;
 import osrodek_narciarski.osrodek.krawedz.OdwiedzajacyKrawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
@@ -18,11 +20,11 @@ public class OdwiedzajacyNastepnyKrok implements OdwiedzajacyKrawedz<Zdarzenie> 
 
     @Override
     public Zdarzenie trasa(Trasa trasa) {
-        return sportowiec.nastepnyKrokTrasa(moment, trasa);
+        return new RozpoczecieZjazdu(moment, trasa, sportowiec);
     }
 
     @Override
     public Zdarzenie wyciag(Wyciag wyciag) {
-        return sportowiec.nastepnyKrokWyciag(moment, wyciag);
+        return new DolaczenieDoKolejki(moment, wyciag, sportowiec);
     }
 }

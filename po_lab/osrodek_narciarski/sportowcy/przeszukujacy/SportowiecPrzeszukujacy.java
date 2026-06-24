@@ -66,19 +66,28 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
     }
 
     public void ulozPlan(Wezel obecnyWezel) {
-        Trasa najlepszaTrasa = null;
         Queue<Krawedz> kolejkaBfs = new ArrayDeque<>();
         Map<Krawedz, Krawedz> poprzednieKrawedzie = new HashMap<>();
+        OdwiedzajacyNajlepszaKrawedz odwiedzajacy = new OdwiedzajacyNajlepszaKrawedz(this);
 
         for (Trasa trasa : obecnyWezel.wychodzaceTrasy()) {
             kolejkaBfs.add(trasa);
             poprzednieKrawedzie.put(trasa, null);
         }
 
-        for (Wyciag wyciag : obecnyWezel.wychodzaceWyciagi())
-        {
+        for (Wyciag wyciag : obecnyWezel.wychodzaceWyciagi()) {
             kolejkaBfs.add(wyciag);
-            poprzednieKrawedzie.put(wyciag)
+            poprzednieKrawedzie.put(wyciag, null);
+        }
+
+        while (!kolejkaBfs.isEmpty())
+        {
+            Krawedz krawedz = kolejkaBfs.remove();
+            krawedz.odwiedz(odwiedzajacy);
+
+            for
         }
     }
+
+    public abstract Trasa lepszaTrasa(Trasa najlepszaTrasa, Trasa trasa);
 }

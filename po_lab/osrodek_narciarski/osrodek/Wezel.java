@@ -1,5 +1,6 @@
 package osrodek_narciarski.osrodek;
 
+import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 
@@ -49,6 +50,15 @@ public class Wezel {
 
     public Wyciag[] wychodzaceWyciagi() {
         return wychodzaceWyciagi;
+    }
+
+    public Krawedz[] wychodzaceKrawedzie() {
+        Krawedz[] wynik = new Krawedz[wychodzaceTrasy.length + wychodzaceWyciagi.length];
+
+        System.arraycopy(wychodzaceTrasy, 0, wynik, 0, wychodzaceTrasy.length);
+        System.arraycopy(wychodzaceWyciagi, 0, wynik, wychodzaceTrasy.length, wychodzaceWyciagi.length);
+        
+        return wynik;
     }
 
     public void wychodzaceTrasy(Trasa[] wychodzaceTrasy) {
