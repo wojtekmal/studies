@@ -8,14 +8,14 @@ import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
+import osrodek_narciarski.sportowcy.OdwiedzajacyNastepnyKrok;
 import osrodek_narciarski.sportowcy.Sportowiec;
-import osrodek_narciarski.sportowcy.krotkowzroczny.SportowiecKrotkowzroczny;
 
 import java.util.*;
 
 public abstract class SportowiecPrzeszukujacy extends Sportowiec {
 
-    private final Deque<Krawedz> plan = new ArrayDeque<>();
+    private final Stack<Krawedz> plan = new Stack<>();
 
     public SportowiecPrzeszukujacy(int id,
         int poziomZaawansowania,
@@ -59,17 +59,26 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
                 ulozPlan(obecnyWezel);
             }
         }
+
+        OdwiedzajacyNastepnyKrok odwiedzajacy = new OdwiedzajacyNastepnyKrok(this, moment);
+        Krawedz nastepnaKrawedz = plan.pop();
+        return nastepnaKrawedz.odwiedz(odwiedzajacy);
     }
 
     public void ulozPlan(Wezel obecnyWezel) {
         Trasa najlepszaTrasa = null;
-        Map<Krawedz, TrasaCzyWyciag> rodzajePoprzednich = new HashMap<>();
-        Map<Krawedz, Trasa> poprzednieTrasy = new HashMap<>();
-        Map<Krawedz, Wyciag> poprzednieWyciagi = new HashMap<>();
-        Queue
+        Queue<Krawedz> kolejkaBfs = new ArrayDeque<>();
+        Map<Krawedz, Krawedz> poprzednieKrawedzie = new HashMap<>();
 
         for (Trasa trasa : obecnyWezel.wychodzaceTrasy()) {
-            rodzajePoprzednich.put(trasa, null);
+            kolejkaBfs.add(trasa);
+            poprzednieKrawedzie.put(trasa, null);
+        }
+
+        for (Wyciag wyciag : obecnyWezel.wychodzaceWyciagi())
+        {
+            kolejkaBfs.add(wyciag);
+            poprzednieKrawedzie.put(wyciag)
         }
     }
 }

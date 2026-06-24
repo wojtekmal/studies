@@ -66,4 +66,9 @@ public class Trasa extends Krawedz {
     public String toString() {
         return String.format("Trasa nr %d", id());
     }
+
+    @Override
+    public <R> R odwiedz(OdwiedzajacyKrawedz<R> odwiedzajacyKrawedz) {
+        return odwiedzajacyKrawedz.trasa(this);
+    }
 }

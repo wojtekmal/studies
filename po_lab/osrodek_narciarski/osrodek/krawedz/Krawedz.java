@@ -43,5 +43,5 @@ public abstract class Krawedz {
         return "Krawedz [id=" + id + ", poczatek=" + poczatek + ", koniec=" + koniec + ", dlugosc=" + dlugosc + "]";
     }
 
-    <R> R odwiedz(Odwiedzajacy<R>)
+    public abstract <R> R odwiedz(OdwiedzajacyKrawedz<R> odwiedzajacyKrawedz);
 }

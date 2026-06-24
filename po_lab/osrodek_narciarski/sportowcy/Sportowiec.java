@@ -155,14 +155,14 @@ public abstract class Sportowiec {
     /**
      * Tworzy zdarzenie dołączenia do kolejki do wyciągu w następnym kroku.
      */
-    protected DolaczenieDoKolejki nastepnyKrokWyciag(Moment moment, Wyciag wyciag) {
+    public DolaczenieDoKolejki nastepnyKrokWyciag(Moment moment, Wyciag wyciag) {
         return new DolaczenieDoKolejki(moment, wyciag, this);
     }
 
     /**
      * Tworzy zdarzenie zjazdu bezpośrednią trasą w następnym kroku.
      */
-    protected RozpoczecieZjazdu nastepnyKrokTrasa(Moment moment, Trasa trasa) {
+    public RozpoczecieZjazdu nastepnyKrokTrasa(Moment moment, Trasa trasa) {
         return new RozpoczecieZjazdu(moment, trasa, this);
     }
 

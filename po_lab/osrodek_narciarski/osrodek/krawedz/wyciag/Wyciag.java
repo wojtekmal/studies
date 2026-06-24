@@ -8,6 +8,7 @@ import osrodek_narciarski.kolejkaZdarzen.zdarzenia.OdjazdWyciagu;
 import osrodek_narciarski.kolejkaZdarzen.zdarzenia.Zdarzenie;
 import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Krawedz;
+import osrodek_narciarski.osrodek.krawedz.OdwiedzajacyKrawedz;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
 public class Wyciag extends Krawedz {
@@ -76,5 +77,10 @@ public class Wyciag extends Krawedz {
     @Override
     public String toString() {
         return String.format("Wyciąg nr %d", id());
+    }
+
+    @Override
+    public <R> R odwiedz(OdwiedzajacyKrawedz<R> odwiedzajacyKrawedz) {
+        return odwiedzajacyKrawedz.wyciag(this);
     }
 }
