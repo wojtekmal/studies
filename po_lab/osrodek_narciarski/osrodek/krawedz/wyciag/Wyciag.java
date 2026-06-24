@@ -42,9 +42,9 @@ public class Wyciag extends Krawedz {
     }
 
     /**
-     * Symuluje odjazd następnego wagonika oraz daje nowo stworzone zdarzenia:
+     *  Symuluje odjazd następnego wagonika oraz daje nowo stworzone zdarzenia:
      * 1. Zdarzenie reprezentujące odjazd następnego wagonika.
-     * 2. Zdarzenia reprezentujące dotarcie do końca wyciagu sportowców, którzy załapali się na obecny odjazd.
+     * 2. Zdarzenia reprezentujące dotarcie do końca wyciągu sportowców, którzy załapali się na obecny odjazd.
      */
     public Zdarzenie[] odjazd(Moment moment, Dziennik dziennik) {
         Sportowiec[] odjezdzajacySportowcy = obecnaKolejka.zdejmij(Math.min(obecnaKolejka.rozmiar(), ladownosc));

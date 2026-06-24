@@ -10,7 +10,7 @@ import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 
-public class Sportowiec {
+public abstract class Sportowiec {
 
     private final int WSPOLCZYNNIK_ROZNICY_POZIOMOW_TRUDNOSCI = 5;
 
@@ -85,16 +85,18 @@ public class Sportowiec {
     }
 
     /**
-     * Dla zadanego obecnego węzła daje wydarzenie opisujace następny
+     * Dla zadanego obecnego węzła daje wydarzenie opisujące następny
      * krok sportowca: dołączenie do kolejki na wyciągu lub rozpoczęcie zjazdu trasą.
      */
-    public Zdarzenie nastepnyKrok(Moment moment, Wezel obecnyWezel) {
+        public Zdarzenie nastepnyKrok(Moment moment, Wezel obecnyWezel) {
         if (maszynaLosujaca.losowyDouble(0, 1) < wspolczynnikSpontanicznosci) {
             return podejmijSpontanicznaDecyzje(moment, obecnyWezel);
         } else {
             return podejmijPrzemyslanaDecyzje(moment, obecnyWezel);
         }
     }
+
+    public abstract Zdarzenie wyborPolaczenia()
 
     /**
      * Spontaniczna decyzja polega na wylosowaniu następnej krawędzi jednostajnie
@@ -115,7 +117,7 @@ public class Sportowiec {
 
     /**
      * Przemyślana decyzja polega na wybraniu najatrakcyjniejszej trasy spośród sumy tras
-     * zaczynających się w obecnym wierzchołku oraz tras których początkowe wierzchołki
+     * zaczynających się w obecnym wierzchołku oraz tras, których początkowe wierzchołki
      * są osiągalne wyciągiem zaczynającym się w obecnym wierzchołku.
      */
     private Zdarzenie podejmijPrzemyslanaDecyzje(Moment moment, Wezel obecnyWezel) {
@@ -147,19 +149,19 @@ public class Sportowiec {
 
         if (najlepszaTrasa == null) {
             // Zbiór dostępnych tras jest pusty, wiec wybieramy dowolny wyciąg.
-            // Mamy gwarancję że taki istnieje, ponieważ graf jest silnie spójny.
+            // Mamy gwarancję, że taki istnieje, ponieważ graf jest silnie spójny.
             return nastepnyKrokWyciag(moment, wyciagi[0]);
         } else if (nastepnyWyciag == null) {
             // Wybrana trasa zaczyna się w obecnym wierzchołku.
             return nastepnyKrokTrasa(moment, najlepszaTrasa);
         } else {
-            // Musimy wjechac wyciągiem by dotrzeć do upatrzonej trasy.
+            // Musimy wjechać wyciągiem, by dotrzeć do upatrzonej trasy.
             return nastepnyKrokWyciag(moment, nastepnyWyciag);
         }
     }
 
     /**
-     * Tworzy zdarzenie dołączenia do kolejki do wyciągu w nastepnym kroku.
+     * Tworzy zdarzenie dołączenia do kolejki do wyciągu w następnym kroku.
      */
     private DolaczenieDoKolejki nastepnyKrokWyciag(Moment moment, Wyciag wyciag) {
         return new DolaczenieDoKolejki(moment, wyciag, this);
@@ -197,8 +199,8 @@ public class Sportowiec {
     }
 
     /**
-     * Tworzy kopie sportowca z tymi samymi parametrami ale zwiekszonym id oraz momentem startu.
-     * Uzywane na potrzeby tworzenia wielu sportowcow z jednej grupy sportowcow z wejscia.
+     * Tworzy kopie sportowca z tymi samymi parametrami, ale ze zwiększonym id oraz momentem startu.
+     * Używane na potrzeby tworzenia wielu sportowców z jednej grupy sportowców z wejścia.
      */
     public Sportowiec kopia(int przesuniecieId, Interwal przesuniecieMomentuStartu) {
         return new Sportowiec(id + przesuniecieId,
