@@ -57,7 +57,7 @@ public class Wezel {
 
         System.arraycopy(wychodzaceTrasy, 0, wynik, 0, wychodzaceTrasy.length);
         System.arraycopy(wychodzaceWyciagi, 0, wynik, wychodzaceTrasy.length, wychodzaceWyciagi.length);
-        
+
         return wynik;
     }
 

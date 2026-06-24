@@ -7,7 +7,6 @@ import osrodek_narciarski.losowosc.MaszynaLosujaca;
 import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
-import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 import osrodek_narciarski.sportowcy.OdwiedzajacyNastepnyKrok;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
@@ -41,7 +40,7 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
             maszynaLosujaca);
     }
 
-    public SportowiecPrzeszukujacy(SportowiecZachlanny inny,
+    public SportowiecPrzeszukujacy(SportowiecPrzeszukujacy inny,
         int przesuniecieId,
         Interwal przesuniecieMomentuStartu)
     {
@@ -70,14 +69,9 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
         Map<Krawedz, Krawedz> poprzednieKrawedzie = new HashMap<>();
         OdwiedzajacyNajlepszaKrawedz odwiedzajacy = new OdwiedzajacyNajlepszaKrawedz(this);
 
-        for (Trasa trasa : obecnyWezel.wychodzaceTrasy()) {
-            kolejkaBfs.add(trasa);
-            poprzednieKrawedzie.put(trasa, null);
-        }
-
-        for (Wyciag wyciag : obecnyWezel.wychodzaceWyciagi()) {
-            kolejkaBfs.add(wyciag);
-            poprzednieKrawedzie.put(wyciag, null);
+        for (Krawedz krawedz : obecnyWezel.wychodzaceKrawedzie()) {
+            kolejkaBfs.add(krawedz);
+            poprzednieKrawedzie.put(krawedz, null);
         }
 
         while (!kolejkaBfs.isEmpty())
@@ -85,9 +79,21 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
             Krawedz krawedz = kolejkaBfs.remove();
             krawedz.odwiedz(odwiedzajacy);
 
-            for
+            for (Krawedz sasiedniaKrawedz : krawedz.koniec().wychodzaceKrawedzie())
+            {
+                if (poprzednieKrawedzie.containsKey(sasiedniaKrawedz)) continue;
+
+                poprzednieKrawedzie.put(sasiedniaKrawedz, krawedz);
+                kolejkaBfs.add(sasiedniaKrawedz);
+            }
+        }
+
+        Trasa najlepszaTrasa = odwiedzajacy.najlepszaTrasa();
+
+        for (Krawedz krawedz = najlepszaTrasa; krawedz != null; krawedz = poprzednieKrawedzie.get(krawedz)) {
+            plan.add(krawedz);
         }
     }
 
-    public abstract Trasa lepszaTrasa(Trasa najlepszaTrasa, Trasa trasa);
+    public abstract boolean czyNowaTrasaLepsza(Trasa najlepszaTrasa, Trasa nowa);
 }

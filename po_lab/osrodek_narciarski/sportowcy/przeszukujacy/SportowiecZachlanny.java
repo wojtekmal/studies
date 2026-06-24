@@ -4,8 +4,8 @@ import osrodek_narciarski.czas.Interwal;
 import osrodek_narciarski.czas.Moment;
 import osrodek_narciarski.losowosc.MaszynaLosujaca;
 import osrodek_narciarski.osrodek.Wezel;
+import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.sportowcy.Sportowiec;
-import osrodek_narciarski.sportowcy.krotkowzroczny.SportowiecKrotkowzroczny;
 
 public class SportowiecZachlanny extends SportowiecPrzeszukujacy{
 
@@ -38,6 +38,11 @@ public class SportowiecZachlanny extends SportowiecPrzeszukujacy{
         Interwal przesuniecieMomentuStartu)
     {
         super(inny, przesuniecieId, przesuniecieMomentuStartu);
+    }
+
+    @Override
+    public boolean czyNowaTrasaLepsza(Trasa najlepszaTrasa, Trasa nowa) {
+        return lacznaAtrakcyjnosc(nowa) > lacznaAtrakcyjnosc(najlepszaTrasa);
     }
 
     @Override

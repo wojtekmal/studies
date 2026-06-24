@@ -5,8 +5,10 @@ import osrodek_narciarski.czas.Moment;
 import osrodek_narciarski.kolejkaZdarzen.zdarzenia.Zdarzenie;
 import osrodek_narciarski.losowosc.MaszynaLosujaca;
 import osrodek_narciarski.osrodek.Wezel;
+import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
+import osrodek_narciarski.sportowcy.OdwiedzajacyNastepnyKrok;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
 public class SportowiecKrotkowzroczny extends Sportowiec {
@@ -82,17 +84,22 @@ public class SportowiecKrotkowzroczny extends Sportowiec {
             }
         }
 
+        Krawedz nastepnaKrawedz;
+
         if (najlepszaTrasa == null) {
             // Zbiór dostępnych tras jest pusty, wiec wybieramy dowolny wyciąg.
             // Mamy gwarancję, że taki istnieje, ponieważ graf jest silnie spójny.
-            return nastepnyKrokWyciag(moment, wyciagi[0]);
+            nastepnaKrawedz = wyciagi[0];
         } else if (nastepnyWyciag == null) {
             // Wybrana trasa zaczyna się w obecnym wierzchołku.
-            return nastepnyKrokTrasa(moment, najlepszaTrasa);
+            nastepnaKrawedz = najlepszaTrasa;
         } else {
             // Musimy wjechać wyciągiem, by dotrzeć do upatrzonej trasy.
-            return nastepnyKrokWyciag(moment, nastepnyWyciag);
+            nastepnaKrawedz = nastepnyWyciag;
         }
+
+        OdwiedzajacyNastepnyKrok odwiedzajacy = new OdwiedzajacyNastepnyKrok(this, moment);
+        return nastepnaKrawedz.odwiedz(odwiedzajacy);
     }
 
     public Sportowiec kopia(int przesuniecieId, Interwal przesuniecieMomentuStartu) {

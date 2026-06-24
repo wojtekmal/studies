@@ -18,7 +18,7 @@ public class OdwiedzajacyNajlepszaKrawedz implements OdwiedzajacyKrawedz<Void> {
             najlepszaTrasa = trasa;
         }
         else {
-            najlepszaTrasa = sportowiec.lepszaTrasa(najlepszaTrasa, trasa);
+            najlepszaTrasa = sportowiec.czyNowaTrasaLepsza(najlepszaTrasa, trasa);
         }
         return null;
     }

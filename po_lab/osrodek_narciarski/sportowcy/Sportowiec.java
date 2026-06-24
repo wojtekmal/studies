@@ -2,13 +2,11 @@ package osrodek_narciarski.sportowcy;
 
 import osrodek_narciarski.czas.Interwal;
 import osrodek_narciarski.czas.Moment;
-import osrodek_narciarski.kolejkaZdarzen.zdarzenia.DolaczenieDoKolejki;
-import osrodek_narciarski.kolejkaZdarzen.zdarzenia.RozpoczecieZjazdu;
 import osrodek_narciarski.kolejkaZdarzen.zdarzenia.Zdarzenie;
 import osrodek_narciarski.losowosc.MaszynaLosujaca;
 import osrodek_narciarski.osrodek.Wezel;
+import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
-import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -140,30 +138,13 @@ public abstract class Sportowiec {
      * spośród wszystkich zaczynających się w obecnym wierzchołku.
      */
     protected Zdarzenie podejmijSpontanicznaDecyzje(Moment moment, Wezel obecnyWezel) {
-        Trasa[] bezposrednieTrasy = obecnyWezel.wychodzaceTrasy();
-        Wyciag[] wyciagi = obecnyWezel.wychodzaceWyciagi();
+        Krawedz[] bezposrednieKrawedzie = obecnyWezel.wychodzaceKrawedzie();
 
-        int losowyWybor = maszynaLosujaca.losowyInt(0, bezposrednieTrasy.length + wyciagi.length);
+        int losowyWybor = maszynaLosujaca.losowyInt(0, bezposrednieKrawedzie.length);
+        Krawedz wybranaKrawedz = bezposrednieKrawedzie[losowyWybor];
 
-        if (losowyWybor < bezposrednieTrasy.length) {
-            return nastepnyKrokTrasa(moment, bezposrednieTrasy[losowyWybor]);
-        } else {
-            return nastepnyKrokWyciag(moment, wyciagi[losowyWybor - bezposrednieTrasy.length]);
-        }
-    }
-
-    /**
-     * Tworzy zdarzenie dołączenia do kolejki do wyciągu w następnym kroku.
-     */
-    public DolaczenieDoKolejki nastepnyKrokWyciag(Moment moment, Wyciag wyciag) {
-        return new DolaczenieDoKolejki(moment, wyciag, this);
-    }
-
-    /**
-     * Tworzy zdarzenie zjazdu bezpośrednią trasą w następnym kroku.
-     */
-    public RozpoczecieZjazdu nastepnyKrokTrasa(Moment moment, Trasa trasa) {
-        return new RozpoczecieZjazdu(moment, trasa, this);
+        OdwiedzajacyNastepnyKrok odwiedzajacy = new OdwiedzajacyNastepnyKrok(this, moment);
+        return wybranaKrawedz.odwiedz(odwiedzajacy);
     }
 
     /**
@@ -207,10 +188,10 @@ public abstract class Sportowiec {
     }
 
     public void zanotujPrzejazdTrasa(Trasa trasa) {
-        zanotujOdwiedziny(trasa);
+        zanotujOstatnieOdwiedziny(trasa);
     }
 
-    protected void zanotujOdwiedziny(Trasa trasa) {
+    protected void zanotujOstatnieOdwiedziny(Trasa trasa) {
         kiedyOdwiedzonoTrasy.put(trasa, liczbaPrzejechanychTras);
         liczbaPrzejechanychTras++;
     }
