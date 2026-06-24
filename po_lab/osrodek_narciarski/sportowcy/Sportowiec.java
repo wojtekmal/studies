@@ -28,6 +28,8 @@ public abstract class Sportowiec {
 
     private final double wspolczynnikNawierzchni; // [0, 1]
 
+    private final double wspolczynnikZnuzenia; // [0, 1]
+
     private final boolean sledzony;
 
     private final Wezel wezelStartowy;
@@ -41,6 +43,7 @@ public abstract class Sportowiec {
         double wspolczynnikSpontanicznosci,
         double wspolczynnikTrudnosci,
         double wspolczynnikNawierzchni,
+        double wspolczynnikZnuzenia,
         boolean sledzony,
         Wezel wezelStartowy,
         Moment momentStartu,
@@ -50,10 +53,30 @@ public abstract class Sportowiec {
         this.wspolczynnikSpontanicznosci = wspolczynnikSpontanicznosci;
         this.wspolczynnikTrudnosci = wspolczynnikTrudnosci;
         this.wspolczynnikNawierzchni = wspolczynnikNawierzchni;
+        this.wspolczynnikZnuzenia = wspolczynnikZnuzenia;
         this.sledzony = sledzony;
         this.wezelStartowy = wezelStartowy;
         this.momentStartu = momentStartu;
         this.maszynaLosujaca = maszynaLosujaca;
+    }
+
+    /**
+     * Konstruktor używany przez metodę kopia.
+     */
+    public Sportowiec(Sportowiec inny,
+        int przesuniecieId,
+        Interwal przesuniecieMomentuStartu)
+    {
+        this(inny.id + przesuniecieId,
+            inny.poziomZaawansowania,
+            inny.wspolczynnikSpontanicznosci,
+            inny.wspolczynnikTrudnosci,
+            inny.wspolczynnikNawierzchni,
+            inny.wspolczynnikZnuzenia,
+            inny.sledzony,
+            inny.wezelStartowy,
+            inny.momentStartu.dodajInterwal(przesuniecieMomentuStartu),
+            inny.maszynaLosujaca);
     }
 
     public int id() {
@@ -72,6 +95,10 @@ public abstract class Sportowiec {
         return wspolczynnikNawierzchni;
     }
 
+    public double wspolczynnikSpontanicznosci() {
+        return wspolczynnikSpontanicznosci;
+    }
+
     public boolean sledzony() {
         return sledzony;
     }
@@ -88,21 +115,17 @@ public abstract class Sportowiec {
      * Dla zadanego obecnego węzła daje wydarzenie opisujące następny
      * krok sportowca: dołączenie do kolejki na wyciągu lub rozpoczęcie zjazdu trasą.
      */
-        public Zdarzenie nastepnyKrok(Moment moment, Wezel obecnyWezel) {
-        if (maszynaLosujaca.losowyDouble(0, 1) < wspolczynnikSpontanicznosci) {
-            return podejmijSpontanicznaDecyzje(moment, obecnyWezel);
-        } else {
-            return podejmijPrzemyslanaDecyzje(moment, obecnyWezel);
-        }
+    public abstract Zdarzenie nastepnyKrok(Moment moment, Wezel obecnyWezel);
+
+    protected boolean czyTerazSpontaniczny()
+    {
+        return maszynaLosujaca.losowyDouble(0, 1) < wspolczynnikSpontanicznosci();
     }
-
-    public abstract Zdarzenie wyborPolaczenia()
-
     /**
      * Spontaniczna decyzja polega na wylosowaniu następnej krawędzi jednostajnie
      * spośród wszystkich zaczynających się w obecnym wierzchołku.
      */
-    private Zdarzenie podejmijSpontanicznaDecyzje(Moment moment, Wezel obecnyWezel) {
+    protected Zdarzenie podejmijSpontanicznaDecyzje(Moment moment, Wezel obecnyWezel) {
         Trasa[] bezposrednieTrasy = obecnyWezel.wychodzaceTrasy();
         Wyciag[] wyciagi = obecnyWezel.wychodzaceWyciagi();
 
@@ -116,68 +139,23 @@ public abstract class Sportowiec {
     }
 
     /**
-     * Przemyślana decyzja polega na wybraniu najatrakcyjniejszej trasy spośród sumy tras
-     * zaczynających się w obecnym wierzchołku oraz tras, których początkowe wierzchołki
-     * są osiągalne wyciągiem zaczynającym się w obecnym wierzchołku.
-     */
-    private Zdarzenie podejmijPrzemyslanaDecyzje(Moment moment, Wezel obecnyWezel) {
-        Trasa[] bezposrednieTrasy = obecnyWezel.wychodzaceTrasy();
-        Wyciag[] wyciagi = obecnyWezel.wychodzaceWyciagi();
-
-        double najwiekszaAtrakcyjnosc = -1;
-        Trasa najlepszaTrasa = null;
-        Wyciag nastepnyWyciag = null;
-
-        for (Trasa trasa : bezposrednieTrasy) {
-            double atrakcyjnosc = lacznaAtrakcyjnosc(trasa);
-            if (atrakcyjnosc > najwiekszaAtrakcyjnosc) {
-                najwiekszaAtrakcyjnosc = atrakcyjnosc;
-                najlepszaTrasa = trasa;
-            }
-        }
-
-        for (Wyciag wyciag : wyciagi) {
-            for (Trasa trasa : wyciag.koniec().wychodzaceTrasy()) {
-                double atrakcyjnosc = lacznaAtrakcyjnosc(trasa);
-                if (atrakcyjnosc > najwiekszaAtrakcyjnosc) {
-                    najwiekszaAtrakcyjnosc = atrakcyjnosc;
-                    najlepszaTrasa = trasa;
-                    nastepnyWyciag = wyciag;
-                }
-            }
-        }
-
-        if (najlepszaTrasa == null) {
-            // Zbiór dostępnych tras jest pusty, wiec wybieramy dowolny wyciąg.
-            // Mamy gwarancję, że taki istnieje, ponieważ graf jest silnie spójny.
-            return nastepnyKrokWyciag(moment, wyciagi[0]);
-        } else if (nastepnyWyciag == null) {
-            // Wybrana trasa zaczyna się w obecnym wierzchołku.
-            return nastepnyKrokTrasa(moment, najlepszaTrasa);
-        } else {
-            // Musimy wjechać wyciągiem, by dotrzeć do upatrzonej trasy.
-            return nastepnyKrokWyciag(moment, nastepnyWyciag);
-        }
-    }
-
-    /**
      * Tworzy zdarzenie dołączenia do kolejki do wyciągu w następnym kroku.
      */
-    private DolaczenieDoKolejki nastepnyKrokWyciag(Moment moment, Wyciag wyciag) {
+    protected DolaczenieDoKolejki nastepnyKrokWyciag(Moment moment, Wyciag wyciag) {
         return new DolaczenieDoKolejki(moment, wyciag, this);
     }
 
     /**
      * Tworzy zdarzenie zjazdu bezpośrednią trasą w następnym kroku.
      */
-    private RozpoczecieZjazdu nastepnyKrokTrasa(Moment moment, Trasa trasa) {
+    protected RozpoczecieZjazdu nastepnyKrokTrasa(Moment moment, Trasa trasa) {
         return new RozpoczecieZjazdu(moment, trasa, this);
     }
 
     /**
      * Wylicza atrakcyjność trasy na podstawie wzoru z treści zadania.
      */
-    private double lacznaAtrakcyjnosc(Trasa trasa) {
+    protected double lacznaAtrakcyjnosc(Trasa trasa) {
         return wspolczynnikTrudnosci * atrakcyjnoscPoziomuTrudnosci(trasa)
             + wspolczynnikNawierzchni * trasa.wyrownanieNawierzchni();
     }
@@ -202,17 +180,8 @@ public abstract class Sportowiec {
      * Tworzy kopie sportowca z tymi samymi parametrami, ale ze zwiększonym id oraz momentem startu.
      * Używane na potrzeby tworzenia wielu sportowców z jednej grupy sportowców z wejścia.
      */
-    public Sportowiec kopia(int przesuniecieId, Interwal przesuniecieMomentuStartu) {
-        return new Sportowiec(id + przesuniecieId,
-            poziomZaawansowania,
-            wspolczynnikSpontanicznosci,
-            wspolczynnikTrudnosci,
-            wspolczynnikNawierzchni,
-            sledzony,
-            wezelStartowy,
-            momentStartu.dodajInterwal(przesuniecieMomentuStartu),
-            maszynaLosujaca);
-    }
+
+    public abstract Sportowiec kopia(int przesuniecieId, Interwal przesuniecieMomentuStartu);
 
     @Override
     public String toString() {
