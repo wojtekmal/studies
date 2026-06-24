@@ -10,6 +10,9 @@ import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class Sportowiec {
 
     private final int WSPOLCZYNNIK_ROZNICY_POZIOMOW_TRUDNOSCI = 5;
@@ -24,11 +27,13 @@ public abstract class Sportowiec {
 
     private final double wspolczynnikSpontanicznosci; // [0, 1]
 
-    private final double wspolczynnikTrudnosci; // [0, 1]
+    private final double wspolczynnikZnudzenia; // [0, 1]
 
-    private final double wspolczynnikNawierzchni; // [0, 1]
+    private final double wagaTrudnosci; // [0, 1]
 
-    private final double wspolczynnikZnuzenia; // [0, 1]
+    private final double wagaNawierzchni; // [0, 1]
+
+    private final double wagaZnudzenia; // [0, 1]
 
     private final boolean sledzony;
 
@@ -38,12 +43,19 @@ public abstract class Sportowiec {
 
     private final MaszynaLosujaca maszynaLosujaca;
 
+    private final Map<Trasa, Double> znudzenia = new HashMap<>();
+
+    private final Map<Trasa, Integer> kiedyOdwiedzonoTrasy = new HashMap<>();
+
+    private int liczbaPrzejechanychTras = 0;
+
     public Sportowiec(int id,
         int poziomZaawansowania,
         double wspolczynnikSpontanicznosci,
-        double wspolczynnikTrudnosci,
-        double wspolczynnikNawierzchni,
-        double wspolczynnikZnuzenia,
+        double wspolczynnikZnudzenia,
+        double wagaZnudzenia,
+        double wagaTrudnosci,
+        double wagaNawierzchni,
         boolean sledzony,
         Wezel wezelStartowy,
         Moment momentStartu,
@@ -51,9 +63,10 @@ public abstract class Sportowiec {
         this.id = id;
         this.poziomZaawansowania = poziomZaawansowania;
         this.wspolczynnikSpontanicznosci = wspolczynnikSpontanicznosci;
-        this.wspolczynnikTrudnosci = wspolczynnikTrudnosci;
-        this.wspolczynnikNawierzchni = wspolczynnikNawierzchni;
-        this.wspolczynnikZnuzenia = wspolczynnikZnuzenia;
+        this.wspolczynnikZnudzenia = wagaZnudzenia;
+        this.wagaTrudnosci = wagaTrudnosci;
+        this.wagaNawierzchni = wagaNawierzchni;
+        this.wagaZnudzenia = wspolczynnikZnudzenia;
         this.sledzony = sledzony;
         this.wezelStartowy = wezelStartowy;
         this.momentStartu = momentStartu;
@@ -70,9 +83,10 @@ public abstract class Sportowiec {
         this(inny.id + przesuniecieId,
             inny.poziomZaawansowania,
             inny.wspolczynnikSpontanicznosci,
-            inny.wspolczynnikTrudnosci,
-            inny.wspolczynnikNawierzchni,
-            inny.wspolczynnikZnuzenia,
+            inny.wspolczynnikZnudzenia,
+            inny.wagaTrudnosci,
+            inny.wagaNawierzchni,
+            inny.wagaZnudzenia,
             inny.sledzony,
             inny.wezelStartowy,
             inny.momentStartu.dodajInterwal(przesuniecieMomentuStartu),
@@ -88,11 +102,11 @@ public abstract class Sportowiec {
     }
 
     public double wspolczynnikTrudnosci() {
-        return wspolczynnikTrudnosci;
+        return wagaTrudnosci;
     }
 
     public double wspolczynnikNawierzchni() {
-        return wspolczynnikNawierzchni;
+        return wagaNawierzchni;
     }
 
     public double wspolczynnikSpontanicznosci() {
@@ -156,8 +170,9 @@ public abstract class Sportowiec {
      * Wylicza atrakcyjność trasy na podstawie wzoru z treści zadania.
      */
     protected double lacznaAtrakcyjnosc(Trasa trasa) {
-        return wspolczynnikTrudnosci * atrakcyjnoscPoziomuTrudnosci(trasa)
-            + wspolczynnikNawierzchni * trasa.wyrownanieNawierzchni();
+        return wagaTrudnosci * atrakcyjnoscPoziomuTrudnosci(trasa)
+            + wagaNawierzchni * trasa.wyrownanieNawierzchni()
+            + wagaZnudzenia * atrakcyjnoscNowosci(trasa);
     }
 
     private double atrakcyjnoscPoziomuTrudnosci(Trasa trasa) {
@@ -174,6 +189,26 @@ public abstract class Sportowiec {
             return Math.max(DOMYSLNA_ATRAKCYJNOSC_LATWEJ_TRASY,
                 1 - (-roznicaPoziomow) / (double) WSPOLCZYNNIK_ROZNICY_POZIOMOW_TRUDNOSCI_LATWEJ_TRASY);
         }
+    }
+
+    public void przeliczZnudzenie(Trasa trasa) {
+        int czasOdOstatniegoPrzejazdu = liczbaPrzejechanychTras - kiedyOdwiedzonoTrasy.get(trasa);
+        double stareZnudzenie;
+
+        if (znudzenia.containsKey(trasa)) {
+            stareZnudzenie = znudzenia.get(trasa);
+        }
+        else {
+            stareZnudzenie = 1;
+        }
+
+        double noweZnudzenie = stareZnudzenie * Math.pow(1 - wspolczynnikZnudzenia, czasOdOstatniegoPrzejazdu);
+        znudzenia.put(trasa, noweZnudzenie);
+    }
+
+    public void zanotujPrzejazdTrasa(Trasa trasa) {
+        kiedyOdwiedzonoTrasy.put(trasa, liczbaPrzejechanychTras);
+        liczbaPrzejechanychTras++;
     }
 
     /**
