@@ -36,6 +36,8 @@ public abstract class Krawedz {
         return dlugosc;
     }
 
+    public abstract String wypiszParametry();
+
     public abstract String wypiszStatystyki();
 
     @Override

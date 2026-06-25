@@ -78,8 +78,37 @@ public class Wyciag extends Krawedz {
     }
 
     @Override
+    public String wypiszParametry() {
+        return String.format("w%d: %d os. co %ds\nczas: %ds",
+            id(),
+            ladownosc,
+            odstepMiedzyOdjazdami.sekundy());
+    }
+
+    @Override
     public String wypiszStatystyki() {
-        return String.format("%d pasażerów", lacznaLiczbaPasazerow);
+        return String.format("w%d: kol: %.2f(śr), %d(maks)\nwjazdy: %d / %d",
+                id(),
+                sredniaDlugoscKolejki(),
+                maksymalnaDlugoscKolejki,
+                lacznaLiczbaPasazerow,
+                maksymalnaMozliwaLiczbaPasazerow());
+    }
+
+    private int sredniaDlugoscKolejki() {
+        int sredniaWDolZaokroglona = sumaDlugosciKolejekiPoSekundach / LICZBA_SEKUND_W_SYMULACJI;
+        int reszta = sumaDlugosciKolejekiPoSekundach % LICZBA_SEKUND_W_SYMULACJI;
+
+        if (reszta >= (sumaDlugosciKolejekiPoSekundach + 1) / 2) {
+            return sredniaWDolZaokroglona + 1;
+        }
+        else {
+            return sredniaWDolZaokroglona;
+        }
+    }
+
+    public int maksymalnaMozliwaLiczbaPasazerow() {
+        return LICZBA_SEKUND_W_SYMULACJI * ladownosc;
     }
 
     @Override

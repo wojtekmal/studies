@@ -1,6 +1,7 @@
 package osrodek_narciarski.dziennik;
 
 import osrodek_narciarski.czas.Moment;
+import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
 public interface Dziennik {
@@ -15,8 +16,11 @@ public interface Dziennik {
      */
     void dodajWpisZeSportowcem(Moment moment, Sportowiec sportowiec, String coZrobil);
 
-    /**
-     * Dodaje wpis złożony z zadanej tabeli, używane do wypisania końcowych statystyk.
-     */
     void dodajTabele(String[][] wiersze);
+
+    void dodajParametryOsrodka(String[] opisyWezlow, String[] opisyTras, String[] opisyWyciagow);
+
+    void dodajStatystykiKoncowe(String[] statystykiTras, String[] statystykiWyciagow);
+
+    void dodajPrzejazdySportowca(int idSportowca, Krawedz[] odwiedzoneKrawedzie);
 }

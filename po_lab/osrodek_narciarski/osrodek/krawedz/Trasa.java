@@ -41,18 +41,34 @@ public class Trasa extends Krawedz {
         return start.dodajInterwal(dlugosc());
     }
 
-    public double wyrownanieNawierzchni() {
-        return (bazowaAtrakcyjnosc + (1 - bazowaAtrakcyjnosc) * Math.pow(odpornoscNaNierownosci, liczbaZjazdow));
+    public double atrakcyjnoscNawierzchni() {
+        return (bazowaAtrakcyjnosc + (1 - bazowaAtrakcyjnosc) * wyrownanieNawierzchni());
     }
 
-    public int liczbaZjazdow()
-    {
+    private double wyrownanieNawierzchni() {
+        return Math.pow(odpornoscNaNierownosci, liczbaZjazdow);
+    }
+
+    public int liczbaZjazdow() {
         return liczbaZjazdow;
     }
 
     @Override
+    public String wypiszParametry() {
+        return String.format("t%d: poziom: %d, czas: %ds\nodporność: %.2f, %.5f",
+            id(),
+            poziomTrudnosci,
+            dlugosc().sekundy(),
+            bazowaAtrakcyjnosc,
+            odpornoscNaNierownosci);
+    }
+
+    @Override
     public String wypiszStatystyki() {
-        return String.format("%d zjazdów", liczbaZjazdow);
+        return String.format("t%d: śnieg: %.2f\nzjazdy: %d",
+            id(),
+            wyrownanieNawierzchni(),
+            liczbaZjazdow);
     }
 
     @Override

@@ -1,9 +1,11 @@
 package osrodek_narciarski.dziennik;
 
 import osrodek_narciarski.czas.Moment;
+import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
-public class DziennikStandardoweWyjscie implements Dziennik {
+public class DziennikStdioIMapki implements Dziennik {
+
 
     @Override
     public void dodajWpis(Moment moment, String wpis) {
@@ -30,5 +32,20 @@ public class DziennikStandardoweWyjscie implements Dziennik {
         for (String[] wiersz : wiersze) {
             System.out.format(formatWiersza, wiersz[0], wiersz[1]);
         }
+    }
+
+    @Override
+    public void dodajParametryOsrodka(String[] opisyWezlow, String[] opisyTras, String[] opisyWyciagow) {
+
+    }
+
+    @Override
+    public void dodajStatystykiKoncowe(String[] statystykiTras, String[] statystykiWyciagow) {
+
+    }
+
+    @Override
+    public void dodajPrzejazdySportowca(int idSportowca, Krawedz[] odwiedzoneKrawedzie) {
+
     }
 }

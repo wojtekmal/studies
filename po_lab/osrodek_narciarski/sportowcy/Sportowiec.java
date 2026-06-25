@@ -75,7 +75,7 @@ public abstract class Sportowiec {
      */
     protected double lacznaAtrakcyjnosc(Trasa trasa) {
         return parametry.wagaTrudnosci() * atrakcyjnoscPoziomuTrudnosci(trasa)
-            + parametry.wagaNawierzchni() * trasa.wyrownanieNawierzchni()
+            + parametry.wagaNawierzchni() * trasa.atrakcyjnoscNawierzchni()
             + parametry.wagaZnudzenia() * (1 - znudzenia.get(trasa));
     }
 
