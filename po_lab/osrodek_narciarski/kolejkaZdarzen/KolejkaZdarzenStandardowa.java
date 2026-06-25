@@ -5,30 +5,46 @@ import osrodek_narciarski.kolejkaZdarzen.zdarzenia.Zdarzenie;
 import java.util.PriorityQueue;
 
 public class KolejkaZdarzenStandardowa implements KolejkaZdarzen {
-    private class ZdarzenieZIndeksem {
-        private Zdarzenie zdarzenie;
-        private int indeks;
 
-        public ZdarzenieZIndeksem(Zdarzenie zdarzenie, int indeks)
+    private class ZdarzenieZId {
+        public Zdarzenie zdarzenie;
+        public int id;
+
+        public ZdarzenieZId(Zdarzenie zdarzenie, int id)
         {
             this.zdarzenie = zdarzenie;
-            this.indeks = indeks;
+            this.id = id;
         }
     }
-    PriorityQueue<Zdarzenie> kolejkaZdarzen = new PriorityQueue<>();
+
+    private int nastepneIdZdarzenia = 0;
+
+    PriorityQueue<ZdarzenieZId> kolejkaZdarzen = new PriorityQueue<>((zdarzenieZId1, zdarzenieZId2) -> {
+        int porownanieMomentow = zdarzenieZId1.zdarzenie.moment().compareTo(zdarzenieZId2.zdarzenie.moment());
+
+        if (porownanieMomentow != 0) {
+            return porownanieMomentow;
+        }
+        else {
+            return Integer.compare(zdarzenieZId1.id, zdarzenieZId2.id);
+        }
+    });
 
     @Override
     public void dodaj(Zdarzenie zdarzenie) {
+        int id = nastepneIdZdarzenia;
+        nastepneIdZdarzenia++;
 
+        kolejkaZdarzen.add(new ZdarzenieZId(zdarzenie, id));
     }
 
     @Override
     public Zdarzenie zdejmij() {
-        return null;
+        return kolejkaZdarzen.remove().zdarzenie;
     }
 
     @Override
     public boolean czyPusta() {
-        return false;
+        return kolejkaZdarzen.isEmpty();
     }
 }

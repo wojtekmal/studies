@@ -84,4 +84,8 @@ public class Moment {
     public int hashCode() {
         return Objects.hash(godzina, minuta, sekunda);
     }
+
+    public Interwal policzInterwal(Moment pozniejszy) {
+        return new Interwal(pozniejszy.sekundy() - sekundy());
+    }
 }

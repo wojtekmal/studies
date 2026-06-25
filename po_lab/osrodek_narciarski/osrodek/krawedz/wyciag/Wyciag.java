@@ -21,6 +21,14 @@ public class Wyciag extends Krawedz {
 
     private int lacznaLiczbaPasazerow;
 
+    private int maksymalnaDlugoscKolejki = 0;
+
+    private int sumaDlugosciKolejekiPoSekundach = 0;
+
+    private Moment ostatniaAktualizacjaStatystyk;
+
+    private final static int LICZBA_SEKUND_W_SYMULACJI = 21600;
+
     public Wyciag(int id,
         Wezel poczatek,
         Wezel koniec,
@@ -82,5 +90,15 @@ public class Wyciag extends Krawedz {
     @Override
     public <R> R odwiedz(OdwiedzajacyKrawedz<R> odwiedzajacyKrawedz) {
         return odwiedzajacyKrawedz.wyciag(this);
+    }
+
+    public void zaktualizujStatystyki(Moment moment) {
+        int dlugoscKolejki = obecnaKolejka.rozmiar();
+        Interwal interwalZStalalKolejka = ostatniaAktualizacjaStatystyk.policzInterwal(moment);
+
+        maksymalnaDlugoscKolejki = Math.max(maksymalnaDlugoscKolejki, dlugoscKolejki);
+        sumaDlugosciKolejekiPoSekundach += dlugoscKolejki * interwalZStalalKolejka.sekundy();
+
+        ostatniaAktualizacjaStatystyk = moment;
     }
 }

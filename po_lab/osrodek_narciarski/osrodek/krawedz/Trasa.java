@@ -45,6 +45,11 @@ public class Trasa extends Krawedz {
         return (bazowaAtrakcyjnosc + (1 - bazowaAtrakcyjnosc) * Math.pow(odpornoscNaNierownosci, liczbaZjazdow));
     }
 
+    public int liczbaZjazdow()
+    {
+        return liczbaZjazdow;
+    }
+
     @Override
     public String wypiszStatystyki() {
         return String.format("%d zjazdów", liczbaZjazdow);

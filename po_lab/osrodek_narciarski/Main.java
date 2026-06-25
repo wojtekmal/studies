@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import osrodek_narciarski.dziennik.DziennikStandardoweWyjscie;
-import osrodek_narciarski.kolejkaZdarzen.ProstaTablicaZdarzen;
+import osrodek_narciarski.kolejkaZdarzen.KolejkaZdarzenStandardowa;
 import osrodek_narciarski.losowosc.DeterministycznaMaszynaLosujaca;
 import osrodek_narciarski.symulacja.Symulacja;
 import osrodek_narciarski.wczytywacz.DaneWejsciowe;
@@ -16,7 +16,7 @@ public class Main {
         DaneWejsciowe daneWejsciowe = wczytajWejscie();
 
         new Symulacja().przeprowadzSymulacje(new DziennikStandardoweWyjscie(),
-            new ProstaTablicaZdarzen(),
+            new KolejkaZdarzenStandardowa(),
             daneWejsciowe.osrodek(),
             daneWejsciowe.sportowcy());
     }
