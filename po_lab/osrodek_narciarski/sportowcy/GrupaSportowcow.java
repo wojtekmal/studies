@@ -10,16 +10,8 @@ public class GrupaSportowcow {
 
     private final Interwal odstepMiedzySportowcami;
 
-    public Sportowiec schematSportowca() {
-        return schematSportowca;
-    }
-
     public int krotnosc() {
         return krotnosc;
-    }
-
-    public Interwal odstepMiedzySportowcami() {
-        return odstepMiedzySportowcami;
     }
 
     public GrupaSportowcow(Sportowiec schematSportowca, int krotnosc, Interwal odstepMiedzySportowcami) {

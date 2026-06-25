@@ -97,7 +97,7 @@ public class ParametrySportowca {
             wagaZnudzenia,
             sledzony,
             wezelStartowy,
-            momentStartu,
+            momentStartu.dodajInterwal(przesuniecieMomentuStartu),
             maszynaLosujaca);
     }
 }

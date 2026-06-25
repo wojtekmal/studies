@@ -1,10 +1,8 @@
 package osrodek_narciarski.sportowcy.przeszukujacy;
 
 import osrodek_narciarski.czas.Interwal;
-import osrodek_narciarski.czas.Moment;
-import osrodek_narciarski.losowosc.MaszynaLosujaca;
-import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
+import osrodek_narciarski.sportowcy.ParametrySportowca;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
 import java.util.HashMap;
@@ -12,13 +10,14 @@ import java.util.Map;
 
 public class SportowiecKolekcjoner extends SportowiecPrzeszukujacy{
 
-    private Map<Trasa, Integer> licznikiPrzejazdow = new HashMap<>();
+    private final Map<Trasa, Integer> licznikiPrzejazdow = new HashMap<>();
 
-    public SportowiecKolekcjoner(SportowiecKolekcjoner inny,
-        int przesuniecieId,
-        Interwal przesuniecieMomentuStartu)
-    {
-        super(inny, przesuniecieId, przesuniecieMomentuStartu);
+    public SportowiecKolekcjoner(ParametrySportowca parametry) {
+        super(parametry);
+    }
+
+    public SportowiecKolekcjoner(Sportowiec doSkopiowania, int przesuniecieId, Interwal przesuniecieMomentuStartu) {
+        super(doSkopiowania, przesuniecieId, przesuniecieMomentuStartu);
     }
 
     @Override
@@ -28,7 +27,7 @@ public class SportowiecKolekcjoner extends SportowiecPrzeszukujacy{
 
     @Override
     public Sportowiec kopia(int przesuniecieId, Interwal przesuniecieMomentuStartu) {
-        return null;
+        return new SportowiecKolekcjoner(this, przesuniecieId, przesuniecieMomentuStartu);
     }
 
     @Override

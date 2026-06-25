@@ -14,11 +14,8 @@ public class OdwiedzajacyNajlepszaKrawedz implements OdwiedzajacyKrawedz<Void> {
 
     @Override
     public Void trasa(Trasa trasa) {
-        if (najlepszaTrasa == null) {
+        if (najlepszaTrasa == null || sportowiec.czyNowaTrasaLepsza(najlepszaTrasa, trasa)) {
             najlepszaTrasa = trasa;
-        }
-        else {
-            najlepszaTrasa = sportowiec.czyNowaTrasaLepsza(najlepszaTrasa, trasa);
         }
         return null;
     }

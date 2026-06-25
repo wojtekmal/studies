@@ -3,7 +3,6 @@ package osrodek_narciarski.sportowcy;
 import osrodek_narciarski.czas.Interwal;
 import osrodek_narciarski.czas.Moment;
 import osrodek_narciarski.kolejkaZdarzen.zdarzenia.Zdarzenie;
-import osrodek_narciarski.losowosc.MaszynaLosujaca;
 import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
@@ -29,6 +28,10 @@ public abstract class Sportowiec {
 
     public Sportowiec(ParametrySportowca parametry) {
         this.parametry = parametry;
+    }
+
+    public Sportowiec(Sportowiec doSkopiowania, int przesuniecieId, Interwal przesuniecieMomentuStartu) {
+        this(doSkopiowania.parametry.kopia(przesuniecieId, przesuniecieMomentuStartu));
     }
 
     public boolean sledzony() {

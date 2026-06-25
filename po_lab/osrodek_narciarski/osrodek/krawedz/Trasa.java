@@ -36,18 +36,6 @@ public class Trasa extends Krawedz {
         return poziomTrudnosci;
     }
 
-    public double bazowaAtrakcyjnosc() {
-        return bazowaAtrakcyjnosc;
-    }
-
-    public double odpornoscNaNierownosci() {
-        return odpornoscNaNierownosci;
-    }
-
-    public int liczbaZjazdow() {
-        return liczbaZjazdow;
-    }
-
     public Moment przemierz(Moment start) {
         liczbaZjazdow++;
         return start.dodajInterwal(dlugosc());

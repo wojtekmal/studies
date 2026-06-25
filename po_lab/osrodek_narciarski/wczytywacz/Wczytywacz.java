@@ -9,7 +9,11 @@ import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 import osrodek_narciarski.sportowcy.GrupaSportowcow;
+import osrodek_narciarski.sportowcy.ParametrySportowca;
 import osrodek_narciarski.sportowcy.Sportowiec;
+import osrodek_narciarski.sportowcy.krotkowzroczny.SportowiecKrotkowzroczny;
+import osrodek_narciarski.sportowcy.przeszukujacy.SportowiecKolekcjoner;
+import osrodek_narciarski.sportowcy.przeszukujacy.SportowiecZachlanny;
 
 public class Wczytywacz {
 
@@ -117,10 +121,13 @@ public class Wczytywacz {
         int liczbaSportowcowWGrupie = scanner.nextInt();
         int poziomZaawansowania = scanner.nextInt();
         double wspolczynnikSpontanicznosci = scanner.nextDouble();
+        double wspolczynnikZnudzenia = scanner.nextDouble();
+        String rodzajSportowcow = scanner.next();
         boolean czySledzeni = scanner.findInLine("s") != null;
 
         double wagaDopasowania = scanner.nextDouble();
-        double wagaJakosciNawierzchni = scanner.nextDouble();
+        double wagaNawierzchni = scanner.nextDouble();
+        double wagaZnudzenia = scanner.nextDouble();
         int idPoczatkowegoWezla = scanner.nextInt();
 
         Moment start = wczytajMoment();
@@ -131,17 +138,35 @@ public class Wczytywacz {
             odstepCzasowy = new Interwal(scanner.nextInt());
         }
 
-        Sportowiec pierwszySportowiec = new Sportowiec(nastepneId,
+        ParametrySportowca parametryPierwszegoSportowca = new ParametrySportowca(nastepneId,
             poziomZaawansowania,
             wspolczynnikSpontanicznosci,
+            wspolczynnikZnudzenia,
             wagaDopasowania,
-            wagaJakosciNawierzchni,
+            wagaNawierzchni,
+            wagaZnudzenia,
             czySledzeni,
             wezly[idPoczatkowegoWezla],
             start,
             maszynaLosujaca);
 
+        Sportowiec pierwszySportowiec = pierwszySportowiec(rodzajSportowcow, parametryPierwszegoSportowca);
+
         return new GrupaSportowcow(pierwszySportowiec, liczbaSportowcowWGrupie, odstepCzasowy);
+    }
+
+    private static Sportowiec pierwszySportowiec(String rodzajSportowcow, ParametrySportowca parametry) {
+        Sportowiec pierwszySportowiec = null;
+
+        switch (rodzajSportowcow) {
+            case "L" -> pierwszySportowiec = new SportowiecKrotkowzroczny(parametry);
+            case "Z" -> pierwszySportowiec = new SportowiecZachlanny(parametry);
+            case "K" -> pierwszySportowiec = new SportowiecKolekcjoner(parametry);
+            default -> {
+                assert false : String.format("Podany rodzaj sportowca nie istnieje: %s", rodzajSportowcow);
+            }
+        }
+        return pierwszySportowiec;
     }
 
     private Moment wczytajMoment() {

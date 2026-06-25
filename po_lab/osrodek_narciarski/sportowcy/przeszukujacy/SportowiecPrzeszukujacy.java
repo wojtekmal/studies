@@ -3,11 +3,11 @@ package osrodek_narciarski.sportowcy.przeszukujacy;
 import osrodek_narciarski.czas.Interwal;
 import osrodek_narciarski.czas.Moment;
 import osrodek_narciarski.kolejkaZdarzen.zdarzenia.Zdarzenie;
-import osrodek_narciarski.losowosc.MaszynaLosujaca;
 import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.sportowcy.OdwiedzajacyNastepnyKrok;
+import osrodek_narciarski.sportowcy.ParametrySportowca;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
 import java.util.*;
@@ -16,11 +16,12 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
 
     private final Stack<Krawedz> plan = new Stack<>();
 
-    public SportowiecPrzeszukujacy(SportowiecPrzeszukujacy inny,
-        int przesuniecieId,
-        Interwal przesuniecieMomentuStartu)
-    {
-        super(inny, przesuniecieId, przesuniecieMomentuStartu);
+    public SportowiecPrzeszukujacy(ParametrySportowca parametry) {
+        super(parametry);
+    }
+
+    public SportowiecPrzeszukujacy(Sportowiec doSkopiowania, int przesuniecieId, Interwal przesuniecieMomentuStartu) {
+        super(doSkopiowania, przesuniecieId, przesuniecieMomentuStartu);
     }
 
     public Zdarzenie nastepnyKrok(Moment moment, Wezel obecnyWezel) {

@@ -8,15 +8,17 @@ import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 import osrodek_narciarski.sportowcy.OdwiedzajacyNastepnyKrok;
+import osrodek_narciarski.sportowcy.ParametrySportowca;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
 public class SportowiecKrotkowzroczny extends Sportowiec {
 
-    public SportowiecKrotkowzroczny(SportowiecKrotkowzroczny inny,
-        int przesuniecieId,
-        Interwal przesuniecieMomentuStartu)
-    {
-        super(inny, przesuniecieId, przesuniecieMomentuStartu);
+    public SportowiecKrotkowzroczny(ParametrySportowca parametry) {
+        super(parametry);
+    }
+
+    public SportowiecKrotkowzroczny(Sportowiec doSkopiowania, int przesuniecieId, Interwal przesuniecieMomentuStartu) {
+        super(doSkopiowania, przesuniecieId, przesuniecieMomentuStartu);
     }
 
     public Zdarzenie nastepnyKrok(Moment moment, Wezel obecnyWezel) {
@@ -59,6 +61,13 @@ public class SportowiecKrotkowzroczny extends Sportowiec {
             }
         }
 
+        Krawedz nastepnaKrawedz = nastepnaKrawedz(najlepszaTrasa, wyciagi, nastepnyWyciag);
+
+        OdwiedzajacyNastepnyKrok odwiedzajacy = new OdwiedzajacyNastepnyKrok(this, moment);
+        return nastepnaKrawedz.odwiedz(odwiedzajacy);
+    }
+
+    private static Krawedz nastepnaKrawedz(Trasa najlepszaTrasa, Wyciag[] wyciagi, Wyciag nastepnyWyciag) {
         Krawedz nastepnaKrawedz;
 
         if (najlepszaTrasa == null) {
@@ -72,9 +81,7 @@ public class SportowiecKrotkowzroczny extends Sportowiec {
             // Musimy wjechać wyciągiem, by dotrzeć do upatrzonej trasy.
             nastepnaKrawedz = nastepnyWyciag;
         }
-
-        OdwiedzajacyNastepnyKrok odwiedzajacy = new OdwiedzajacyNastepnyKrok(this, moment);
-        return nastepnaKrawedz.odwiedz(odwiedzajacy);
+        return nastepnaKrawedz;
     }
 
     public Sportowiec kopia(int przesuniecieId, Interwal przesuniecieMomentuStartu) {
