@@ -16,30 +16,6 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
 
     private final Stack<Krawedz> plan = new Stack<>();
 
-    public SportowiecPrzeszukujacy(int id,
-        int poziomZaawansowania,
-        double wspolczynnikSpontanicznosci,
-        double wspolczynnikZnudzenia,
-        double wagaZnudzenia,
-        double wagaTrudnosci,
-        double wagaNawierzchni,
-        boolean sledzony,
-        Wezel wezelStartowy,
-        Moment momentStartu,
-        MaszynaLosujaca maszynaLosujaca) {
-        super(id,
-            poziomZaawansowania,
-            wspolczynnikSpontanicznosci,
-            wspolczynnikZnudzenia,
-            wagaZnudzenia,
-            wagaTrudnosci,
-            wagaNawierzchni,
-            sledzony,
-            wezelStartowy,
-            momentStartu,
-            maszynaLosujaca);
-    }
-
     public SportowiecPrzeszukujacy(SportowiecPrzeszukujacy inny,
         int przesuniecieId,
         Interwal przesuniecieMomentuStartu)

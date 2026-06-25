@@ -82,12 +82,14 @@ public class DaneWejsciowe {
         }
 
         Sportowiec[] sportowcy = new Sportowiec[sumaSportowcow];
+        int nastepneId = 0;
 
         for (GrupaSportowcow grupa : grupySportowcow) {
             Sportowiec[] sportowcyWGrupie = grupa.podajSportowcow();
 
             for (Sportowiec sportowiec : sportowcyWGrupie) {
-                sportowcy[sportowiec.id()] = sportowiec;
+                sportowcy[nastepneId] = sportowiec;
+                nastepneId++;
             }
         }
 

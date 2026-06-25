@@ -14,30 +14,6 @@ public class SportowiecKolekcjoner extends SportowiecPrzeszukujacy{
 
     private Map<Trasa, Integer> licznikiPrzejazdow = new HashMap<>();
 
-    public SportowiecKolekcjoner(int id,
-        int poziomZaawansowania,
-        double wspolczynnikSpontanicznosci,
-        double wspolczynnikZnudzenia,
-        double wagaTrudnosci,
-        double wagaNawierzchni,
-        double wagaZnudzenia,
-        boolean sledzony,
-        Wezel wezelStartowy,
-        Moment momentStartu,
-        MaszynaLosujaca maszynaLosujaca) {
-        super(id,
-            poziomZaawansowania,
-            wspolczynnikSpontanicznosci,
-            wspolczynnikZnudzenia,
-            wagaTrudnosci,
-            wagaNawierzchni,
-            wagaZnudzenia,
-            sledzony,
-            wezelStartowy,
-            momentStartu,
-            maszynaLosujaca);
-    }
-
     public SportowiecKolekcjoner(SportowiecKolekcjoner inny,
         int przesuniecieId,
         Interwal przesuniecieMomentuStartu)
@@ -47,7 +23,7 @@ public class SportowiecKolekcjoner extends SportowiecPrzeszukujacy{
 
     @Override
     public boolean czyNowaTrasaLepsza(Trasa najlepszaTrasa, Trasa nowa) {
-        if (licznikiPrzejazdow.get(najlepszaTrasa) < licznikiPrzejazdow)
+        return licznikiPrzejazdow.get(nowa) < licznikiPrzejazdow.get(najlepszaTrasa);
     }
 
     @Override

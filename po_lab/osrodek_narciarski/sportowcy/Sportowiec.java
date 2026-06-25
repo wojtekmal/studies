@@ -19,27 +19,7 @@ public abstract class Sportowiec {
 
     private final double DOMYSLNA_ATRAKCYJNOSC_LATWEJ_TRASY = 0.2;
 
-    private final int id;
-
-    private final int poziomZaawansowania; // {0, 1, ..., 10}
-
-    private final double wspolczynnikSpontanicznosci; // [0, 1]
-
-    private final double wspolczynnikZnudzenia; // [0, 1]
-
-    private final double wagaTrudnosci; // [0, 1]
-
-    private final double wagaNawierzchni; // [0, 1]
-
-    private final double wagaZnudzenia; // [0, 1]
-
-    private final boolean sledzony;
-
-    private final Wezel wezelStartowy;
-
-    private final Moment momentStartu;
-
-    private final MaszynaLosujaca maszynaLosujaca;
+    private final ParametrySportowca parametry;
 
     private final Map<Trasa, Double> znudzenia = new HashMap<>();
 
@@ -47,80 +27,20 @@ public abstract class Sportowiec {
 
     private int liczbaPrzejechanychTras = 0;
 
-    public Sportowiec(int id,
-        int poziomZaawansowania,
-        double wspolczynnikSpontanicznosci,
-        double wspolczynnikZnudzenia,
-        double wagaZnudzenia,
-        double wagaTrudnosci,
-        double wagaNawierzchni,
-        boolean sledzony,
-        Wezel wezelStartowy,
-        Moment momentStartu,
-        MaszynaLosujaca maszynaLosujaca) {
-        this.id = id;
-        this.poziomZaawansowania = poziomZaawansowania;
-        this.wspolczynnikSpontanicznosci = wspolczynnikSpontanicznosci;
-        this.wspolczynnikZnudzenia = wagaZnudzenia;
-        this.wagaTrudnosci = wagaTrudnosci;
-        this.wagaNawierzchni = wagaNawierzchni;
-        this.wagaZnudzenia = wspolczynnikZnudzenia;
-        this.sledzony = sledzony;
-        this.wezelStartowy = wezelStartowy;
-        this.momentStartu = momentStartu;
-        this.maszynaLosujaca = maszynaLosujaca;
-    }
-
-    /**
-     * Konstruktor używany przez metodę kopia.
-     */
-    public Sportowiec(Sportowiec inny,
-        int przesuniecieId,
-        Interwal przesuniecieMomentuStartu)
-    {
-        this(inny.id + przesuniecieId,
-            inny.poziomZaawansowania,
-            inny.wspolczynnikSpontanicznosci,
-            inny.wspolczynnikZnudzenia,
-            inny.wagaTrudnosci,
-            inny.wagaNawierzchni,
-            inny.wagaZnudzenia,
-            inny.sledzony,
-            inny.wezelStartowy,
-            inny.momentStartu.dodajInterwal(przesuniecieMomentuStartu),
-            inny.maszynaLosujaca);
-    }
-
-    public int id() {
-        return id;
-    }
-
-    public int poziomZaawansowania() {
-        return poziomZaawansowania;
-    }
-
-    public double wspolczynnikTrudnosci() {
-        return wagaTrudnosci;
-    }
-
-    public double wspolczynnikNawierzchni() {
-        return wagaNawierzchni;
-    }
-
-    public double wspolczynnikSpontanicznosci() {
-        return wspolczynnikSpontanicznosci;
+    public Sportowiec(ParametrySportowca parametry) {
+        this.parametry = parametry;
     }
 
     public boolean sledzony() {
-        return sledzony;
+        return parametry.sledzony();
     }
 
     public Wezel wezelStartowy() {
-        return wezelStartowy;
+        return parametry.wezelStartowy();
     }
 
     public Moment momentStartu() {
-        return momentStartu;
+        return parametry.momentStartu();
     }
 
     /**
@@ -131,7 +51,7 @@ public abstract class Sportowiec {
 
     protected boolean czyTerazSpontaniczny()
     {
-        return maszynaLosujaca.losowyDouble(0, 1) < wspolczynnikSpontanicznosci();
+        return parametry.maszynaLosujaca().losowyDouble(0, 1) < parametry.wspolczynnikSpontanicznosci();
     }
     /**
      * Spontaniczna decyzja polega na wylosowaniu następnej krawędzi jednostajnie
@@ -140,7 +60,7 @@ public abstract class Sportowiec {
     protected Zdarzenie podejmijSpontanicznaDecyzje(Moment moment, Wezel obecnyWezel) {
         Krawedz[] bezposrednieKrawedzie = obecnyWezel.wychodzaceKrawedzie();
 
-        int losowyWybor = maszynaLosujaca.losowyInt(0, bezposrednieKrawedzie.length);
+        int losowyWybor = parametry.maszynaLosujaca().losowyInt(0, bezposrednieKrawedzie.length);
         Krawedz wybranaKrawedz = bezposrednieKrawedzie[losowyWybor];
 
         OdwiedzajacyNastepnyKrok odwiedzajacy = new OdwiedzajacyNastepnyKrok(this, moment);
@@ -151,20 +71,20 @@ public abstract class Sportowiec {
      * Wylicza atrakcyjność trasy na podstawie wzoru z treści zadania.
      */
     protected double lacznaAtrakcyjnosc(Trasa trasa) {
-        return wagaTrudnosci * atrakcyjnoscPoziomuTrudnosci(trasa)
-            + wagaNawierzchni * trasa.wyrownanieNawierzchni()
-            + wagaZnudzenia * (1 - znudzenia.get(trasa));
+        return parametry.wagaTrudnosci() * atrakcyjnoscPoziomuTrudnosci(trasa)
+            + parametry.wagaNawierzchni() * trasa.wyrownanieNawierzchni()
+            + parametry.wagaZnudzenia() * (1 - znudzenia.get(trasa));
     }
 
     private double atrakcyjnoscPoziomuTrudnosci(Trasa trasa) {
         int poziomTrudnosci = trasa.poziomTrudnosci();
 
-        double roznicaPoziomow = poziomTrudnosci - poziomZaawansowania;
+        double roznicaPoziomow = poziomTrudnosci - parametry.poziomZaawansowania();
 
-        if (poziomTrudnosci >= poziomZaawansowania + WSPOLCZYNNIK_ROZNICY_POZIOMOW_TRUDNOSCI) {
+        if (poziomTrudnosci >= parametry.poziomZaawansowania() + WSPOLCZYNNIK_ROZNICY_POZIOMOW_TRUDNOSCI) {
             return 0;
-        } else if (poziomZaawansowania + WSPOLCZYNNIK_ROZNICY_POZIOMOW_TRUDNOSCI > poziomTrudnosci
-            && poziomTrudnosci >= poziomZaawansowania) {
+        } else if (parametry.poziomZaawansowania() + WSPOLCZYNNIK_ROZNICY_POZIOMOW_TRUDNOSCI > poziomTrudnosci
+            && poziomTrudnosci >= parametry.poziomZaawansowania()) {
             return 1.0 - roznicaPoziomow / (double) WSPOLCZYNNIK_ROZNICY_POZIOMOW_TRUDNOSCI;
         } else {
             return Math.max(DOMYSLNA_ATRAKCYJNOSC_LATWEJ_TRASY,
@@ -183,7 +103,7 @@ public abstract class Sportowiec {
             stareZnudzenie = 1;
         }
 
-        double noweZnudzenie = stareZnudzenie * Math.pow(1 - wspolczynnikZnudzenia, czasOdOstatniegoPrzejazdu);
+        double noweZnudzenie = stareZnudzenie * Math.pow(1 - parametry.wspolczynnikZnudzenia(), czasOdOstatniegoPrzejazdu);
         znudzenia.put(trasa, noweZnudzenie);
     }
 
@@ -205,6 +125,6 @@ public abstract class Sportowiec {
 
     @Override
     public String toString() {
-        return String.format("Sportowiec nr %d", id);
+        return String.format("Sportowiec nr %d", parametry.id());
     }
 }

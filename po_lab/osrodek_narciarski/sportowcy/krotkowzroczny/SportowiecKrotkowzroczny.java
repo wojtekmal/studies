@@ -3,7 +3,6 @@ package osrodek_narciarski.sportowcy.krotkowzroczny;
 import osrodek_narciarski.czas.Interwal;
 import osrodek_narciarski.czas.Moment;
 import osrodek_narciarski.kolejkaZdarzen.zdarzenia.Zdarzenie;
-import osrodek_narciarski.losowosc.MaszynaLosujaca;
 import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Krawedz;
 import osrodek_narciarski.osrodek.krawedz.Trasa;
@@ -12,30 +11,6 @@ import osrodek_narciarski.sportowcy.OdwiedzajacyNastepnyKrok;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
 public class SportowiecKrotkowzroczny extends Sportowiec {
-
-    public SportowiecKrotkowzroczny(int id,
-        int poziomZaawansowania,
-        double wspolczynnikSpontanicznosci,
-        double wspolczynnikZnudzenia,
-        double wagaTrudnosci,
-        double wagaNawierzchni,
-        double wagaZnudzenia,
-        boolean sledzony,
-        Wezel wezelStartowy,
-        Moment momentStartu,
-        MaszynaLosujaca maszynaLosujaca) {
-        super(id,
-            poziomZaawansowania,
-            wspolczynnikSpontanicznosci,
-            wspolczynnikZnudzenia,
-            wagaTrudnosci,
-            wagaNawierzchni,
-            wagaZnudzenia,
-            sledzony,
-            wezelStartowy,
-            momentStartu,
-            maszynaLosujaca);
-    }
 
     public SportowiecKrotkowzroczny(SportowiecKrotkowzroczny inny,
         int przesuniecieId,
