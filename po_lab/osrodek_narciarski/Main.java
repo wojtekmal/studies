@@ -3,7 +3,8 @@ package osrodek_narciarski;
 import java.util.Locale;
 import java.util.Scanner;
 
-import osrodek_narciarski.dziennik.DziennikStandardoweWyjscie;
+import osrodek_narciarski.dziennik.DziennikStdioIMapki;
+import osrodek_narciarski.generatorMapek.pliki.WyjatekSystemuPlikow;
 import osrodek_narciarski.kolejkaZdarzen.KolejkaZdarzenStandardowa;
 import osrodek_narciarski.losowosc.DeterministycznaMaszynaLosujaca;
 import osrodek_narciarski.symulacja.Symulacja;
@@ -12,10 +13,11 @@ import osrodek_narciarski.wczytywacz.Wczytywacz;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws WyjatekSystemuPlikow
+    {
         DaneWejsciowe daneWejsciowe = wczytajWejscie();
 
-        new Symulacja().przeprowadzSymulacje(new DziennikStandardoweWyjscie(),
+        new Symulacja().przeprowadzSymulacje(new DziennikStdioIMapki(),
             new KolejkaZdarzenStandardowa(),
             daneWejsciowe.osrodek(),
             daneWejsciowe.sportowcy());

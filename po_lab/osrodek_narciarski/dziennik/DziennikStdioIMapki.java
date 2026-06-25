@@ -1,11 +1,26 @@
 package osrodek_narciarski.dziennik;
 
 import osrodek_narciarski.czas.Moment;
+import osrodek_narciarski.generatorMapek.GeneratorMapek;
+import osrodek_narciarski.generatorMapek.pliki.WyjatekSystemuPlikow;
+import osrodek_narciarski.generatorMapek.styl.GruboscKonturu;
+import osrodek_narciarski.generatorMapek.styl.StylKrawedzi;
+import osrodek_narciarski.generatorMapek.styl.StylLinii;
+import osrodek_narciarski.generatorMapek.styl.StylWezla;
+import osrodek_narciarski.osrodek.Osrodek;
+import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Krawedz;
+import osrodek_narciarski.osrodek.krawedz.Trasa;
+import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
 public class DziennikStdioIMapki implements Dziennik {
 
+    private final GeneratorMapek generatorMapek = new GeneratorMapek("mapki");
+
+    public DziennikStdioIMapki() throws WyjatekSystemuPlikow
+    {
+    }
 
     @Override
     public void dodajWpis(Moment moment, String wpis) {
@@ -34,8 +49,35 @@ public class DziennikStdioIMapki implements Dziennik {
         }
     }
 
+    public void zrobMapke(Osrodek osrodek, String[] tekstyTras, String[] tekstyWyciagow)
+    {
+        for (Wezel wezel : osrodek.wezly()) {
+            GruboscKonturu gruboscKonturu = wezel.czyStartowy() ? GruboscKonturu.POGRUBIONY : GruboscKonturu.ZWYKLY;
+
+            generatorMapek.dodajWezel(wezel.id(),
+                wezel.wspolrzednaX(),
+                wezel.wspolrzednaY(),
+                new StylWezla(gruboscKonturu));
+        }
+
+        for (Trasa trasa : osrodek.trasy()) {
+            generatorMapek.dodajKrawedz(trasa.poczatek().id(),
+                trasa.koniec().id(),
+                new StylKrawedzi(StylLinii.CIAGLA),
+                tekstyTras[trasa.id()]);
+        }
+
+        for (Wyciag wyciag : osrodek.wyciagi()) {
+            generatorMapek.dodajKrawedz(wyciag.poczatek().id(),
+                wyciag.koniec().id(),
+                new StylKrawedzi(StylLinii.PRZERYWANA),
+                tekstyWyciagow[wyciag.id()]);
+        }
+    }
+
     @Override
-    public void dodajParametryOsrodka(String[] opisyWezlow, String[] opisyTras, String[] opisyWyciagow) {
+    public void dodajParametryOsrodka(String[] opisyTras, String[] opisyWyciagow)
+    {
 
     }
 

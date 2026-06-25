@@ -28,6 +28,9 @@ public class Wezel {
         this.czyStartowy = czyStartowy;
     }
 
+    public int id() {
+        return id;
+    }
     public int wysokosc() {
         return wysokosc;
     }
