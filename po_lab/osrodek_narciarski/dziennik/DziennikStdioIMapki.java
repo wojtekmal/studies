@@ -76,17 +76,17 @@ public class DziennikStdioIMapki implements Dziennik {
     }
 
     @Override
-    public void dodajParametryOsrodka(String[] opisyTras, String[] opisyWyciagow) {
+    public void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow) {
+        zrobMapke();
+    }
+
+    @Override
+    public void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow) {
 
     }
 
     @Override
-    public void dodajStatystykiKoncowe(String[] statystykiTras, String[] statystykiWyciagow) {
-
-    }
-
-    @Override
-    public void dodajPrzejazdySportowca(int idSportowca, Krawedz[] odwiedzoneKrawedzie) {
+    public void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie) {
 
     }
 }
