@@ -25,7 +25,7 @@ public class Wyciag extends Krawedz {
 
     private int sumaDlugosciKolejekiPoSekundach = 0;
 
-    private Moment ostatniaAktualizacjaStatystyk;
+    private Moment ostatniaAktualizacjaStatystyk = new Moment(9, 0, 0);
 
     private final static int LICZBA_SEKUND_W_SYMULACJI = 21600;
 
@@ -48,6 +48,10 @@ public class Wyciag extends Krawedz {
 
     public int lacznaLiczbaPasazerow() {
         return lacznaLiczbaPasazerow;
+    }
+
+    public int maksymalnaDlugoscKolejki() {
+        return maksymalnaDlugoscKolejki;
     }
 
     public void dodajDoKolejki(Sportowiec sportowiec) {

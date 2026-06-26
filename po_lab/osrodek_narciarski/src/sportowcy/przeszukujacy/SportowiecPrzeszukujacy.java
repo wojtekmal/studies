@@ -14,7 +14,7 @@ import java.util.*;
 
 public abstract class SportowiecPrzeszukujacy extends Sportowiec {
 
-    private final Stack<Krawedz> plan = new Stack<>();
+    private Stack<Krawedz> plan = new Stack<>();
 
     public SportowiecPrzeszukujacy(ParametrySportowca parametry) {
         super(parametry);
@@ -42,34 +42,8 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
     }
 
     public void ulozPlan(Wezel obecnyWezel) {
-        Queue<Krawedz> kolejkaBfs = new ArrayDeque<>();
-        Map<Krawedz, Krawedz> poprzednieKrawedzie = new HashMap<>();
-        OdwiedzajacyNajlepszaKrawedz odwiedzajacy = new OdwiedzajacyNajlepszaKrawedz(this);
-
-        for (Krawedz krawedz : obecnyWezel.wychodzaceKrawedzie()) {
-            kolejkaBfs.add(krawedz);
-            poprzednieKrawedzie.put(krawedz, null);
-        }
-
-        while (!kolejkaBfs.isEmpty())
-        {
-            Krawedz krawedz = kolejkaBfs.remove();
-            krawedz.odwiedz(odwiedzajacy);
-
-            for (Krawedz sasiedniaKrawedz : krawedz.koniec().wychodzaceKrawedzie())
-            {
-                if (poprzednieKrawedzie.containsKey(sasiedniaKrawedz)) continue;
-
-                poprzednieKrawedzie.put(sasiedniaKrawedz, krawedz);
-                kolejkaBfs.add(sasiedniaKrawedz);
-            }
-        }
-
-        Trasa najlepszaTrasa = odwiedzajacy.najlepszaTrasa();
-
-        for (Krawedz krawedz = najlepszaTrasa; krawedz != null; krawedz = poprzednieKrawedzie.get(krawedz)) {
-            plan.add(krawedz);
-        }
+        BFS bfs = new BFS(this);
+        plan = bfs.dajPlan(obecnyWezel);
     }
 
     public abstract boolean czyNowaTrasaLepsza(Trasa najlepszaTrasa, Trasa nowa);
