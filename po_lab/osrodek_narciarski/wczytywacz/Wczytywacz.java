@@ -26,7 +26,8 @@ public class Wczytywacz {
         this.maszynaLosujaca = maszynaLosujaca;
     }
 
-    public DaneWejsciowe wczytajWejscie() {
+    public DaneWejsciowe wczytajWejscie() throws WyjatekRodzajSportowca
+    {
         Wezel[] wezly = wczytajWezly();
         Wyciag[] wyciagi = wczytajWyciagi(wezly);
         Trasa[] trasy = wczytajTrasy(wezly);
@@ -103,7 +104,8 @@ public class Wczytywacz {
         return trasy;
     }
 
-    private GrupaSportowcow[] wczytajGrupySportowcow(Wezel[] wezly) {
+    private GrupaSportowcow[] wczytajGrupySportowcow(Wezel[] wezly) throws WyjatekRodzajSportowca
+    {
         int nastepneId = 0;
         int liczbaGrup = scanner.nextInt();
 
@@ -117,7 +119,8 @@ public class Wczytywacz {
         return grupySportowcow;
     }
 
-    private GrupaSportowcow wczytajGrupeSportowcow(int nastepneId, Wezel[] wezly) {
+    private GrupaSportowcow wczytajGrupeSportowcow(int nastepneId, Wezel[] wezly) throws WyjatekRodzajSportowca
+    {
         int liczbaSportowcowWGrupie = scanner.nextInt();
         int poziomZaawansowania = scanner.nextInt();
         double wspolczynnikSpontanicznosci = scanner.nextDouble();
@@ -155,7 +158,8 @@ public class Wczytywacz {
         return new GrupaSportowcow(pierwszySportowiec, liczbaSportowcowWGrupie, odstepCzasowy);
     }
 
-    private static Sportowiec pierwszySportowiec(String rodzajSportowcow, ParametrySportowca parametry) {
+    private static Sportowiec pierwszySportowiec(String rodzajSportowcow, ParametrySportowca parametry) throws WyjatekRodzajSportowca
+    {
         Sportowiec pierwszySportowiec = null;
 
         switch (rodzajSportowcow) {
@@ -163,7 +167,7 @@ public class Wczytywacz {
             case "Z" -> pierwszySportowiec = new SportowiecZachlanny(parametry);
             case "K" -> pierwszySportowiec = new SportowiecKolekcjoner(parametry);
             default -> {
-                assert false : String.format("Podany rodzaj sportowca nie istnieje: %s", rodzajSportowcow);
+                throw new WyjatekRodzajSportowca(rodzajSportowcow);
             }
         }
         return pierwszySportowiec;

@@ -1,6 +1,7 @@
 package osrodek_narciarski.dziennik;
 
 import osrodek_narciarski.czas.Moment;
+import osrodek_narciarski.generatorMapek.pliki.WyjatekSystemuPlikow;
 import osrodek_narciarski.osrodek.Osrodek;
 import osrodek_narciarski.osrodek.Wezel;
 import osrodek_narciarski.osrodek.krawedz.Krawedz;
@@ -22,9 +23,9 @@ public interface Dziennik {
 
     void dodajTabele(String[][] wiersze);
 
-    void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow);
+    void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow) throws WyjatekSystemuPlikow;
 
-    void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow);
+    void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow) throws WyjatekSystemuPlikow;
 
-    void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie);
+    void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie) throws WyjatekSystemuPlikow;
 }

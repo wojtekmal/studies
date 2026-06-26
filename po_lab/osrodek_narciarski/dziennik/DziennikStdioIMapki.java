@@ -51,7 +51,7 @@ public class DziennikStdioIMapki implements Dziennik {
         }
     }
 
-    public void zrobMapke(Osrodek osrodek, String[] tekstyTras, String[] tekstyWyciagow, String nazwaPliku)
+    public void zrobMapke(Osrodek osrodek, String[] tekstyTras, String[] tekstyWyciagow, String nazwaPliku) throws WyjatekSystemuPlikow
     {
         for (Wezel wezel : osrodek.wezly()) {
             GruboscKonturu gruboscKonturu = wezel.czyStartowy() ? GruboscKonturu.POGRUBIONY : GruboscKonturu.ZWYKLY;
@@ -75,6 +75,9 @@ public class DziennikStdioIMapki implements Dziennik {
                 new StylKrawedzi(StylLinii.PRZERYWANA),
                 podzielNaLinie(tekstyWyciagow[wyciag.id()]));
         }
+
+        generatorMapek.tworzMapke(nazwaPliku);
+        generatorMapek.zeruj();
     }
 
     private List<String> podzielNaLinie(String doPodzialu) {
@@ -82,19 +85,20 @@ public class DziennikStdioIMapki implements Dziennik {
     }
 
     @Override
-    public void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow) {
+    public void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow) throws WyjatekSystemuPlikow
+    {
         zrobMapke(osrodek, opisyTras, opisyWyciagow, "parametry_osrodka.tex");
     }
 
     @Override
-    public void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow) {
+    public void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow) throws WyjatekSystemuPlikow
+    {
         zrobMapke(osrodek, statystykiTras, statystykiWyciagow, "statystyki_koncowe.tex");
     }
 
     @Override
-    public void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie) {
-        String nazwaPliku = String.format("przejazd_sportowca_%d", idSportowca);
-
+    public void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie) throws WyjatekSystemuPlikow
+    {
         Map<Krawedz, Set<Integer>> zbioryOdwiedzin = new HashMap<>();
         int nastepnyIndeksOdwiedzonego = 0;
 
@@ -112,19 +116,35 @@ public class DziennikStdioIMapki implements Dziennik {
         for (Trasa trasa : osrodek.trasy()) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(String.format("t%d(%d): ",
-                    trasa.id(), osrodek.trasy().length));
+                trasa.id(), zbioryOdwiedzin.get(trasa).size()));
 
-            dodajOpisZbioruOdwiedzin(stringBuilder,
+            String opis = dodajOpisZbioruOdwiedzin(stringBuilder,
                 zbioryOdwiedzin.computeIfAbsent(trasa, k -> new HashSet<>()));
 
-            opisyTras[trasa.id()] = stringBuilder.toString();
+            opisyTras[trasa.id()] = opis;
         }
+
+        for (Wyciag wyciag : osrodek.wyciagi()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(String.format("w%d(%d): ",
+                wyciag.id(), zbioryOdwiedzin.get(wyciag).size()));
+
+            String opis = dodajOpisZbioruOdwiedzin(stringBuilder,
+                zbioryOdwiedzin.computeIfAbsent(wyciag, k -> new HashSet<>()));
+
+            opisyWyciagow[wyciag.id()] = opis;
+        }
+
+        String nazwaPliku = String.format("przejazd_sportowca_%d.tex", idSportowca);
+        zrobMapke(osrodek, opisyTras, opisyWyciagow, nazwaPliku);
     }
 
-    private void dodajOpisZbioruOdwiedzin(StringBuilder stringBuilder, Set<Integer> zbiorOdwiedzin) {
+    private String dodajOpisZbioruOdwiedzin(StringBuilder stringBuilder, Set<Integer> zbiorOdwiedzin) {
         for (int idOdwiedzonejKrawedzi : zbiorOdwiedzin) {
-            
+            stringBuilder.append(idOdwiedzonejKrawedzi).append(",");
         }
+
+        return stringBuilder.substring(0, stringBuilder.length());
     }
 
 

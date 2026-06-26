@@ -15,15 +15,21 @@ public class Main {
 
     public static void main(String[] args) throws WyjatekSystemuPlikow
     {
-        DaneWejsciowe daneWejsciowe = wczytajWejscie();
+        try {
+            DaneWejsciowe daneWejsciowe = wczytajWejscie();
 
-        new Symulacja().przeprowadzSymulacje(new DziennikStdioIMapki(),
-            new KolejkaZdarzenStandardowa(),
-            daneWejsciowe.osrodek(),
-            daneWejsciowe.sportowcy());
+            new Symulacja().przeprowadzSymulacje(new DziennikStdioIMapki(),
+                    new KolejkaZdarzenStandardowa(),
+                    daneWejsciowe.osrodek(),
+                    daneWejsciowe.sportowcy());
+        }
+        catch(Wczytywacz.WyjatekDaneWejsciowe wyjatek) {
+            System.err.println();
+        }
     }
 
-    private static DaneWejsciowe wczytajWejscie() {
+    private static DaneWejsciowe wczytajWejscie() throws Wczytywacz.WyjatekRodzajSportowca
+    {
         Scanner scanner = new Scanner(System.in);
 
         // Ustawiamy region na angielski, żeby Scanner parsował liczby
