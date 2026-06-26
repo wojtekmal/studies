@@ -1,0 +1,137 @@
+package osrodek.krawedz.wyciag;
+
+import czas.Interwal;
+import czas.Moment;
+import dziennik.Dziennik;
+import kolejkaZdarzen.zdarzenia.DotarcieDoWezla;
+import kolejkaZdarzen.zdarzenia.OdjazdWyciagu;
+import kolejkaZdarzen.zdarzenia.Zdarzenie;
+import osrodek.Wezel;
+import osrodek.krawedz.Krawedz;
+import osrodek.krawedz.OdwiedzajacyKrawedz;
+import sportowcy.Sportowiec;
+
+public class Wyciag extends Krawedz {
+
+    private final Interwal odstepMiedzyOdjazdami;
+
+    private final int ladownosc;
+
+    private final KolejkaSportowcow obecnaKolejka;
+
+    private int lacznaLiczbaPasazerow;
+
+    private int maksymalnaDlugoscKolejki = 0;
+
+    private int sumaDlugosciKolejekiPoSekundach = 0;
+
+    private Moment ostatniaAktualizacjaStatystyk;
+
+    private final static int LICZBA_SEKUND_W_SYMULACJI = 21600;
+
+    public Wyciag(int id,
+        Wezel poczatek,
+        Wezel koniec,
+        Interwal odstepMiedzyOdjazdami,
+        Interwal dlugoscPrzejazdu,
+        int ladownosc) {
+        super(id, poczatek, koniec, dlugoscPrzejazdu);
+
+        assert poczatek.wysokosc() < koniec.wysokosc()
+            : String.format("Wyciąg %d prowadzi w dół: %d -> %d", id, poczatek.wysokosc(), koniec.wysokosc());
+
+        this.odstepMiedzyOdjazdami = odstepMiedzyOdjazdami;
+        this.ladownosc = ladownosc;
+        obecnaKolejka = new BuforCyklicznySportowcow();
+        lacznaLiczbaPasazerow = 0;
+    }
+
+    public int lacznaLiczbaPasazerow() {
+        return lacznaLiczbaPasazerow;
+    }
+
+    public void dodajDoKolejki(Sportowiec sportowiec) {
+        obecnaKolejka.dodaj(sportowiec);
+    }
+
+    /**
+     *  Symuluje odjazd następnego wagonika oraz daje nowo stworzone zdarzenia:
+     * 1. Zdarzenie reprezentujące odjazd następnego wagonika.
+     * 2. Zdarzenia reprezentujące dotarcie do końca wyciągu sportowców, którzy załapali się na obecny odjazd.
+     */
+    public Zdarzenie[] odjazd(Moment moment, Dziennik dziennik) {
+        Sportowiec[] odjezdzajacySportowcy = obecnaKolejka.zdejmij(Math.min(obecnaKolejka.rozmiar(), ladownosc));
+
+        for (Sportowiec sportowiec : odjezdzajacySportowcy) {
+            dziennik.dodajWpisZeSportowcem(moment, sportowiec, String.format("rozpoczął wjazd %s", toString()));
+        }
+
+        Zdarzenie[] noweZdarzenia = new Zdarzenie[1 + odjezdzajacySportowcy.length];
+        noweZdarzenia[0] = new OdjazdWyciagu(moment.dodajInterwal(odstepMiedzyOdjazdami), this);
+
+        for (int i = 0; i < odjezdzajacySportowcy.length; i++) {
+            noweZdarzenia[1 + i] = new DotarcieDoWezla(moment.dodajInterwal(dlugosc()),
+                this,
+                koniec(),
+                odjezdzajacySportowcy[i]);
+        }
+
+        lacznaLiczbaPasazerow += odjezdzajacySportowcy.length;
+
+        return noweZdarzenia;
+    }
+
+    @Override
+    public String wypiszParametry() {
+        return String.format("w%d: %d os. co %ds\nczas: %ds",
+            id(),
+            ladownosc,
+            odstepMiedzyOdjazdami.sekundy());
+    }
+
+    @Override
+    public String wypiszStatystyki() {
+        return String.format("w%d: kol: %.2f(śr), %d(maks)\nwjazdy: %d / %d",
+                id(),
+                sredniaDlugoscKolejki(),
+                maksymalnaDlugoscKolejki,
+                lacznaLiczbaPasazerow,
+                maksymalnaMozliwaLiczbaPasazerow());
+    }
+
+    private int sredniaDlugoscKolejki() {
+        int sredniaWDolZaokroglona = sumaDlugosciKolejekiPoSekundach / LICZBA_SEKUND_W_SYMULACJI;
+        int reszta = sumaDlugosciKolejekiPoSekundach % LICZBA_SEKUND_W_SYMULACJI;
+
+        if (reszta >= (sumaDlugosciKolejekiPoSekundach + 1) / 2) {
+            return sredniaWDolZaokroglona + 1;
+        }
+        else {
+            return sredniaWDolZaokroglona;
+        }
+    }
+
+    public int maksymalnaMozliwaLiczbaPasazerow() {
+        return LICZBA_SEKUND_W_SYMULACJI * ladownosc;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Wyciąg nr %d", id());
+    }
+
+    @Override
+    public <R> R odwiedz(OdwiedzajacyKrawedz<R> odwiedzajacyKrawedz) {
+        return odwiedzajacyKrawedz.wyciag(this);
+    }
+
+    public void zaktualizujStatystyki(Moment moment) {
+        int dlugoscKolejki = obecnaKolejka.rozmiar();
+        Interwal interwalZStalalKolejka = ostatniaAktualizacjaStatystyk.policzInterwal(moment);
+
+        maksymalnaDlugoscKolejki = Math.max(maksymalnaDlugoscKolejki, dlugoscKolejki);
+        sumaDlugosciKolejekiPoSekundach += dlugoscKolejki * interwalZStalalKolejka.sekundy();
+
+        ostatniaAktualizacjaStatystyk = moment;
+    }
+}
