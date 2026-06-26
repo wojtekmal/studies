@@ -14,6 +14,8 @@ import osrodek_narciarski.osrodek.krawedz.Trasa;
 import osrodek_narciarski.osrodek.krawedz.wyciag.Wyciag;
 import osrodek_narciarski.sportowcy.Sportowiec;
 
+import java.util.*;
+
 public class DziennikStdioIMapki implements Dziennik {
 
     private final GeneratorMapek generatorMapek = new GeneratorMapek("mapki");
@@ -51,7 +53,6 @@ public class DziennikStdioIMapki implements Dziennik {
 
     public void zrobMapke(Osrodek osrodek, String[] tekstyTras, String[] tekstyWyciagow, String nazwaPliku)
     {
-        String[][] teksty
         for (Wezel wezel : osrodek.wezly()) {
             GruboscKonturu gruboscKonturu = wezel.czyStartowy() ? GruboscKonturu.POGRUBIONY : GruboscKonturu.ZWYKLY;
 
@@ -65,15 +66,19 @@ public class DziennikStdioIMapki implements Dziennik {
             generatorMapek.dodajKrawedz(trasa.poczatek().id(),
                 trasa.koniec().id(),
                 new StylKrawedzi(StylLinii.CIAGLA),
-                tekstyTras[trasa.id()]);
+                podzielNaLinie(tekstyTras[trasa.id()]));
         }
 
         for (Wyciag wyciag : osrodek.wyciagi()) {
             generatorMapek.dodajKrawedz(wyciag.poczatek().id(),
                 wyciag.koniec().id(),
                 new StylKrawedzi(StylLinii.PRZERYWANA),
-                tekstyWyciagow[wyciag.id()]);
+                podzielNaLinie(tekstyWyciagow[wyciag.id()]));
         }
+    }
+
+    private List<String> podzielNaLinie(String doPodzialu) {
+        return Arrays.asList(doPodzialu.split("\n"));
     }
 
     @Override
@@ -90,5 +95,37 @@ public class DziennikStdioIMapki implements Dziennik {
     public void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie) {
         String nazwaPliku = String.format("przejazd_sportowca_%d", idSportowca);
 
+        Map<Krawedz, Set<Integer>> zbioryOdwiedzin = new HashMap<>();
+        int nastepnyIndeksOdwiedzonego = 0;
+
+        for (Krawedz krawedz : odwiedzoneKrawedzie) {
+            Set<Integer> zbiorOdwiedzin = zbioryOdwiedzin.computeIfAbsent(krawedz,
+                    k -> new HashSet<>());
+
+            zbiorOdwiedzin.add(nastepnyIndeksOdwiedzonego);
+            nastepnyIndeksOdwiedzonego++;
+        }
+
+        String[] opisyTras = new String[osrodek.trasy().length];
+        String[] opisyWyciagow = new String[osrodek.wyciagi().length];
+
+        for (Trasa trasa : osrodek.trasy()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(String.format("t%d(%d): ",
+                    trasa.id(), osrodek.trasy().length));
+
+            dodajOpisZbioruOdwiedzin(stringBuilder,
+                zbioryOdwiedzin.computeIfAbsent(trasa, k -> new HashSet<>()));
+
+            opisyTras[trasa.id()] = stringBuilder.toString();
+        }
     }
+
+    private void dodajOpisZbioruOdwiedzin(StringBuilder stringBuilder, Set<Integer> zbiorOdwiedzin) {
+        for (int idOdwiedzonejKrawedzi : zbiorOdwiedzin) {
+            
+        }
+    }
+
+
 }
