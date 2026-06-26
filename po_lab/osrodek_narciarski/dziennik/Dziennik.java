@@ -21,7 +21,7 @@ public interface Dziennik {
     void dodajWpisZeSportowcem(Moment moment, Sportowiec sportowiec, String coZrobil);
 
     void dodajTabele(String[][] wiersze);
-    
+
     void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow);
 
     void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow);

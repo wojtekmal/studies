@@ -49,8 +49,9 @@ public class DziennikStdioIMapki implements Dziennik {
         }
     }
 
-    public void zrobMapke(Osrodek osrodek, String[] tekstyTras, String[] tekstyWyciagow)
+    public void zrobMapke(Osrodek osrodek, String[] tekstyTras, String[] tekstyWyciagow, String nazwaPliku)
     {
+        String[][] teksty
         for (Wezel wezel : osrodek.wezly()) {
             GruboscKonturu gruboscKonturu = wezel.czyStartowy() ? GruboscKonturu.POGRUBIONY : GruboscKonturu.ZWYKLY;
 
@@ -77,16 +78,17 @@ public class DziennikStdioIMapki implements Dziennik {
 
     @Override
     public void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow) {
-        zrobMapke();
+        zrobMapke(osrodek, opisyTras, opisyWyciagow, "parametry_osrodka.tex");
     }
 
     @Override
     public void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow) {
-
+        zrobMapke(osrodek, statystykiTras, statystykiWyciagow, "statystyki_koncowe.tex");
     }
 
     @Override
     public void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie) {
+        String nazwaPliku = String.format("przejazd_sportowca_%d", idSportowca);
 
     }
 }
