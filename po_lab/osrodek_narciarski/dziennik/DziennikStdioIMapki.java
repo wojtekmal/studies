@@ -76,8 +76,7 @@ public class DziennikStdioIMapki implements Dziennik {
     }
 
     @Override
-    public void dodajParametryOsrodka(String[] opisyTras, String[] opisyWyciagow)
-    {
+    public void dodajParametryOsrodka(String[] opisyTras, String[] opisyWyciagow) {
 
     }
 
