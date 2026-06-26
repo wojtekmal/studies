@@ -16,6 +16,11 @@ import osrodek_narciarski.sportowcy.przeszukujacy.SportowiecKolekcjoner;
 import osrodek_narciarski.sportowcy.przeszukujacy.SportowiecZachlanny;
 
 public class Wczytywacz {
+    public static class WyjatekRodzajSportowca extends WyjatekDaneWejsciowe {
+        public WyjatekRodzajSportowca(String wiadomosc) {
+            super(wiadomosc);
+        }
+    }
 
     private final Scanner scanner;
 

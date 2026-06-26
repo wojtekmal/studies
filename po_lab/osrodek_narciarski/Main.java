@@ -10,12 +10,20 @@ import osrodek_narciarski.losowosc.DeterministycznaMaszynaLosujaca;
 import osrodek_narciarski.symulacja.Symulacja;
 import osrodek_narciarski.wczytywacz.DaneWejsciowe;
 import osrodek_narciarski.wczytywacz.Wczytywacz;
+import osrodek_narciarski.wczytywacz.WyjatekDaneWejsciowe;
 
 public class Main {
 
-    public static void main(String[] args) throws WyjatekSystemuPlikow
+    private static class WyjatekZleArgumenty extends Exception {
+        public WyjatekZleArgumenty(String komunikat) {
+            super(komunikat);
+        }
+    }
+
+    public static void main(String[] args)
     {
         try {
+            sprawdzArgumenty(args);
             DaneWejsciowe daneWejsciowe = wczytajWejscie();
 
             new Symulacja().przeprowadzSymulacje(new DziennikStdioIMapki(),
@@ -23,8 +31,29 @@ public class Main {
                     daneWejsciowe.osrodek(),
                     daneWejsciowe.sportowcy());
         }
-        catch(Wczytywacz.WyjatekDaneWejsciowe wyjatek) {
-            System.err.println();
+        catch (WyjatekDaneWejsciowe wyjatekDaneWejsciowe) {
+            System.err.println("Wykryto błąd w danych wejściowych:");
+            System.err.println(wyjatekDaneWejsciowe.getMessage());
+        }
+        catch (WyjatekSystemuPlikow wyjatekSystemuPlikow) {
+            System.err.println("Wykryto błąd związany z systemem plików:");
+            System.err.println(wyjatekSystemuPlikow.getMessage());
+        }
+        catch (WyjatekZleArgumenty wyjatekZleArgumenty) {
+            System.err.println("Podano niewłaściwe parametry do programu.");
+            System.err.println(wyjatekZleArgumenty.getMessage());
+        }
+        catch(Exception wyjatek) {
+            System.err.println("Wystąpił błąd:");
+            System.err.println(wyjatek);
+            System.err.println("Prosimy o zgłoszenie tego zespołowi deweloperskiemu.");
+        }
+    }
+
+    private static void sprawdzArgumenty(String[] args) throws WyjatekZleArgumenty
+    {
+        if (args.length != 1) {
+            throw new WyjatekZleArgumenty("Użycie: java -ea pakiet.GłównaKlasa \"sciezka/katalogu/do/mapek\"");
         }
     }
 
