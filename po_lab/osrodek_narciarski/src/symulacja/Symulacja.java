@@ -2,27 +2,33 @@ package symulacja;
 
 import czas.Moment;
 import dziennik.Dziennik;
+import dziennik.TworcaMapek;
+import generatorMapek.pliki.WyjatekSystemuPlikow;
 import kolejkaZdarzen.KolejkaZdarzen;
 import kolejkaZdarzen.zdarzenia.OdjazdWyciagu;
 import kolejkaZdarzen.zdarzenia.PoczatekDnia;
 import kolejkaZdarzen.zdarzenia.Zdarzenie;
 import osrodek.Osrodek;
+import osrodek.krawedz.Krawedz;
+import osrodek.krawedz.Trasa;
 import osrodek.krawedz.wyciag.Wyciag;
 import sportowcy.Sportowiec;
 
 public class Symulacja {
 
-    private static final Moment POCZATEK_DNIA = new Moment(9, 0, 0);
+    public static final Moment POCZATEK_DNIA = new Moment(9, 0, 0);
 
-    private static final Moment KONIEC_SYMULACJI = new Moment(15, 0, 0);
+    public static final Moment KONIEC_SYMULACJI = new Moment(15, 0, 0);
 
     public void przeprowadzSymulacje(Dziennik dziennik,
+        TworcaMapek tworcaMapek,
         KolejkaZdarzen kolejkaZdarzen,
         Osrodek osrodek,
-        Sportowiec[] sportowcy) {
+        Sportowiec[] sportowcy) throws WyjatekSystemuPlikow {
         przygotujPoczatkoweZdarzenia(kolejkaZdarzen, osrodek, sportowcy);
         glownaPetla(kolejkaZdarzen, dziennik);
         zbierzStatystyki(osrodek, dziennik);
+        zrobMapki(osrodek, sportowcy, tworcaMapek);
     }
 
     /**
@@ -74,5 +80,37 @@ public class Symulacja {
         }
 
         dziennik.dodajTabele(statystyki);
+    }
+
+    private void zrobMapki(Osrodek osrodek, Sportowiec[] sportowcy, TworcaMapek tworcaMapek) throws WyjatekSystemuPlikow {
+        String[] parametryTras = new String[osrodek.trasy().length];
+        String[] parametryWyciagow = new String[osrodek.wyciagi().length];
+        String[] statystykiTras = new String[osrodek.trasy().length];
+        String[] statystykiWyciagow = new String[osrodek.wyciagi().length];
+
+        for (Trasa trasa : osrodek.trasy()) {
+            parametryTras[trasa.id()] = trasa.wypiszParametry();
+            statystykiTras[trasa.id()] = trasa.wypiszStatystyki();
+        }
+
+        for (Wyciag wyciag : osrodek.wyciagi()) {
+            parametryTras[wyciag.id()] = wyciag.wypiszParametry();
+            statystykiTras[wyciag.id()] = wyciag.wypiszStatystyki();
+        }
+
+        tworcaMapek.dodajParametryOsrodka(osrodek, parametryTras, parametryWyciagow);
+        tworcaMapek.dodajStatystykiKoncowe(osrodek, statystykiTras, statystykiWyciagow);
+
+        int idSportowca = 0;
+
+        for (Sportowiec sportowiec : sportowcy) {
+            if (sportowiec.sledzony()) {
+                tworcaMapek.dodajPrzejazdySportowca(osrodek,
+                    idSportowca,
+                    sportowiec.odwiedzoneKrawedzie().toArray(new Krawedz[0]));
+            }
+
+            idSportowca++;
+        }
     }
 }

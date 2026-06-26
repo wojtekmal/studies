@@ -22,7 +22,8 @@ public class SportowiecKolekcjoner extends SportowiecPrzeszukujacy{
 
     @Override
     public boolean czyNowaTrasaLepsza(Trasa najlepszaTrasa, Trasa nowa) {
-        return licznikiPrzejazdow.get(nowa) < licznikiPrzejazdow.get(najlepszaTrasa);
+        return licznikiPrzejazdow.getOrDefault(nowa, 0) <
+            licznikiPrzejazdow.getOrDefault(najlepszaTrasa, 0);
     }
 
     @Override

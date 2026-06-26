@@ -19,10 +19,4 @@ public interface Dziennik {
     void dodajWpisZeSportowcem(Moment moment, Sportowiec sportowiec, String coZrobil);
 
     void dodajTabele(String[][] wiersze);
-
-    void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow) throws WyjatekSystemuPlikow;
-
-    void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow) throws WyjatekSystemuPlikow;
-
-    void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie) throws WyjatekSystemuPlikow;
 }

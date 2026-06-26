@@ -1,7 +1,8 @@
 import java.util.Locale;
 import java.util.Scanner;
 
-import dziennik.DziennikStdioIMapki;
+import dziennik.DziennikStandardoweWyjscie;
+import dziennik.TworcaMapek;
 import generatorMapek.pliki.WyjatekSystemuPlikow;
 import kolejkaZdarzen.KolejkaZdarzenStandardowa;
 import losowosc.DeterministycznaMaszynaLosujaca;
@@ -24,7 +25,8 @@ public class Main {
             sprawdzArgumenty(args);
             DaneWejsciowe daneWejsciowe = wczytajWejscie();
 
-            new Symulacja().przeprowadzSymulacje(new DziennikStdioIMapki(),
+            new Symulacja().przeprowadzSymulacje(new DziennikStandardoweWyjscie(),
+                    new TworcaMapek(args[0]),
                     new KolejkaZdarzenStandardowa(),
                     daneWejsciowe.osrodek(),
                     daneWejsciowe.sportowcy());

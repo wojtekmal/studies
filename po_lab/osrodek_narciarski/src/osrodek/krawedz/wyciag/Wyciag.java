@@ -67,6 +67,7 @@ public class Wyciag extends Krawedz {
         Sportowiec[] odjezdzajacySportowcy = obecnaKolejka.zdejmij(Math.min(obecnaKolejka.rozmiar(), ladownosc));
 
         for (Sportowiec sportowiec : odjezdzajacySportowcy) {
+            sportowiec.zanotujPrzejazdWyciagiem(this);
             dziennik.dodajWpisZeSportowcem(moment, sportowiec, String.format("rozpoczął wjazd %s", toString()));
         }
 
@@ -95,12 +96,12 @@ public class Wyciag extends Krawedz {
 
     @Override
     public String wypiszStatystyki() {
-        return String.format("w%d: kol: %.2f(śr), %d(maks)\nwjazdy: %d / %d",
-                id(),
-                sredniaDlugoscKolejki(),
-                maksymalnaDlugoscKolejki,
-                lacznaLiczbaPasazerow,
-                maksymalnaMozliwaLiczbaPasazerow());
+        return String.format("w%d: kol: %d(śr), %d(maks)\nwjazdy: %d / %d",
+            id(),
+            sredniaDlugoscKolejki(),
+            maksymalnaDlugoscKolejki,
+            lacznaLiczbaPasazerow,
+            maksymalnaMozliwaLiczbaPasazerow());
     }
 
     private int sredniaDlugoscKolejki() {

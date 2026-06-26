@@ -6,8 +6,11 @@ import kolejkaZdarzen.zdarzenia.Zdarzenie;
 import osrodek.Wezel;
 import osrodek.krawedz.Krawedz;
 import osrodek.krawedz.Trasa;
+import osrodek.krawedz.wyciag.Wyciag;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Sportowiec {
@@ -24,7 +27,9 @@ public abstract class Sportowiec {
 
     private final Map<Trasa, Integer> kiedyOdwiedzonoTrasy = new HashMap<>();
 
-    private int liczbaPrzejechanychTras = 0;
+    private final List<Krawedz> odwiedzoneKrawedzie = new ArrayList<>();
+
+    private int nastepnyIndeksOdwiedzonejTrasy = 0;
 
     public Sportowiec(ParametrySportowca parametry) {
         this.parametry = parametry;
@@ -44,6 +49,11 @@ public abstract class Sportowiec {
 
     public Moment momentStartu() {
         return parametry.momentStartu();
+    }
+
+    public List<Krawedz> odwiedzoneKrawedzie()
+    {
+        return odwiedzoneKrawedzie;
     }
 
     /**
@@ -96,7 +106,7 @@ public abstract class Sportowiec {
     }
 
     public void przeliczZnudzenie(Trasa trasa) {
-        int czasOdOstatniegoPrzejazdu = liczbaPrzejechanychTras - kiedyOdwiedzonoTrasy.get(trasa);
+        int czasOdOstatniegoPrzejazdu = nastepnyIndeksOdwiedzonejTrasy - kiedyOdwiedzonoTrasy.getOrDefault(trasa, 0);
         double stareZnudzenie;
 
         if (znudzenia.containsKey(trasa)) {
@@ -114,9 +124,15 @@ public abstract class Sportowiec {
         zanotujOstatnieOdwiedziny(trasa);
     }
 
+    public void zanotujPrzejazdWyciagiem(Wyciag wyciag) {
+        odwiedzoneKrawedzie.add(wyciag);
+    }
+
     protected void zanotujOstatnieOdwiedziny(Trasa trasa) {
-        kiedyOdwiedzonoTrasy.put(trasa, liczbaPrzejechanychTras);
-        liczbaPrzejechanychTras++;
+        kiedyOdwiedzonoTrasy.put(trasa, nastepnyIndeksOdwiedzonejTrasy);
+        nastepnyIndeksOdwiedzonejTrasy++;
+
+        odwiedzoneKrawedzie.add(trasa);
     }
 
     /**
