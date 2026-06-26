@@ -14,13 +14,12 @@ import osrodek.krawedz.Trasa;
 import osrodek.krawedz.wyciag.Wyciag;
 import sportowcy.ParametrySportowca;
 
-import java.util.Stack;
+import java.util.*;
 
 public class BfsTesty {
 
     private static final Wezel wezelPomocniczy1 = new Wezel(0, 0, 0, 0, false);
     private static final Wezel wezelPomocniczy2 = new Wezel(0, 1, 0, 0, false);
-    private static final Wezel wezelPomocniczy3 = new Wezel(0, 10, 0, 0, false);
     private static final Moment momentPomocniczy = new Moment(0, 0, 0);
     private static final MaszynaLosujaca maszynaLosujacaPomocnicza = new DeterministycznaMaszynaLosujaca(0);
     private final Interwal interwalPomocniczy = new Interwal(0);
@@ -46,7 +45,7 @@ public class BfsTesty {
 
         // Potrzebna są trasy pomocnicze od niektórych węzłów, ze względu na
         // implementację bfs; algorytm szuka krawędzi, nie wierzchołka.
-        new Trasa(7, wezly[4], wezelPomocniczy3, interwalPomocniczy, 0, 0, 0),
+        new Trasa(7, wezly[4], wezelPomocniczy1, interwalPomocniczy, 0, 0, 0),
     };
 
     private final Wyciag[] wyciagi = {
@@ -56,48 +55,68 @@ public class BfsTesty {
         new Wyciag(3, wezly[4], wezly[5], interwalPomocniczy, interwalPomocniczy, 0),
     };
 
+    public BfsTesty() {
+        wezly[5].wychodzaceTrasy(new Trasa[]{trasy[0], trasy[1]});
+        wezly[3].wychodzaceTrasy(new Trasa[]{trasy[2], trasy[3]});
+        wezly[1].wychodzaceTrasy(new Trasa[]{trasy[4], trasy[5]});
+        wezly[2].wychodzaceTrasy(new Trasa[]{trasy[6]});
+        wezly[4].wychodzaceTrasy(new Trasa[]{trasy[7]});
+
+        wezly[0].wychodzaceWyciagi(new Wyciag[]{wyciagi[0]});
+        wezly[2].wychodzaceWyciagi(new Wyciag[]{wyciagi[1], wyciagi[2]});
+        wezly[4].wychodzaceWyciagi(new Wyciag[]{wyciagi[3]});
+    }
+
+    private Bfs bfsDoWezla(Wezel wezelDocelowy)
+    {
+        SportowiecPrzeszukujacy sportowiec = new SportowiecUwielbiajacyKonkretnyWezel(parametrySportowcaPomocnicze, wezelDocelowy);
+        return new Bfs(sportowiec);
+    }
+
     @Test
     public void dlugaSciezkaTest() {
-        SportowiecPrzeszukujacy sportowiec = new SportowiecUwielbiajacyKonkretnyWezel(parametrySportowcaPomocnicze, wezly[4]);
-        Bfs bfs = new Bfs(sportowiec);
+        Bfs bfs = bfsDoWezla(wezly[4]);
         Stack<Krawedz> plan = bfs.dajPlan(wezly[0]);
 
         assertEquals(wyciagi[0], plan.pop());
         assertEquals(trasy[4], plan.pop());
-        assertEquals(wyciagi[1], plan.pop());
-        assertEquals(trasy[2], plan.pop());
-        assertTrue(plan.isEmpty());
+        assertEquals(wyciagi[2], plan.pop());
+
+        // Upewniamy się, że została tylko ta krawędź, która wychodzi z
+        // docelowego węzła (czyli krawędź, której szuka sportowiec).
+        assertEquals(1, plan.size());
     }
 
     @Test
     public void pojedynczaTrasaTest() {
-        SportowiecPrzeszukujacy sportowiec = new SportowiecUwielbiajacyKonkretnyWezel(parametrySportowcaPomocnicze, wezly[1]);
-        Bfs bfs = new Bfs(sportowiec);
+        Bfs bfs = bfsDoWezla(wezly[1]);
         Stack<Krawedz> plan = bfs.dajPlan(wezly[3]);
 
         assertEquals(trasy[3], plan.pop());
-        assertTrue(plan.isEmpty());
+
+        assertEquals(1, plan.size());
     }
 
     @Test
     public void pustaSciezkaTest() {
-        SportowiecPrzeszukujacy sportowiec = new SportowiecUwielbiajacyKonkretnyWezel(parametrySportowcaPomocnicze, wezly[2]);
-        Bfs bfs = new Bfs(sportowiec);
+        Bfs bfs = bfsDoWezla(wezly[2]);
         Stack<Krawedz> plan = bfs.dajPlan(wezly[2]);
 
-        assertTrue(plan.isEmpty());
+        assertEquals(1, plan.size());
     }
 
     @Test
     public void dwieMozliwosciTest() {
-        SportowiecPrzeszukujacy sportowiec = new SportowiecUwielbiajacyKonkretnyWezel(parametrySportowcaPomocnicze, wezly[4]);
-        Bfs bfs = new Bfs(sportowiec);
-        Stack<Krawedz> plan = bfs.dajPlan(wezly[0]);
+        Bfs bfs = bfsDoWezla(wezly[3]);
+        Stack<Krawedz> plan = bfs.dajPlan(wezly[4]);
 
-        assertEquals(wyciagi[0], plan.pop());
-        assertEquals(trasy[4], plan.pop());
-        assertEquals(wyciagi[1], plan.pop());
-        assertEquals(trasy[2], plan.pop());
-        assertTrue(plan.isEmpty());
+        assertEquals(wyciagi[3], plan.pop());
+
+        Set<Krawedz> dozwoloneOstatnieKrawedzie = new HashSet<>();
+        dozwoloneOstatnieKrawedzie.add(trasy[0]);
+        dozwoloneOstatnieKrawedzie.add(trasy[1]);
+        assertTrue(dozwoloneOstatnieKrawedzie.contains(plan.pop()));
+
+        assertEquals(1, plan.size());
     }
 }

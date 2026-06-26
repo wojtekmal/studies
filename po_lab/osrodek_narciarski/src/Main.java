@@ -43,7 +43,7 @@ public class Main {
         }
         catch(Exception wyjatek) {
             System.err.println("Wystąpił błąd:");
-            System.err.println(wyjatek);
+            wyjatek.printStackTrace();
             System.err.println("Prosimy o zgłoszenie tego zespołowi deweloperskiemu.");
         }
     }
