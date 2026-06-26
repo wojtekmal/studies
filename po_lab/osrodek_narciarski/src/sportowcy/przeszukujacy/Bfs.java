@@ -6,11 +6,12 @@ import osrodek.krawedz.Trasa;
 
 import java.util.*;
 
-public class BFS {
+public class Bfs
+{
 
     private final SportowiecPrzeszukujacy sportowiec;
 
-    public BFS(SportowiecPrzeszukujacy sportowiec) {
+    public Bfs(SportowiecPrzeszukujacy sportowiec) {
         this.sportowiec = sportowiec;
     }
 

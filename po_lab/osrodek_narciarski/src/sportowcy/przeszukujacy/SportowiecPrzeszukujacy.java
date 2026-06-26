@@ -42,7 +42,7 @@ public abstract class SportowiecPrzeszukujacy extends Sportowiec {
     }
 
     public void ulozPlan(Wezel obecnyWezel) {
-        BFS bfs = new BFS(this);
+        Bfs bfs = new Bfs(this);
         plan = bfs.dajPlan(obecnyWezel);
     }
 
