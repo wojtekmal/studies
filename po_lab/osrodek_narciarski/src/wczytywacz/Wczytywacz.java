@@ -31,7 +31,7 @@ public class Wczytywacz {
         this.maszynaLosujaca = maszynaLosujaca;
     }
 
-    public DaneWejsciowe wczytajWejscie() throws WyjatekRodzajSportowca
+    public DaneWejsciowe wczytajWejscie() throws WyjatekDaneWejsciowe
     {
         Wezel[] wezly = wczytajWezly();
         Wyciag[] wyciagi = wczytajWyciagi(wezly);
@@ -56,7 +56,7 @@ public class Wczytywacz {
         return wezly;
     }
 
-    private Wyciag[] wczytajWyciagi(Wezel[] wezly) {
+    private Wyciag[] wczytajWyciagi(Wezel[] wezly) throws WyjatekDaneWejsciowe {
         int liczbaWyciagow = scanner.nextInt();
 
         Wyciag[] wyciagi = new Wyciag[liczbaWyciagow];
@@ -81,7 +81,7 @@ public class Wczytywacz {
         return wyciagi;
     }
 
-    private Trasa[] wczytajTrasy(Wezel[] wezly) {
+    private Trasa[] wczytajTrasy(Wezel[] wezly) throws WyjatekDaneWejsciowe {
         int liczbaTras = scanner.nextInt();
 
         Trasa[] trasy = new Trasa[liczbaTras];

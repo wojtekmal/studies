@@ -1,0 +1,82 @@
+\documentclass[10pt]{article}
+\usepackage[paperwidth=13cm, paperheight=23cm, margin=1cm]{geometry}
+% Usuń numerację stron.
+\pagestyle{empty}
+
+\usepackage{tikz}
+% Import do ustalania końcówek strzałek.
+\usetikzlibrary{arrows.meta}
+
+% Zmniejsz interlinię.
+\linespread{0.9}
+
+% Importy do białych konturów napisów.
+\usepackage[T1]{fontenc}
+\usepackage{pslatex}
+\usepackage{contour}
+\usepackage{color}
+\contourlength{1pt} % Grubość konturu
+\contournumber{50}  % Liczba powtórzeń
+
+% Ustaw czcionkę bezszeryfową.
+\renewcommand{\familydefault}{\sfdefault}
+
+\begin{document}
+\begin{figure}[p]
+\centering
+\begin{tikzpicture}[scale=100]
+    \tikzset{
+        % Style węzłów i krawędzi.
+        wezel grafu/.style={circle,draw,minimum size=0.75cm,inner sep=0,line width=0.35mm},
+        krawedz grafu/.style={-{Latex[length=3mm, width=2mm]},sloped,centered,line width=0.35mm,font=\small}
+    }
+    % Węzły:
+    \node[wezel grafu,line width=0.7mm] (0) at (7/100, 1/100) {0};
+    \node[wezel grafu] (1) at (6/100, 8/100) {1};
+    \node[wezel grafu,line width=0.7mm] (2) at (1/100, 3/100) {2};
+    \node[wezel grafu] (3) at (4/100, 17/100) {3};
+    % Krawedzie:
+    \path[draw]
+    (0) edge[krawedz grafu, bend left=13, densely dashed] node {
+        \begin{tabular}{l}
+            \contour{white}{w0: kol: 52(śr), 103(maks)
+            } \\
+            \contour{white}{wjazdy: 8433 / 8640 (98\%)}
+        \end{tabular}
+    } (1)
+    (1) edge[krawedz grafu, bend left=13] node {
+        \begin{tabular}{l}
+            \contour{white}{t0: śnieg: 0.32
+            zjazdy: 5754}
+        \end{tabular}
+    } (0)
+    (2) edge[krawedz grafu] node {
+        \begin{tabular}{l}
+            \contour{white}{t3: śnieg: 0.68
+            zjazdy: 2588}
+        \end{tabular}
+    } (0)
+    (1) edge[krawedz grafu] node {
+        \begin{tabular}{l}
+            \contour{white}{t2: śnieg: 0.35
+            zjazdy: 5298}
+        \end{tabular}
+    } (2)
+    (3) edge[krawedz grafu] node {
+        \begin{tabular}{l}
+            \contour{white}{t1: śnieg: 0.44
+            zjazdy: 2741}
+        \end{tabular}
+    } (1)
+    (2) edge[krawedz grafu, densely dashed] node {
+        \begin{tabular}{l}
+            \contour{white}{w1: kol: 1(śr), 6(maks)
+            wjazdy} \\
+            \contour{white}{: 2801 / 16200 (17\%)}
+        \end{tabular}
+    } (3)
+    ;
+\end{tikzpicture}
+
+\end{figure}
+\end{document}

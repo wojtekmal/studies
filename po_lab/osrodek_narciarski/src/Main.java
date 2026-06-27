@@ -57,7 +57,7 @@ public class Main {
         }
     }
 
-    private static DaneWejsciowe wczytajWejscie() throws Wczytywacz.WyjatekRodzajSportowca
+    private static DaneWejsciowe wczytajWejscie() throws WyjatekDaneWejsciowe
     {
         Scanner scanner = new Scanner(System.in);
 

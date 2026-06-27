@@ -18,17 +18,13 @@ public class DziennikStandardoweWyjscie implements Dziennik {
     }
 
     @Override
-    public void dodajTabele(String[][] wiersze) {
-        int maxDlugoscKlucza = 0;
-
-        for (String[] wiersz : wiersze) {
-            maxDlugoscKlucza = Math.max(maxDlugoscKlucza, wiersz[0].length());
+    public void dodajStatystykiKoncowe(String[] statystykiTras, String[] statystykiWyciagow) {
+        for (String statystykiTrasy : statystykiTras) {
+            System.out.println(statystykiTrasy);
         }
 
-        String formatWiersza = "%-" + maxDlugoscKlucza + "s: %s%n";
-
-        for (String[] wiersz : wiersze) {
-            System.out.format(formatWiersza, wiersz[0], wiersz[1]);
+        for (String statystykiWyciagu : statystykiWyciagow) {
+            System.out.println(statystykiWyciagu);
         }
     }
 }

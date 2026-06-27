@@ -22,7 +22,12 @@ public class TworcaMapek {
         generatorMapek = new GeneratorMapek(nazwaKatalogu);
     }
 
-    private void zrobMapke(Osrodek osrodek, String[] tekstyTras, String[] tekstyWyciagow, String nazwaPliku) throws WyjatekSystemuPlikow {
+    private void zrobMapke(Osrodek osrodek,
+        String[] tekstyTras,
+        String[] tekstyWyciagow,
+        String nazwaPliku,
+        boolean czyCiacWiersze) throws WyjatekSystemuPlikow {
+
         for (Wezel wezel : osrodek.wezly()) {
             GruboscKonturu gruboscKonturu = wezel.czyStartowy() ? GruboscKonturu.POGRUBIONY : GruboscKonturu.ZWYKLY;
 
@@ -33,17 +38,33 @@ public class TworcaMapek {
         }
 
         for (Trasa trasa : osrodek.trasy()) {
-            generatorMapek.dodajKrawedz(trasa.poczatek().id(),
+            if (czyCiacWiersze) {
+                generatorMapek.dodajKrawedz(trasa.poczatek().id(),
                     trasa.koniec().id(),
                     new StylKrawedzi(StylLinii.CIAGLA),
                     podzielNaLinie(tekstyTras[trasa.id()]));
+            }
+            else {
+                generatorMapek.dodajKrawedz(trasa.poczatek().id(),
+                    trasa.koniec().id(),
+                    new StylKrawedzi(StylLinii.CIAGLA),
+                    tekstyTras[trasa.id()]);
+            }
         }
 
         for (Wyciag wyciag : osrodek.wyciagi()) {
-            generatorMapek.dodajKrawedz(wyciag.poczatek().id(),
+            if (czyCiacWiersze) {
+                generatorMapek.dodajKrawedz(wyciag.poczatek().id(),
                     wyciag.koniec().id(),
                     new StylKrawedzi(StylLinii.PRZERYWANA),
                     podzielNaLinie(tekstyWyciagow[wyciag.id()]));
+            }
+            else {
+                generatorMapek.dodajKrawedz(wyciag.poczatek().id(),
+                    wyciag.koniec().id(),
+                    new StylKrawedzi(StylLinii.PRZERYWANA),
+                    tekstyWyciagow[wyciag.id()]);
+            }
         }
 
         generatorMapek.tworzMapke(nazwaPliku);
@@ -55,16 +76,18 @@ public class TworcaMapek {
     }
 
     public void dodajParametryOsrodka(Osrodek osrodek, String[] opisyTras, String[] opisyWyciagow) throws WyjatekSystemuPlikow {
-        zrobMapke(osrodek, opisyTras, opisyWyciagow, "parametry_osrodka.tex");
+        zrobMapke(osrodek, opisyTras, opisyWyciagow, "parametry_osrodka.tex", false);
     }
 
     public void dodajStatystykiKoncowe(Osrodek osrodek, String[] statystykiTras, String[] statystykiWyciagow) throws WyjatekSystemuPlikow {
-        zrobMapke(osrodek, statystykiTras, statystykiWyciagow, "statystyki_koncowe.tex");
+        zrobMapke(osrodek, statystykiTras, statystykiWyciagow, "statystyki_koncowe.tex", false);
     }
 
-    public void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, Krawedz[] odwiedzoneKrawedzie) throws WyjatekSystemuPlikow {
+    public void dodajPrzejazdySportowca(Osrodek osrodek, int idSportowca, List<Krawedz> odwiedzoneKrawedzie) throws WyjatekSystemuPlikow {
         Map<Krawedz, Set<Integer>> zbioryOdwiedzin = new HashMap<>();
-        int nastepnyIndeksOdwiedzonego = 0;
+
+        // Indeksowanie od 1.
+        int nastepnyIndeksOdwiedzonego = 1;
 
         for (Krawedz krawedz : odwiedzoneKrawedzie) {
             Set<Integer> zbiorOdwiedzin = zbioryOdwiedzin.computeIfAbsent(krawedz,
@@ -100,7 +123,7 @@ public class TworcaMapek {
         }
 
         String nazwaPliku = String.format("przejazd_sportowca_%d.tex", idSportowca);
-        zrobMapke(osrodek, opisyTras, opisyWyciagow, nazwaPliku);
+        zrobMapke(osrodek, opisyTras, opisyWyciagow, nazwaPliku, true);
     }
 
     private String dodajOpisZbioruOdwiedzin(StringBuilder stringBuilder, Set<Integer> zbiorOdwiedzin) {

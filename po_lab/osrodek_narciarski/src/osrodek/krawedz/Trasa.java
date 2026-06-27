@@ -3,6 +3,7 @@ package osrodek.krawedz;
 import czas.Interwal;
 import czas.Moment;
 import osrodek.Wezel;
+import wczytywacz.WyjatekDaneWejsciowe;
 
 public class Trasa extends Krawedz {
 
@@ -20,11 +21,12 @@ public class Trasa extends Krawedz {
         Interwal dlugoscZjazdu,
         int poziomTrudnosci,
         double bazowaAtrakcyjnosc,
-        double odpornoscNaNierownosci) {
+        double odpornoscNaNierownosci) throws WyjatekDaneWejsciowe {
         super(id, poczatek, koniec, dlugoscZjazdu);
 
-        assert poczatek.wysokosc() > koniec.wysokosc()
-            : String.format("Trasa %d prowadzi w górę: %d -> %d", id, poczatek.wysokosc(), koniec.wysokosc());
+        if (poczatek.wysokosc() <= koniec.wysokosc()) {
+            throw new WyjatekDaneWejsciowe(String.format("Trasa %d prowadzi w górę: %d -> %d", id, poczatek.wysokosc(), koniec.wysokosc()));
+        }
 
         this.poziomTrudnosci = poziomTrudnosci;
         this.bazowaAtrakcyjnosc = bazowaAtrakcyjnosc;

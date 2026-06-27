@@ -69,17 +69,17 @@ public class Symulacja {
      * Wypisuje statystyki końcowe symulacji.
      */
     private void zbierzStatystyki(Osrodek osrodek, Dziennik dziennik) {
-        String[][] statystyki = new String[osrodek.trasy().length + osrodek.wyciagi().length][2];
+        String[] statystykiTras = new String[osrodek.trasy().length];
+        String[] statystykiWyciagow = new String[osrodek.wyciagi().length];
 
         for (int i = 0; i < osrodek.trasy().length; i++) {
-            statystyki[i] = new String[]{osrodek.trasy()[i].toString(), osrodek.trasy()[i].wypiszStatystyki()};
+            statystykiTras[i] = osrodek.trasy()[i].wypiszStatystyki();
         }
         for (int i = 0; i < osrodek.wyciagi().length; i++) {
-            statystyki[osrodek.trasy().length + i] = new String[]{osrodek.wyciagi()[i].toString(),
-                osrodek.wyciagi()[i].wypiszStatystyki()};
+            statystykiWyciagow[i] = osrodek.wyciagi()[i].wypiszStatystyki();
         }
 
-        dziennik.dodajTabele(statystyki);
+        dziennik.dodajStatystykiKoncowe(statystykiTras, statystykiWyciagow);
     }
 
     private void zrobMapki(Osrodek osrodek, Sportowiec[] sportowcy, TworcaMapek tworcaMapek) throws WyjatekSystemuPlikow {
@@ -94,8 +94,8 @@ public class Symulacja {
         }
 
         for (Wyciag wyciag : osrodek.wyciagi()) {
-            parametryTras[wyciag.id()] = wyciag.wypiszParametry();
-            statystykiTras[wyciag.id()] = wyciag.wypiszStatystyki();
+            parametryWyciagow[wyciag.id()] = wyciag.wypiszParametry();
+            statystykiWyciagow[wyciag.id()] = wyciag.wypiszStatystyki();
         }
 
         tworcaMapek.dodajParametryOsrodka(osrodek, parametryTras, parametryWyciagow);
@@ -107,7 +107,7 @@ public class Symulacja {
             if (sportowiec.sledzony()) {
                 tworcaMapek.dodajPrzejazdySportowca(osrodek,
                     idSportowca,
-                    sportowiec.odwiedzoneKrawedzie().toArray(new Krawedz[0]));
+                    sportowiec.odwiedzoneKrawedzie());
             }
 
             idSportowca++;

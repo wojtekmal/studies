@@ -10,6 +10,8 @@ import osrodek.Wezel;
 import osrodek.krawedz.Krawedz;
 import osrodek.krawedz.OdwiedzajacyKrawedz;
 import sportowcy.Sportowiec;
+import symulacja.Symulacja;
+import wczytywacz.WyjatekDaneWejsciowe;
 
 public class Wyciag extends Krawedz {
 
@@ -25,20 +27,21 @@ public class Wyciag extends Krawedz {
 
     private int sumaDlugosciKolejekiPoSekundach = 0;
 
-    private Moment ostatniaAktualizacjaStatystyk = new Moment(9, 0, 0);
+    private Moment ostatniaAktualizacjaStatystyk = Symulacja.POCZATEK_DNIA;
 
-    private final static int LICZBA_SEKUND_W_SYMULACJI = 21600;
+    private final static int LICZBA_SEKUND_W_SYMULACJI = Symulacja.POCZATEK_DNIA.policzInterwal(Symulacja.KONIEC_SYMULACJI).sekundy();
 
     public Wyciag(int id,
         Wezel poczatek,
         Wezel koniec,
         Interwal odstepMiedzyOdjazdami,
         Interwal dlugoscPrzejazdu,
-        int ladownosc) {
+        int ladownosc) throws WyjatekDaneWejsciowe {
         super(id, poczatek, koniec, dlugoscPrzejazdu);
 
-        assert poczatek.wysokosc() < koniec.wysokosc()
-            : String.format("Wyciąg %d prowadzi w dół: %d -> %d", id, poczatek.wysokosc(), koniec.wysokosc());
+        if (poczatek.wysokosc() >= koniec.wysokosc()) {
+            throw new WyjatekDaneWejsciowe(String.format("Wyciąg %d prowadzi w dół: %d -> %d", id, poczatek.wysokosc(), koniec.wysokosc()));
+        }
 
         this.odstepMiedzyOdjazdami = odstepMiedzyOdjazdami;
         this.ladownosc = ladownosc;
@@ -64,7 +67,10 @@ public class Wyciag extends Krawedz {
      * 2. Zdarzenia reprezentujące dotarcie do końca wyciągu sportowców, którzy załapali się na obecny odjazd.
      */
     public Zdarzenie[] odjazd(Moment moment, Dziennik dziennik) {
+        zaktualizujStatystyki(moment);
+
         Sportowiec[] odjezdzajacySportowcy = obecnaKolejka.zdejmij(Math.min(obecnaKolejka.rozmiar(), ladownosc));
+        lacznaLiczbaPasazerow += odjezdzajacySportowcy.length;
 
         for (Sportowiec sportowiec : odjezdzajacySportowcy) {
             sportowiec.zanotujPrzejazdWyciagiem(this);
@@ -81,8 +87,6 @@ public class Wyciag extends Krawedz {
                 odjezdzajacySportowcy[i]);
         }
 
-        lacznaLiczbaPasazerow += odjezdzajacySportowcy.length;
-
         return noweZdarzenia;
     }
 
@@ -91,33 +95,34 @@ public class Wyciag extends Krawedz {
         return String.format("w%d: %d os. co %ds\nczas: %ds",
             id(),
             ladownosc,
-            odstepMiedzyOdjazdami.sekundy());
+            odstepMiedzyOdjazdami.sekundy(),
+            dlugosc().sekundy());
     }
 
     @Override
     public String wypiszStatystyki() {
-        return String.format("w%d: kol: %d(śr), %d(maks)\nwjazdy: %d / %d",
+        return String.format("w%d: kol: %d(śr), %d(maks)\nwjazdy: %d / %d (%d%%)",
             id(),
             sredniaDlugoscKolejki(),
             maksymalnaDlugoscKolejki,
             lacznaLiczbaPasazerow,
-            maksymalnaMozliwaLiczbaPasazerow());
+            maksymalnaMozliwaLiczbaPasazerow(),
+            procentObciazenia());
     }
 
     private int sredniaDlugoscKolejki() {
-        int sredniaWDolZaokroglona = sumaDlugosciKolejekiPoSekundach / LICZBA_SEKUND_W_SYMULACJI;
-        int reszta = sumaDlugosciKolejekiPoSekundach % LICZBA_SEKUND_W_SYMULACJI;
-
-        if (reszta >= (sumaDlugosciKolejekiPoSekundach + 1) / 2) {
-            return sredniaWDolZaokroglona + 1;
-        }
-        else {
-            return sredniaWDolZaokroglona;
-        }
+        double sumaDlugosci = sumaDlugosciKolejekiPoSekundach;
+        return Math.toIntExact(Math.round(sumaDlugosci / LICZBA_SEKUND_W_SYMULACJI));
     }
 
     public int maksymalnaMozliwaLiczbaPasazerow() {
-        return LICZBA_SEKUND_W_SYMULACJI * ladownosc;
+        return LICZBA_SEKUND_W_SYMULACJI / odstepMiedzyOdjazdami.sekundy() * ladownosc;
+    }
+
+    public int procentObciazenia()
+    {
+        double liczbaPasazerow = lacznaLiczbaPasazerow;
+        return Math.toIntExact(Math.round(liczbaPasazerow / maksymalnaMozliwaLiczbaPasazerow() * 100));
     }
 
     @Override
