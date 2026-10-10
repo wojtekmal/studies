@@ -20,7 +20,7 @@ git add . || { send_notification "git add failed"; exit 1; }
 
 # 3. Check for staged changes before committing
 if ! git diff --staged --quiet; then
-    git commit -m "Automated hourly backup" || { send_notification "git commit failed"; exit 1; }
+    git commit -m "Updating." || { send_notification "git commit failed"; exit 1; }
 fi
 
 # 4. Push and capture error output for the notification
