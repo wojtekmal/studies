@@ -27,7 +27,12 @@ public class Primes {
 
         @Override
         public void run() {
-            // FIXME: implement
+            for (int divisor = start; divisor <= end; divisor += step) {
+                if (n % divisor == 0) {
+                    foundDivisor = divisor;
+                    break;
+                }
+            }
         }
     }
 
@@ -42,21 +47,35 @@ public class Primes {
         // Remainders mod 30 that don't have common factors with 30.
         int[] starts = { 31, 37, 41, 43, 47, 49, 53, 59 };
 
-        // FIXME: implement
+        foundDivisor = NO_DIVISOR;
+
+        for (int smallPrime : smallPrimes) {
+            if (n > smallPrime && n % smallPrime == 0) {
+                foundDivisor = smallPrime;
+                return false;
+            }
+        }
 
         List<Thread> threads = new ArrayList<>();
         for (int start : starts) {
-            threads.add(new Thread(/* ... */));
+            threads.add(new Thread(new FindDivisor(n, start, n - 1, STEP)));
         }
 
-        // FIXME: implement
-        return false;
+        for (Thread thread : threads) {
+            thread.start();
+        }
+
+        for (Thread thread : threads) {
+            while (thread.isAlive()) {}
+        }
+
+        return foundDivisor == NO_DIVISOR;
     }
 
     public static void main(String[] args) {
         // A simple test: count how many numbers are prime, up to i=MAX_VALUE_TO_CHECK.
-        final int MAX_VALUE_TO_CHECK = 100; // 10000;
-        final int EXPECTED_N_PRIMES = 25; // 1229;
+        final int MAX_VALUE_TO_CHECK = 10000;
+        final int EXPECTED_N_PRIMES = 1229;
 
         int primesCount = 0;
         for (int i = 0; i <= MAX_VALUE_TO_CHECK; ++i) {
