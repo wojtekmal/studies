@@ -12,8 +12,6 @@ send_notification() {
     notify-send -u critical "Automated Git Push Failed" "$error_message"
 }
 
-send_notification "Cron notification test successful."
-
 # 1. Catch directory access failures
 cd "$REPO_DIR" || { send_notification "Could not find directory $REPO_DIR"; exit 1; }
 
