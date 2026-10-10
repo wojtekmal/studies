@@ -58,7 +58,9 @@ public class Vector {
 
         @Override
         public void run() {
-            // FIXME: implement
+            for (int pos = begin; pos < end; pos++) {
+                result.elements[pos] = left.elements[pos] + right.elements[pos];
+            }
         }
     }
 
@@ -70,7 +72,19 @@ public class Vector {
 
         ArrayList<Thread> threads = new ArrayList<>();
 
-        // FIXME: implement
+        for (int begin = 0; begin < elements.length; begin += SUM_CHUNK_LENGTH) {
+            int end = begin + SUM_CHUNK_LENGTH;
+            SumHelper helper = new SumHelper(this, v, result, begin, end);
+            threads.add(new Thread(helper));
+        }
+
+        for (Thread thread : threads) {
+            thread.start();
+        }
+
+        for (Thread thread : threads) {
+            thread.join();
+        }
 
         return result;
     }
