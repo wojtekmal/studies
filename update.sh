@@ -28,3 +28,5 @@ if ! PUSH_OUTPUT=$(git push 2>&1); then
     send_notification "git push failed: $PUSH_OUTPUT"
     exit 1
 fi
+
+send_notification "This is a test alert."
