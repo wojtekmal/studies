@@ -73,7 +73,8 @@ public class Vector {
         ArrayList<Thread> threads = new ArrayList<>();
 
         for (int begin = 0; begin < elements.length; begin += SUM_CHUNK_LENGTH) {
-            int end = begin + SUM_CHUNK_LENGTH;
+            int end = Math.min(begin + SUM_CHUNK_LENGTH, elements.length);
+
             SumHelper helper = new SumHelper(this, v, result, begin, end);
             threads.add(new Thread(helper));
         }
@@ -108,7 +109,13 @@ public class Vector {
 
         @Override
         public void run() {
-            // FIXME: implement
+            int sum = 0;
+
+            for (int pos = begin; pos < end; pos++) {
+                sum += left.elements[pos] * right.elements[pos];
+            }
+
+            result[resultPosition] = sum;
         }
     }
 
@@ -117,11 +124,34 @@ public class Vector {
             throw new IllegalArgumentException("Vector lengths differ.");
         }
 
-        int nThreads = 0;
+        // The number of chunks is the ceiling of length / chunkLength.
+        int nThreads = (elements.length - 1) / DOT_CHUNK_LENGTH + 1;
         int[] partialResults = new int[nThreads];
         int total = 0;
 
-        // FIXME: implement
+        ArrayList<Thread> threads = new ArrayList<>();
+
+        for (int threadId = 0; threadId < nThreads; threadId++) {
+            int begin = threadId * DOT_CHUNK_LENGTH;
+            int end = Math.min(begin + DOT_CHUNK_LENGTH, elements.length);
+
+            DotHelper helper = new DotHelper(
+                    this, v, begin, end, partialResults, threadId);
+
+            threads.add(new Thread(helper));
+        }
+
+        for (Thread thread : threads) {
+            thread.start();
+        }
+
+        for (Thread thread : threads) {
+            thread.join();
+        }
+
+        for (int partialResult : partialResults) {
+            total += partialResult;
+        }
 
         return total;
     }
