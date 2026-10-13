@@ -1,3 +1,12 @@
+/*
+Wygenerowane przez skrypt w pythonie.
+Napisane, żeby działało w PostgreSQL, ale gemini stwierdziło, że to też działa w
+OracleDB (uzyskałem pozwolenie na tłumaczenie z PostgreSQL do OracleDB za pomocą
+sztucznej inteligencji). Wystarczy jedynie dodać poniższą linię.
+*/
+
+SET DEFINE OFF;
+
 CREATE TABLE publikacje (
     ID int PRIMARY KEY,
     Tytuł varchar(200) NOT NULL,
@@ -23,8 +32,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (14,'SMIS 2017 Data
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (15,'Decremental Single-source Reachability in Planar Digraphs',2017,4,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (16,'Contracting a Planar Graph Efficiently',2017,6,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (17,'Modal mu-Calculus with Atoms',2017,2,70);
-['18,', 'Expressiveness of Probabilistic Modal Logics, Revisited', ',2017,3,140\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (18,'',Expressiveness of Probabilistic Modal Logics, Revisited,,2017,3,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (18,'Expressiveness of Probabilistic Modal Logics, Revisited',2017,3,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (19,'Learning nominal automata',2017,5,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (20,'Efficient Enumeration of Non-Equivalent Squares in Partial Words with Few Holes',2017,8,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (21,'LOIS: Syntax and Semantics',2017,2,200);
@@ -39,8 +47,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (29,'The Dollar Auc
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (30,'On the Construction of Covert Networks',2017,4,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (31,'Strategic Social Network Analysis',2017,3,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (32,'Dynamic Beats Fixed: On Phase-Based Algorithms for File Migration',2017,3,140);
-['33,', 'On Problems Equivalent to (min, +)-Convolution', ',2017,4,140\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (33,'',On Problems Equivalent to (min, +)-Convolution,,2017,4,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (33,'On Problems Equivalent to (min, +)-Convolution',2017,4,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (34,'Bisimilarity for paraconsistent description logics',2017,4,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (35,'Why Do Cascade Sizes Follow a Power-Law?',2017,4,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (36,'Approximation and Kernelization for Chordal Vertex Deletion',2017,2,200);
@@ -115,15 +122,13 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (104,'On the number
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (105,'Broadcast with Energy-Exchanging Mobile Agents Distributed on a Tree',2018,4,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (106,'Dfuntest: A Testing Framework for Distributed Applications',2018,2,20);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (107,'Collective Schedules: Scheduling Meets Computational Social Choice',2018,3,200);
-['108,', 'Reducing Transducer Equivalence to Register Automata Problems Solved by ', '', 'Hilbert Method', ',2018,3,70\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (108,'',Reducing Transducer Equivalence to Register Automata Problems Solved by );
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (108,'Reducing Transducer Equivalence to Register Automata Problems Solved by "Hilbert Method',2018,3,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (109,'Approval-Based Multi-Winner Rules and Strategic Voting',2018,2,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (110,'Consistent Approval-Based Multi-Winner Rules',2018,2,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (111,'Stable Marriage with Multi-Modal Preferences',2018,3,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (112,'Multiwinner Elections With Diversity Constraints',2018,5,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (113,'On the Complexity of Extended and Proportional Justified Representation',2018,6,200);
-['114,', 'Proportional Approval Voting, Harmonic k-median, and Negative Association', ',2018,3,140\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (114,'',Proportional Approval Voting, Harmonic k-median, and Negative Association,,2018,3,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (114,'Proportional Approval Voting, Harmonic k-median, and Negative Association',2018,3,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (115,'How Deterministic are Good-For-Games Automata?',2018,3,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (116,'Unambiguous Languages Exhaust the Index Hierarchy',2018,1,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (117,'Investigating Similarity between Hearthstone Cards: Text Embeddings and Interchangeability Approaches',2018,2,70);
@@ -132,8 +137,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (119,'On computabil
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (120,'An Axiomatization of the Eigenvector and Katz Centralities',2018,2,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (121,'Axiomatization of the PageRank Centrality',2018,2,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (122,'Random Order Contention Resolution Schemes',2018,2,200);
-['123,', 'Multi3Net: Segmenting Flooded Buildings via Fusion of Multiresolution, Multisensor, and Multitemporal Satellite Imagery', ',2019,7,200\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (123,'',Multi3Net: Segmenting Flooded Buildings via Fusion of Multiresolution, Multisensor, and Multitemporal Satellite Imagery,,2019,7,200);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (123,'Multi3Net: Segmenting Flooded Buildings via Fusion of Multiresolution, Multisensor, and Multitemporal Satellite Imagery',2019,7,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (124,'String-to-String Interpretations With Polynomial-Size Output',2019,3,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (125,'A non-regular language of infinite trees that is recognizable by a sort-wise finite algebra',2019,2,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (126,'Regular tree languages in low levels of the Wadge Hierarchy',2019,4,70);
@@ -142,8 +146,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (128,'Occupational 
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (129,'Timed Basic Parallel Processes',2019,3,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (130,'Efficient reduction of nondeterministic automata with application to language inclusion testing',2019,2,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (131,'Binary Reachability of Timed-register Pushdown Automata and Branching Vector Addition Systems',2019,4,100);
-['132,', 'On Problems Equivalent to (min, +)-Convolution', ',2019,4,140\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (132,'',On Problems Equivalent to (min, +)-Convolution,,2019,4,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (132,'On Problems Equivalent to (min, +)-Convolution',2019,4,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (133,'Improving TSP Tours Using Dynamic Programming over Tree Decompositions',2019,3,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (134,'Minimum Bisection Is Fixed-Parameter Tractable',2019,5,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (135,'Applying deep learning to right whale photo identification',2019,6,140);
@@ -169,8 +172,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (154,'Biologically 
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (155,'MIND: A double-linear model to accurately determine monoisotopic precursor mass in high-resolution top-down proteomics',2019,10,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (156,'Truncated Robust Principal Component Analysis and Noise Reduction for Single Cell RNA Sequencing Data',2019,4,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (157,'masstodon: A tool for assigning peaks and modeling electron transfer reactions in top-down mass spectrometry',2019,7,140);
-['158,', 'Mapping of breakpoints in balanced chromosomal translocations by shallow whole genome sequencing points to EFNA5, BAHD1 and PPP2R5E as novel candidates for genes causing human Mendelian disorders', ',2019,22,140\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (158,'',Mapping of breakpoints in balanced chromosomal translocations by shallow whole genome sequencing points to EFNA5, BAHD1 and PPP2R5E as novel candidates for genes causing human Mendelian disorders,,2019,22,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (158,'Mapping of breakpoints in balanced chromosomal translocations by shallow whole genome sequencing points to EFNA5, BAHD1 and PPP2R5E as novel candidates for genes causing human Mendelian disorders',2019,22,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (159,'Credibility of Evolutionary Events in Gene Trees',2019,2,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (160,'Mathematical properties of the gene duplication cost',2019,4,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (161,'Feasibility Algorithms for the Duplication-Loss Cost',2019,3,140);
@@ -202,7 +204,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (186,'How to Hide o
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (187,'Adversarial Robustness of Similarity-Based Link Prediction',2019,3,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (188,'A Subquadratic Approximation Scheme for Partition',2019,3,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (189,'Equal-subset-sum faster than the meet-in-the-middle',2019,4,140);
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (190,'On the semantics of Cypher's implicit group-by',2019,3,70);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (190,'On the semantics of Cypher''s implicit group-by',2019,3,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (191,'On Finite and Unrestricted Query Entailment beyond SQ with Number Restrictions on Transitive Roles',2019,5,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (192,'Credibility of Evolutionary Events in Gene Trees',2019,2,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (193,'The Influence of the Test Operator on the Expressive Power of PDL-like Logics',2019,1,100);
@@ -213,7 +215,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (197,'Bisimulations
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (198,'Incorporating Stratified Negation into Query-Subquery Nets for Evaluating Queries to Stratified Deductive Databases',2019,2,20);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (199,'PyLink: a PyMOL plugin to identify links',2019,5,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (200,'Defining and detecting links in chromosomes',2019,3,140);
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (201,'Parity Games: Zielonka's Algorithm in Quasi-Polynomial Time',2019,1,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (201,'Parity Games: Zielonka''s Algorithm in Quasi-Polynomial Time',2019,1,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (202,'Extensions of the Caucal Hierarchy?',2019,1,20);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (203,'Inferring duplication episodes from unrooted gene trees',2019,2,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (204,'Efficient algorithms for genomic duplication models',2019,2,70);
@@ -259,15 +261,14 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (243,'Proportional 
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (244,'Matchings under Preferences: Strength of Stability and Trade-Offs',2019,3,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (245,'How Similar Are Two Elections?',2019,5,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (246,'Uniformisation Gives the Full Strength of Regular Languages',2019,3,140);
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (247,'The logical strength of Büchi's decidability theorem',2019,4,70);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (247,'The logical strength of Büchi''s decidability theorem',2019,4,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (248,'Multivariate Ovulation Window Detection at OvuFriend',2019,10,20);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (249,'On Boolean Representation of Continuous Data Biclustering',2019,2,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (250,'On resilient feature selection: Computational foundations of r-C-reducts',2019,2,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (251,'Paraconsistent Reasoning in Cops and Robber Game with Uncertain Information: A Simulation-Based Analysis',2019,3,40);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (252,'Decision-Making Support Using Nonmonotonic Probabilistic Reasoning',2019,1,20);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (253,'Learning signaling networks from combinatorial perturbations by exploiting siRNA off-target effects',2019,2,200);
-['254,', 'ARA: accurate, reliable and active histopathological image classification framework with Bayesian deep learning', ',2019,4,140\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (254,'',ARA: accurate, reliable and active histopathological image classification framework with Bayesian deep learning,,2019,4,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (254,'ARA: accurate, reliable and active histopathological image classification framework with Bayesian deep learning',2019,4,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (255,'QChromosomeVisualizer: A new tool for 3D visualization of long simulations of polymer-like chromosome models',2019,3,100);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (256,'Random Walk Decay Centrality',2019,3,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (257,'Approximating APSP without Scaling: Equivalence of Approximate Min-plus and Exact Min-Max',2019,3,200);
@@ -283,8 +284,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (266,'First-order t
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (267,'Single-Use Automata and Transducers for Infinite Alphabets',2020,2,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (268,'Some Remarks on Deciding Equivalence for Graph-To-Graph Transducers',2020,2,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (269,'Undecidability of a weak version of MSO+U',2020,5,70);
-['270,', 'From Gap-Exponential Time Hypothesis to Fixed Parameter Tractable Inapproximability: Clique, Dominating Set, and More', ',2020,7,200\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (270,'',From Gap-Exponential Time Hypothesis to Fixed Parameter Tractable Inapproximability: Clique, Dominating Set, and More,,2020,7,200);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (270,'From Gap-Exponential Time Hypothesis to Fixed Parameter Tractable Inapproximability: Clique, Dominating Set, and More',2020,7,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (271,'Lower Bounds for the Parameterized Complexity of Minimum Fill-in and Other Completion Problems',2020,5,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (272,'An Approach to Regular Separability in Vector Addition Systems',2020,2,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (273,'Reachability in Fixed Dimension Vector Addition Systems with States',2020,5,140);
@@ -298,8 +298,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (280,'Drawing graph
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (281,'Low Entropy Sub-Networks Prevent the Integration of Metabolomic and Transcriptomic Data',2020,3,100);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (282,'Masserstein: Linear regression of mass spectra by optimal transport',2020,7,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (283,'Knot_pull—python package for biopolymer smoothing and knot detection',2020,3,200);
-['284,', 'Breakpoint mapping of symptomatic balanced translocations links the EPHA6, KLF13 and UBR3 genes to novel disease phenotype', ',2020,20,140\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (284,'',Breakpoint mapping of symptomatic balanced translocations links the EPHA6, KLF13 and UBR3 genes to novel disease phenotype,,2020,20,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (284,'Breakpoint mapping of symptomatic balanced translocations links the EPHA6, KLF13 and UBR3 genes to novel disease phenotype',2020,20,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (285,'New Hybrid Quantum Annealing Algorithms for Solving Vehicle Routing Problem',2020,9,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (286,'Exact median-tree inference for unrooted reconciliation costs',2020,3,100);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (287,'Minimizing genomic duplication episodes',2020,3,70);
@@ -319,8 +318,7 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (300,'Fair division
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (301,'Deep Learning Versus Traditional Solutions for Group Trajectory Outliers',2020,5,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (302,'Hiding in Multilayer Networks',2020,3,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (303,'Partition decision trees: representation for efficient computation of the Shapley value extended to games with externalities',2020,5,70);
-['304,', 'Signed Graph Games: Coalitional Games with Friends, Enemies and Allies', ',2020,5,200\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (304,'',Signed Graph Games: Coalitional Games with Friends, Enemies and Allies,,2020,5,200);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (304,'Signed Graph Games: Coalitional Games with Friends, Enemies and Allies',2020,5,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (305,'The Manipulability of Centrality Measures-An Axiomatic Approach',2020,4,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (306,'Improved approximation for Fractionally Subadditive Network Design',2020,2,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (307,'On Finite Entailment of Non-Local Queries in Description Logics',2020,5,200);
@@ -333,13 +331,11 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (313,'Computing Mea
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (314,'A Quasi-Polynomial Black-Box Algorithm for Fixed Point Evaluation',2020,3,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (315,'A Type System Describing Unboundedness',2020,1,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (316,'Bisimulation Finiteness of Pushdown Systems Is Elementary',2020,2,200);
-['317,', 'Cost Automata, Safe Schemes, and Downward Closures', ',2020,4,140\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (317,'',Cost Automata, Safe Schemes, and Downward Closures,,2020,4,140);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (317,'Cost Automata, Safe Schemes, and Downward Closures',2020,4,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (318,'Higher-Order Nonemptiness Step by Step',2020,1,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (319,'On the Expressive Power of Higher-Order Pushdown Systems',2020,1,70);
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (320,'Parity Games: Another View on Lehtinen's Algorithm',2020,1,70);
-['321,', 'Recursion Schemes, the MSO Logic, and the U quantifier', ',2020,1,70\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (321,'',Recursion Schemes, the MSO Logic, and the U quantifier,,2020,1,70);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (320,'Parity Games: Another View on Lehtinen''s Algorithm',2020,1,70);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (321,'Recursion Schemes, the MSO Logic, and the U quantifier',2020,1,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (322,'A Double Exponential Lower Bound for the Distinct Vectors Problem',2020,2,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (323,'The Complexity of Connectivity Problems in Forbidden-Transition Graphs And Edge-Colored Graphs',2020,5,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (324,'An Improved FPT Algorithm for Independent Feedback Vertex Set',2020,2,40);
@@ -399,17 +395,15 @@ INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (377,'The Problem o
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (378,'IsoSpec2: Ultrafast Fine Structure Calculator',2020,3,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (379,'Algorithmic Discovery of Tactical Combinations for Advanced Organic Syntheses',2020,7,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (380,'A Paraconsistent ASP-like Language with Tractable Model Generation',2020,1,20);
-['381,', 'On the Probability and Cost of Ignorance, Inconsistency, Nonsense and More', ',2020,1,40\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (381,'',On the Probability and Cost of Ignorance, Inconsistency, Nonsense and More,,2020,1,40);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (381,'On the Probability and Cost of Ignorance, Inconsistency, Nonsense and More',2020,1,40);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (382,'Rough Forgetting',2020,2,20);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (383,'A mathematical model of the metastatic bottleneck predicts patient outcome and response to cancer treatment',2020,4,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (384,'Eleven grand challenges in single-cell data science',2020,52,200);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (385,'Feature selection strategies for drug sensitivity prediction',2020,8,140);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (386,'The Unconstrained Diameters of the Duplication-Loss Cost and the Loss Cost',2020,3,70);
 INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (387,'Aggregate Queries on Sparse Databases',2020,1,200);
-['388,', 'Register Automata with Extrema Constraints, and an Application to Two-Variable Logic', ',2020,2,200\n']
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (388,'',Register Automata with Extrema Constraints, and an Application to Two-Variable Logic,,2020,2,200);
-INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (389,'Automated inference of gene regulatory networks using explicit regulatory modules',2020,2,7);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (388,'Register Automata with Extrema Constraints, and an Application to Two-Variable Logic',2020,2,200);
+INSERT INTO publikacje (ID,Tytuł,Rok,Autorzy,Punkty) VALUES (389,'Automated inference of gene regulatory networks using explicit regulatory modules',2020,2,70);
 
 SELECT * FROM publikacje WHERE Rok = 2020 AND Punkty >= Autorzy * 100 ORDER BY Autorzy;
 DROP TABLE publikacje;
