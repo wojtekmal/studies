@@ -3,6 +3,7 @@ package lab04.assignments;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.function.IntBinaryOperator;
 
 public class MatrixRowSums {
@@ -10,6 +11,9 @@ public class MatrixRowSums {
     private static final int N_COLUMNS = 100;
 
     private static final ConcurrentHashMap<Integer, Integer> row_sums =
+        new ConcurrentHashMap<>();
+    
+    private static final ConcurrentHashMap<Integer, Integer> summand_counts =
         new ConcurrentHashMap<>();
 
     private static IntBinaryOperator matrixDefinition = (row, col) -> {
@@ -34,17 +38,29 @@ public class MatrixRowSums {
             final int myColumn = c;
             threads.add(new Thread(() -> {
                 for (int row = 0; row < N_ROWS; row++) {
-                    row_sums.putIfAbsent(row, 0);
+                    final int myRow = row;
 
-                    row_sums.computeIfPresent(row, (key, val) -> (val + matrixDefinition.applyAsInt(row, myColumn)));
+                    row_sums.putIfAbsent(myRow, 0);
+
+                    row_sums.computeIfPresent(myRow, (key, val) -> 
+                        (val + matrixDefinition.applyAsInt(myRow, myColumn)));
+
+                    summand_counts.putIfAbsent(myRow, 0);
+                    summand_counts.computeIfPresent(myRow, (key, val) -> (val + 1));
+
+                    if (summand_count == N_ROWS) {
+                        int sum = row_sums.get(myRow);
+                        System.out.println(myRow + " -> " + sum);
+
+                        summand_counts.remove(myRow);
+                        row_sums.remove(myRow);
+                    }
                 }
             }));
         }
         for (Thread t : threads) {
             t.start();
         }
-
-        // TODO
 
         try {
             for (Thread t : threads) {
