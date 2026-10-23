@@ -2,11 +2,15 @@ package lab04.assignments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntBinaryOperator;
 
 public class MatrixRowSums {
     private static final int N_ROWS = 10;
     private static final int N_COLUMNS = 100;
+
+    private static final ConcurrentHashMap<Integer, Integer> row_sums =
+        new ConcurrentHashMap<>();
 
     private static IntBinaryOperator matrixDefinition = (row, col) -> {
         int a = 2 * col + 1;
@@ -29,7 +33,11 @@ public class MatrixRowSums {
         for (int c = 0; c < N_COLUMNS; ++c) {
             final int myColumn = c;
             threads.add(new Thread(() -> {
-                // TODO
+                for (int row = 0; row < N_ROWS; row++) {
+                    row_sums.putIfAbsent(row, 0);
+
+                    row_sums.computeIfPresent(row, (key, val) -> (val + matrixDefinition.applyAsInt(row, myColumn)));
+                }
             }));
         }
         for (Thread t : threads) {
