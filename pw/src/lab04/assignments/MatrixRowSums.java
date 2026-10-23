@@ -48,7 +48,12 @@ public class MatrixRowSums {
                     summand_counts.putIfAbsent(myRow, 0);
                     summand_counts.computeIfPresent(myRow, (key, val) -> (val + 1));
 
-                    if (summand_count == N_ROWS) {
+                    boolean rowIsComplete = summand_counts.replace(myRow, N_COLUMNS, 0);
+                    // replace allows us to safely check the value for a given key
+                    // and get true only on the first check. 0 is a placeholder;
+                    // if a replacement is made, then the key will soon be deleted.
+
+                    if (rowIsComplete) {
                         int sum = row_sums.get(myRow);
                         System.out.println(myRow + " -> " + sum);
 
@@ -79,6 +84,7 @@ public class MatrixRowSums {
             System.out.println("-- Sequentially --");
             printRowSumsSequentially();
             System.out.println("-- In parallel --");
+            System.out.println("This implementation does not guarantee that the sums will be printed in order.");
             printRowSumsInParallel();
             System.out.println("-- End --");
         } catch (InterruptedException e) {
