@@ -12,7 +12,7 @@ class Task(models.Model):
     def __str__(self):
         return f"{self.short_name}: {self.title}"
 
-class Sumbmission(models.Model):
+class Submission(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="submissions")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     code = models.TextField()

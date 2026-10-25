@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Zadania</h1>
+<ul>
+    {% for task in tasks %}
+        <li>
+            <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a>
+            {% if task.deadline %}(do {{ task.deadline|date:"d.m.Y H:i" }}){% endif %}
+        </li>
+    {% empty %}
+        <li>Brak zadań.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
