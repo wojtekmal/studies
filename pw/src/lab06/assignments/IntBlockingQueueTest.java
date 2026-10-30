@@ -243,7 +243,7 @@ public class IntBlockingQueueTest {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             System.out.println("== Test run " + (i + 1) + " ==");
             if (!testQueue())
                 break;

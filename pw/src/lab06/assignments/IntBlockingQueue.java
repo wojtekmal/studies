@@ -17,30 +17,40 @@ public class IntBlockingQueue {
         this.isShutdown = false;
     }
 
-    public int take() throws InterruptedException, ShutdownException {
-        if (isShutdown && getSize() == 0)
+    public synchronized int take() throws InterruptedException, ShutdownException {
+        while (getSize() == 0 && !isShutdown) wait();
+
+        if (getSize() == 0)
             throw new ShutdownException();
 
         int first = buffer[firstOccupied];
         firstOccupied = (firstOccupied + 1) % capacity;
         size--;
+
+        notifyAll();
+
         return first;
     }
 
-    public void put(int item) throws InterruptedException, ShutdownException {
+    public synchronized void put(int item) throws InterruptedException, ShutdownException {
+        while (getSize() == capacity && !isShutdown) wait();
+
         if (isShutdown)
             throw new ShutdownException();
 
         buffer[firstEmpty] = item;
         firstEmpty = (firstEmpty + 1) % capacity;
         size++;
+
+        notifyAll();
     }
 
-    public void shutdown() {
+    public synchronized void shutdown() {
         isShutdown = true;
+        notifyAll();
     }
 
-    public int getSize() {
+    public synchronized int getSize() {
         return size;
     }
 
