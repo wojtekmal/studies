@@ -1,21 +1,28 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stddef.h>
+#include <stdbool.h>
 
-int counter = 0;
-int who_waits = 1;
-bool thread_1_wants = false;
-bool thread_2_wants = false;
+volatile int counter = 0;
+volatile int who_waits = 1;
+volatile bool thread_1_wants = false;
+volatile bool thread_2_wants = false;
+
+void critical_section() {
+    counter++;
+}
 
 void* thread_1(void* arg) {
     for (int i = 0; i < 1000000; i++) {
         thread_1_wants = true;
+        __sync_synchronize();
         who_waits = 1;
+        __sync_synchronize();
 
         while (thread_2_wants && who_waits == true) {}
 
-        counter++;
+        critical_section();
 
         thread_1_wants = false;
     }
@@ -24,11 +31,13 @@ void* thread_1(void* arg) {
 void* thread_2(void* arg) {
     for (int i = 0; i < 1000000; i++) {
         thread_2_wants = false;
+        __sync_synchronize();
         who_waits = 2;
+        __sync_synchronize();
 
         while (thread_1_wants && who_waits == 2) {}
 
-        counter++;
+        critical_section();
 
         thread_2_wants = false;
     }
