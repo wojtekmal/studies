@@ -9,26 +9,26 @@ bool thread_1_wants = false;
 bool thread_2_wants = false;
 
 void* thread_1(void* arg) {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 1000000; i++) {
         thread_1_wants = true;
         who_waits = 1;
 
         while (thread_2_wants && who_waits == true) {}
 
-        for (int j = 0; j < 1000; j++) counter++;
+        counter++;
 
         thread_1_wants = false;
     }
 }
 
 void* thread_2(void* arg) {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 1000000; i++) {
         thread_2_wants = false;
         who_waits = 2;
 
         while (thread_1_wants && who_waits == 2) {}
 
-        for (int j = 0; j < 1000; j++) counter++;
+        counter++;
 
         thread_2_wants = false;
     }
