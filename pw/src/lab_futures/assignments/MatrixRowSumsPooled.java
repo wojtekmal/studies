@@ -2,11 +2,9 @@ package lab_futures.assignments;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import lab_futures.examples.Utils;
 
@@ -43,12 +41,52 @@ public class MatrixRowSumsPooled {
         return previousSum;
     }
 
+    private static int[] rowSums = new int[N_ROWS];
+
+    public static class FirstRowHelper implements Supplier<Integer>
+    {
+        private final int column;
+
+        public FirstRowHelper(int column) {
+            this.column = column;
+        }
+
+        @Override
+        public Integer get()
+        {
+            return compute(0, column);
+        }
+    }
+
+    public static class NextRowHelper implements Function<Integer,CompletableFuture<Integer>>
+    {
+        private final int column;
+
+        public NextRowHelper(int column) {
+            this.column = column;
+        }
+
+        @Override
+        public CompletableFuture<Integer> apply(Integer previousSum)
+        {
+            return CompletableFuture.supplyAsync(() -> {return compute(previousSum, column);});
+        }
+    }
+
+    public static class SummationHelper implements Function<List<Integer>,CompletableFuture<Integer>>
+    {
+        @Override
+        public CompletableFuture<Integer> apply(List<Integer> vals)
+        {
+            return CompletableFuture.supplyAsync(() -> {return vals.stream().mapToInt(i -> i).sum();});
+        }
+    }
 
     public static Integer printRowSumsInParallel() throws InterruptedException, ExecutionException {
         try (ExecutorService pool = Executors.newFixedThreadPool(N_THREADS)) {
 
             // TODO
-            throw new RuntimeException("not implemented");
+            // Niestety zabrakło mi czasu.
         }
     }
 
