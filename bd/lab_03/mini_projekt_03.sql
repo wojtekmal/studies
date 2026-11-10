@@ -1,5 +1,5 @@
 -- Magiczna linia na & w tytułach.
-SET DEFINE OFF;
+-- SET DEFINE OFF;
 
 CREATE TABLE prace (
     ID int PRIMARY KEY,
@@ -1172,9 +1172,20 @@ INSERT INTO autorstwo(Praca,Autor) VALUES (387,'Toruńczyk');
 INSERT INTO autorstwo(Praca,Autor) VALUES (388,'Toruńczyk');
 INSERT INTO autorstwo(Praca,Autor) VALUES (389,'Wilczyński');
 
-SELECT autorzy.Autor, SUM(publication_values.value) OVER (
-    
-)
+SELECT Sumy_wartosci_publikacji.Autor,
+MAX(Sumy_wartosci_publikacji.suma) AS Wynik_publikacyjny
+FROM (
+    SELECT autorstwo.Autor AS Autor,
+    SUM(Wartosci_publikacji.Wartosc) OVER (
+        PARTITION BY autorstwo.Autor
+        ORDER BY Wartosci_publikacji.Wartosc
+        ROWS BETWEEN 3 PRECEDING AND CURRENT ROW
+    ) AS Suma
+    FROM autorstwo LEFT JOIN (
+        SELECT prace.ID, Punkty / Autorzy AS Wartosc FROM prace
+    ) AS Wartosci_publikacji ON autorstwo.Praca = Wartosci_publikacji.ID
+) AS Sumy_wartosci_publikacji
+GROUP BY Sumy_wartosci_publikacji.Autor;
 
 DROP TABLE prace;
 DROP TABLE autorzy;
