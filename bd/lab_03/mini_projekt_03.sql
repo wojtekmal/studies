@@ -1,5 +1,5 @@
 -- Magiczna linia na & w tytułach.
--- SET DEFINE OFF;
+SET DEFINE OFF;
 
 CREATE TABLE prace (
     ID int PRIMARY KEY,
@@ -1172,6 +1172,14 @@ INSERT INTO autorstwo(Praca,Autor) VALUES (387,'Toruńczyk');
 INSERT INTO autorstwo(Praca,Autor) VALUES (388,'Toruńczyk');
 INSERT INTO autorstwo(Praca,Autor) VALUES (389,'Wilczyński');
 
+/*
+Wyjaśnienie: nie mamy podanego sposobu, żeby wziąć pierwsze 4 elementy z 
+posortowanej kolumny, więc robię tak, że sortuję kolumnę z wartościami
+publikacji, a potem dla każdej wartości liczę sumę po tej i 3 poprzednich. Na
+tym etapie wśród sum wartości publikacji jest między innymi suma 4 największych
+wartości (działa gdy autor ma mniej niż 4 publikacje), więc wystarczy wziąć
+maksimum po tych sumach dla każdego autora.
+*/
 SELECT Sumy_wartosci_publikacji.Autor,
 MAX(Sumy_wartosci_publikacji.suma) AS Wynik_publikacyjny
 FROM (
@@ -1183,8 +1191,8 @@ FROM (
     ) AS Suma
     FROM autorstwo LEFT JOIN (
         SELECT prace.ID, Punkty / Autorzy AS Wartosc FROM prace
-    ) AS Wartosci_publikacji ON autorstwo.Praca = Wartosci_publikacji.ID
-) AS Sumy_wartosci_publikacji
+    ) Wartosci_publikacji ON autorstwo.Praca = Wartosci_publikacji.ID
+) Sumy_wartosci_publikacji
 GROUP BY Sumy_wartosci_publikacji.Autor;
 
 DROP TABLE prace;
